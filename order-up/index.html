@@ -564,18 +564,6 @@ const TOPICS = [
      ['Hawaiʻi (Big Island)',10493],['Cyprus',9284],['Puerto Rico',8759],['Corsica',8730],['Crete',8296],['Mallorca',3630],['Long Island',3505],
      ['Tenerife',2047],['Maui',1893],['Oʻahu',1560],['Isle of Man',574],['Martha’s Vineyard',250],['Manhattan',59]]},
 
-  {id: 'space', title: 'Size in space', ask: 'Biggest to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'kmd', gap: 1.025,
-   src: 'Mean diameter, from NASA fact sheets.',
-   items: [['The Sun',1391400],['Jupiter',139772],['Saturn',116464],['Uranus',50724],['Neptune',49244],['Earth',12742],['Venus',12104],
-     ['Mars',6779],['Ganymede',5268,'moon of Jupiter'],['Titan',5149,'moon of Saturn'],['Mercury',4879],['Callisto',4821,'moon of Jupiter'],
-     ['Io',3643,'moon of Jupiter'],['The Moon',3475],['Europa',3122,'moon of Jupiter'],['Triton',2707,'moon of Neptune'],['Pluto',2377],
-     ['Titania',1577,'moon of Uranus'],['Charon',1212,'moon of Pluto'],['Ceres',939,'dwarf planet'],['Enceladus',504,'moon of Saturn']]},
-
-  {id: 'sundist', title: 'Distance from the Sun', ask: 'Farthest from the Sun to closest', hi: 'Farthest', lo: 'Closest', unit: 'mkm', gap: 1.1,
-   src: 'Average distance, from NASA fact sheets.',
-   items: [['Mercury',57.9],['Venus',108.2],['Earth',149.6],['Mars',228.0],['Ceres',414,'dwarf planet'],['Jupiter',778.5],['Saturn',1432],
-     ['Uranus',2867],['Neptune',4515],['Pluto',5906],['Eris',10126,'dwarf planet']]},
-
   {id: 'rivers', title: 'River length', ask: 'Longest river to shortest', hi: 'Longest', lo: 'Shortest', unit: 'km', gap: 1.12,
    src: 'Wikipedia’s list of river systems by length. River lengths vary between sources, so every river in a round is at least 12% longer than the next.',
    items: [['Nile',6650],['Yangtze',6300],['Mississippi–Missouri',6275,'as one river system'],['Yellow River',5464],['Ob–Irtysh',5410,'as one river system'],
@@ -751,6 +739,42 @@ const TOPICS = [
      ['Take On Me',225,'a-ha'],['Blinding Lights',200,'The Weeknd'],['Bad Guy',194,'Billie Eilish'],['Imagine',183,'John Lennon'],
      ['Espresso',175,'Sabrina Carpenter'],['As It Was',167,'Harry Styles'],['I Want to Hold Your Hand',144,'The Beatles'],['Yesterday',125,'The Beatles'],
      ['Old Town Road',113,'Lil Nas X, original']]},
+
+  /* ---- pop culture ---- */
+  {id: 'debut', title: 'When famous characters first appeared', ask: 'First to appear to last', hi: 'Appeared first', lo: 'Appeared last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'Year of each character’s first appearance in a book, comic, cartoon, film or game, from Wikipedia.',
+   items: [['Sherlock Holmes',1887],['Winnie-the-Pooh',1926],['Mickey Mouse',1928],['Superman',1938],['Batman',1939],['Bugs Bunny',1940],
+     ['Wonder Woman',1941],['Snoopy',1950],['James Bond',1953],['Kermit the Frog',1955],['Barbie',1959],['Spider-Man',1962],['Scooby-Doo',1969],
+     ['Hello Kitty',1974],['Darth Vader',1977],['Garfield',1978],['Pac-Man',1980],['Mario',1981,'as “Jumpman” in Donkey Kong'],['Homer Simpson',1987],
+     ['Sonic the Hedgehog',1991],['Buzz Lightyear',1995],['Pikachu',1996],['Harry Potter',1997],['SpongeBob',1999],['Master Chief',2001],
+     ['The Minions',2010],['Elsa',2013],['Grogu',2019,'“Baby Yoda”']]},
+
+  {id: 'celebage', title: 'Celebrity ages', ask: 'Oldest to youngest', hi: 'Oldest', lo: 'Youngest', asc: true, unit: 'born', gap: 3, year: true,
+   src: 'Birth year, from each person’s Wikipedia page.',
+   items: [['Morgan Freeman',1937],['Paul McCartney',1942],['Dolly Parton',1946],['Cher',1946],['Oprah Winfrey',1954],['Tom Hanks',1956],
+     ['Madonna',1958],['Brad Pitt',1963],['Keanu Reeves',1964],['Jennifer Aniston',1969],['Snoop Dogg',1971],['Dwayne Johnson',1972],
+     ['Leonardo DiCaprio',1974],['Pedro Pascal',1975],['Kim Kardashian',1980],['Beyoncé',1981],['Lady Gaga',1986],['Drake',1986],['Rihanna',1988],
+     ['Taylor Swift',1989],['Ariana Grande',1993],['Bad Bunny',1994],['Timothée Chalamet',1995],['Zendaya',1996],['Tom Holland',1996],
+     ['Sabrina Carpenter',1999],['Billie Eilish',2001],['Olivia Rodrigo',2003]]},
+
+  {id: 'insta', title: 'Instagram followers', ask: 'Most followers to fewest', hi: 'Most followers', lo: 'Fewest followers', unit: 'mfollow', gap: 1.35, about: true,
+   src: 'Approximate follower counts in 2026. They change every day, so everyone in a round has at least 1.35× the followers of the next.',
+   items: [['Cristiano Ronaldo',665],['Lionel Messi',505],['Selena Gomez',420],['Dwayne Johnson',395],['Kylie Jenner',390],['Ariana Grande',375],
+     ['Kim Kardashian',355],['Beyoncé',310],['Justin Bieber',295],['Taylor Swift',280],['Virat Kohli',275],['Neymar',230],['Nicki Minaj',225],
+     ['Zendaya',185],['LeBron James',160],['Rihanna',150],['Drake',145],['Billie Eilish',125],['Lady Gaga',90],['Tom Holland',65],
+     ['Bad Bunny',50],['Sabrina Carpenter',45]]},
+
+  {id: 'youtube', title: 'YouTube subscribers', ask: 'Most subscribers to fewest', hi: 'Most subscribers', lo: 'Fewest subscribers', unit: 'msubs', gap: 1.4, about: true,
+   src: 'Approximate subscriber counts in 2026. They change every day, so every channel in a round has at least 1.4× the subscribers of the next.',
+   items: [['MrBeast',450],['T-Series',300,'Indian music label'],['Cocomelon',195],['Vlad and Niki',140],['Like Nastya',130],['PewDiePie',110],
+     ['Blackpink',97],['BTS',80,'Bangtan TV'],['Mark Rober',70],['Dude Perfect',60],['Markiplier',38],['Smosh',27],['Marques Brownlee',20,'MKBHD'],
+     ['Veritasium',19]]},
+
+  {id: 'chains', title: 'Restaurant chains', ask: 'Most locations to fewest', hi: 'Most locations', lo: 'Fewest locations', unit: 'stores', gap: 1.3, about: true,
+   src: 'Restaurants worldwide in 2025, from each company’s annual report or Wikipedia.',
+   items: [['McDonald’s',43500],['Starbucks',40500],['Subway',37000],['KFC',31000],['Domino’s',21000],['Pizza Hut',20000],['Burger King',19700],
+     ['Dunkin’',13900],['Taco Bell',8700],['Wendy’s',7300],['Tim Hortons',5900],['Popeyes',4800],['Chipotle',3700],['Chick-fil-A',3100],
+     ['Panda Express',2500],['Five Guys',1900],['Shake Shack',580],['In-N-Out',420]]},
 ];
 
 /* ---------------- rules ---------------- */
@@ -805,12 +829,15 @@ function fmtVal(t, v) {
     case 'people': return big(v, 'people');
     case 'km2': return big(v / KM2_PER_SQMI, 'sq mi');
     case 'sqmi': return `${Math.round(v).toLocaleString('en-US')} sq mi`;
-    case 'km': case 'kmd': return `${num(v * MI_PER_KM)} mi`;
-    case 'mkm': return big(v * 1e6 * MI_PER_KM, 'mi');
+    case 'km': return `${num(v * MI_PER_KM)} mi`;
     case 'kg': { const lb = v * 2.20462; return (t.about ? 'about ' : '') + (lb < 1 ? `${num(lb * 16)} oz` : big(lb, 'lb')); }
     case 'kmh': return `${num(v * MI_PER_KM)} mph`;
     case 'm': return `${Math.round(v * 3.28084).toLocaleString('en-US')} ft`;
     case 'year': return v < 1000 ? `AD ${v}` : String(v);
+    case 'born': return `born ${v}`;
+    case 'mfollow': return `about ${num(v)} million followers`;
+    case 'msubs': return `about ${num(v)} million subscribers`;
+    case 'stores': return `about ${num(v)} locations`;
     case 'mcopies': return `${t.about ? 'about ' : ''}${num(v)} million copies`;
     case 'munits': return `${t.about ? 'about ' : ''}${num(v)} million sold`;
     case 'musd': return v >= 1000 ? `$${num(v / 1000)} billion` : `$${num(v)} million`;
@@ -1528,10 +1555,10 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 
 /* ---------------- demo on home: a list sorting itself ---------------- */
 const demo = (() => {
-  const t = TOP.space, ids = ['earth', 'saturn', 'the-moon', 'neptune', 'mars'];
+  const t = TOP.boxoffice, ids = ['barbie', 'home-alone', 'titanic', 'the-matrix', 'frozen'];
   const el = $('#demo-list');
   $('#demo-hi').innerHTML = `${ARROW_UP}${t.hi}`; $('#demo-lo').innerHTML = `${ARROW_DN}${t.lo}`;
-  $('#demo-cap').textContent = 'Example round: size in space, biggest to smallest. Here the list sorts itself. In the game, you drag the rows.';
+  $('#demo-cap').textContent = 'Example round: movie box office, most money to least. Here the list sorts itself. In the game, you drag the rows.';
   let order, timer = null, on = false;
   const right = rightOrder({t, ids});
   function paint(done) {
