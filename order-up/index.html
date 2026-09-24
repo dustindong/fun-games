@@ -144,6 +144,7 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .k-exact{background:var(--green-bg);border-color:var(--green)!important}.k-exact b{color:var(--green)}
 .k-near{background:var(--amber-bg);border-color:var(--amber)!important}.k-near b{color:var(--amber)}
 .k-far{background:var(--surface-2)}.k-far b{color:var(--muted)}
+.k-bonus{border-style:dashed!important;border-color:var(--green)!important}.k-bonus b{color:var(--green)}
 
 /* ---------- lobby ---------- */
 .lobby{display:grid;gap:18px}
@@ -271,6 +272,14 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 /* perfect round: a green sweep down the rows and a steady glow on the result */
 .rv-main.perfect{border-color:var(--green);box-shadow:0 0 0 1px var(--green),var(--shadow)}
 .rv-main.perfect #rv-verdict{color:var(--green)}
+.rv-bonus{display:grid;grid-template-columns:1fr auto;gap:4px 0;align-items:center;font:600 13px/1.2 var(--mono);color:var(--muted);max-width:300px}
+.rv-bonus b{justify-self:stretch;text-align:right;padding-left:16px;color:var(--ink);font-variant-numeric:tabular-nums}
+.rv-bonus .bn{color:var(--green)}
+.rv-bonus b.bn{justify-self:end;background:var(--green-bg);border:1px solid var(--green);border-radius:4px;padding:1px 6px}
+.rv-bonus .tot{border-top:1px solid var(--line);padding-top:5px;color:var(--ink)}
+.reveal.pop .rv-bonus b.bn{animation:bonus-in .5s .55s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes bonus-in{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.rv-list .rd small{margin-left:3px;font-size:10px}
 .reveal.pop .rv-main.perfect .rv-pts{animation:perfect-pop .6s cubic-bezier(.2,1.5,.4,1) both}
 .sorter.perfect .row{animation:perfect-row .7s ease both}
 .sorter.perfect .row:nth-child(2){animation-delay:.08s}.sorter.perfect .row:nth-child(3){animation-delay:.16s}
@@ -293,7 +302,7 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .board li.win{background:var(--accent);color:var(--accent-ink)}
 .board li.win .rank,.board li.win .tag{color:var(--accent-ink);border-color:rgba(42,12,2,.35)}
 .bars{display:flex;gap:2px;align-items:flex-end;height:26px}
-.bars s{display:block;width:6px;height:calc(var(--v) * .24px + 2px);background:currentColor;opacity:.55;border-radius:1px}
+.bars s{display:block;width:6px;height:calc(var(--v) * .2px + 2px);background:currentColor;opacity:.55;border-radius:1px}
 .final-actions{display:flex;gap:10px;flex-wrap:wrap}
 .awards{display:grid;gap:8px}
 .awards ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
@@ -452,10 +461,10 @@ input[type=text]{font-size:16px}
     </div>
 
     <div class="card scoring">
-      <h3>100 points<br>per round</h3>
+      <h3>Up to 115<br>per round</h3>
       <div class="scale-row" style="display:grid;gap:8px">
-        <div class="pts-key"><span class="k-exact"><b>20</b> right spot</span><span class="k-near"><b>10</b> one spot off</span><span class="k-far"><b>0</b> two or more off</span></div>
-        <p class="note">Each of the five things scores on its own, so a list with two neighbors swapped still earns 80. If time runs out before you make a move or lock in, the round scores 0.</p>
+        <div class="pts-key"><span class="k-exact"><b>20</b> right spot</span><span class="k-near"><b>10</b> one spot off</span><span class="k-far"><b>0</b> two or more off</span><span class="k-bonus"><b>+15</b> all five exactly right</span></div>
+        <p class="note">Each of the five things scores on its own, so a list with two neighbors swapped still earns 80. Get all five exactly right for 100 plus a +15 Perfect Order bonus: 115 points. If time runs out before you make a move or lock in, the round scores 0.</p>
       </div>
     </div>
   </section>
@@ -487,7 +496,7 @@ input[type=text]{font-size:16px}
       <div class="facts">
         <div><span class="eyebrow">Rounds</span><b>10</b></div>
         <div><span class="eyebrow">Per round</span><b>30 s</b></div>
-        <div><span class="eyebrow">Max score</span><b>1,000</b></div>
+        <div><span class="eyebrow">Max score</span><b>1,150</b></div>
       </div>
       <div style="display:grid;gap:6px;justify-items:end">
         <button class="btn primary" id="btn-start">Start game</button>
@@ -526,6 +535,11 @@ input[type=text]{font-size:16px}
       <div class="card rv-main" id="rv-main" aria-live="polite">
         <div class="rv-pts"><b id="rv-pts">+0</b><span id="rv-verdict"></span></div>
         <div class="rv-off" id="rv-off"></div>
+        <div class="rv-bonus" id="rv-bonus" hidden>
+          <span>Base score</span><b id="rv-base"></b>
+          <span class="bn">Perfect Order bonus</span><b class="bn" id="rv-bonus-pts"></b>
+          <span class="tot">Round score</span><b class="tot" id="rv-round"></b>
+        </div>
         <p class="rv-fact" id="rv-fact"></p>
       </div>
       <div class="card rv-side">
@@ -1171,6 +1185,8 @@ const CATEGORIES = [
 
 /* ---------------- rules ---------------- */
 const ROUNDS = 10, SECONDS = 30, REVEAL_MS = 15000, STEP_MS = 650, N = 5;
+// 20 per item in the right spot, so 100 for a perfect list, plus the Perfect Order bonus
+const BASE_MAX = N * 20, PERFECT_BONUS = 15, ROUND_MAX = BASE_MAX + PERFECT_BONUS;
 const COLORS = ['#E4572E','#3A7FD0','#23905A','#9B5DE5','#D99A00','#D6337F','#12A4B6','#7F8F2A','#C0632B','#5C6BC0'];
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1295,8 +1311,11 @@ const rightOrder = R => R.ids.slice().sort((a, b) => (R.t.byId[b].v - R.t.byId[a
 function scoreOrder(order, R) {
   if (!order) return 0;
   const right = rightOrder(R);
-  return order.reduce((p, id, i) => { const d = Math.abs(right.indexOf(id) - i); return p + (d === 0 ? 20 : d === 1 ? 10 : 0); }, 0);
+  const base = order.reduce((p, id, i) => { const d = Math.abs(right.indexOf(id) - i); return p + (d === 0 ? 20 : d === 1 ? 10 : 0); }, 0);
+  // all five in exactly the right spot (the only way to reach the full base) earns the Perfect Order bonus
+  return base === BASE_MAX ? base + PERFECT_BONUS : base;
 }
+const isPerfect = p => p === ROUND_MAX;
 function makeRounds(n, cats) {
   const plan = [];
   if (!cats) {
@@ -1353,7 +1372,7 @@ function cleanOrder(o, R) {
 }
 function verdict(p, answered) {
   if (!answered) return 'No answer';
-  if (p === 100) return 'Perfect order!';
+  if (isPerfect(p)) return 'Perfect order!';
   if (p >= 80) return 'So close';
   if (p >= 60) return 'Solid';
   if (p >= 40) return 'Mixed up';
@@ -1931,14 +1950,14 @@ function roundCallouts(i) {
   if (list.length <= 1) {
     const who = list[0] || mine(), k = exact(who), p = scoreRec(who, i)?.p || 0;
     if (k === 5) {
-      const n = room.rounds.slice(0, i + 1).filter((_, j) => scoreRec(who, j)?.p === 100).length;
+      const n = room.rounds.slice(0, i + 1).filter((_, j) => isPerfect(scoreRec(who, j)?.p)).length;
       if (n > 1) out.push({big: true, text: `${n} perfect rounds this game`});
     } else out.push({text: k >= 3 ? `You nailed ${k}/5` : k ? `${k}/5 in the right spot` : 'Tough one', sub: `+${p}`});
     return out;
   }
   const scored = list.map(p => ({p, k: exact(p)}));
   const bestK = Math.max(...scored.map(x => x.k)), best = scored.filter(x => x.k === bestK).map(x => x.p);
-  if (bestK === 5) out.push({big: true, who: best, text: `${names(best)} nailed it! 5/5`});
+  if (bestK === 5) out.push({big: true, who: best, text: `${names(best)} nailed it! 5/5`, sub: `+${PERFECT_BONUS} bonus${best.length > 1 ? ' each' : ''}`});
   else if (bestK >= 2) out.push({who: best, text: `${names(best)} nailed ${bestK}/5`, sub: best.length === 1 ? `+${scoreRec(best[0], i)?.p || 0}` : ''});
   else out.push({text: bestK ? 'Tough one. Nobody got more than 1 right' : 'Tough one. Nobody got any right'});
 
@@ -2020,13 +2039,15 @@ function renderRound() {
     const calls = roundCallouts(room.round).map(c => `<div class="callout${c.big ? ' big' : ''}">${c.who?.length === 1 ? `<i class="dot" style="background:${esc(c.who[0].color)}"></i>` : ''}<span>${esc(c.text)}</span>${c.sub ? `<small>${esc(c.sub)}</small>` : ''}</div>`).join('');
     // only touch the banner when it changes, so its entrance animation plays once
     if ($('#rv-callouts').dataset.html !== calls) { $('#rv-callouts').dataset.html = calls; $('#rv-callouts').innerHTML = calls; }
-    const perfect = p === 100 && !!mineO;
+    const perfect = isPerfect(p) && !!mineO;
     $('#rv-main').classList.toggle('perfect', perfect);
     sorterEl.classList.toggle('perfect', perfect);
     $('#rv-pts').textContent = '+' + p;
     $('#rv-pts').style.color = p >= 60 ? 'var(--green)' : p > 0 ? 'var(--ink)' : 'var(--red)';
     $('#rv-verdict').textContent = verdict(p, !!mineO);
     const near = mineO ? mineO.filter((id, i) => Math.abs(right.indexOf(id) - i) === 1).length : 0;
+    $('#rv-bonus').hidden = !perfect;
+    if (perfect) { $('#rv-base').textContent = BASE_MAX; $('#rv-bonus-pts').textContent = '+' + PERFECT_BONUS; $('#rv-round').textContent = p; }
     $('#rv-off').textContent = perfect ? `${N} / ${N} exactly right` : mineO ? `${rightCount(mineO, R)}${near ? `, ${near} one spot off` : ''}` : 'Time ran out before you made a move or locked in.';
     $('#rv-fact').textContent = t.src;
     const list = standingsAt(room.round).map(({p: pl, rec, round, total, rank, prev}) => {
@@ -2036,7 +2057,7 @@ function renderRound() {
       return `<li class="${pl.online === false ? 'away' : ''}" title="${esc(rec ? rightCount(rec.o ? String(rec.o).split(',') : null, R) : 'no answer')}">
       <span class="rk">${rank}</span><i class="dot" style="background:${esc(pl.color)}"></i>
       <span class="nm">${esc(pl.name)}${pl.pid === me.pid ? ' <span class="tag">you</span>' : ''}${pl.online === false ? ' <span class="tag">away</span>' : ''}</span>
-      <span class="rd${round === 100 ? ' hot' : ''}">${rec ? '+' + round : '—'}</span>
+      <span class="rd${isPerfect(round) ? ' hot' : ''}"${isPerfect(round) ? ` title="Includes the +${PERFECT_BONUS} Perfect Order bonus"` : ''}>${rec ? '+' + round : '—'}${isPerfect(round) ? '<small>★</small>' : ''}</span>
       <span class="pts">${total}</span>${mv || '<span class="move"></span>'}</li>`;
     }).join('');
     // standings only change when a score arrives, so rebuild only then and let the arrows animate once
@@ -2064,7 +2085,7 @@ function gameAwards() {
   const pts = (p, i) => scoreRec(p, i)?.p ?? 0;
 
   // 🎯 most perfect rounds
-  const perfects = list.map(p => ({p, k: room.rounds.filter((_, i) => pts(p, i) === 100).length}));
+  const perfects = list.map(p => ({p, k: room.rounds.filter((_, i) => isPerfect(pts(p, i))).length}));
   const maxPerfect = Math.max(...perfects.map(x => x.k));
   if (maxPerfect > 0) {
     const top = perfects.filter(x => x.k === maxPerfect).map(x => x.p);
@@ -2073,13 +2094,13 @@ function gameAwards() {
       html: solo ? `${maxPerfect === 1 ? 'One round' : `${maxPerfect} rounds`} with all five in the right spot` : `${who(top)} · ${times}${top.length > 1 ? ' each' : ''}`});
   }
 
-  // 🔥 best round: only when it isn't already a perfect round (the award above covers that)
+  // 🔥 best round: only when it isn't already a perfect round (the award above covers that, bonus and all)
   let best = {v: -1, hits: []};
   list.forEach(p => room.rounds.forEach((_, i) => {
     const v = pts(p, i);
     if (v > best.v) best = {v, hits: [{p, i}]}; else if (v === best.v) best.hits.push({p, i});
   }));
-  if (best.v > 0 && best.v < 100) {
+  if (best.v > 0 && !isPerfect(best.v)) {
     const ps = [...new Set(best.hits.map(h => h.p))];
     const where = best.hits.length === 1 ? ` on ${esc(topicOf(best.hits[0].i))}` : '';
     out.push({icon: '🔥', title: 'Best round', html: solo ? `${best.v} points${where}` : `${who(ps)} · ${best.v} points${where}`});
@@ -2120,7 +2141,7 @@ function gameAwards() {
 function renderFinal() {
   const rows = players.map(p => ({p, total: totalOf(p), per: room.rounds.map((_, i) => scoreRec(p, i)?.p ?? 0)}))
     .sort((a, b) => b.total - a.total || a.p.name.localeCompare(b.p.name));
-  const max = room.rounds.length * 100;
+  const max = room.rounds.length * ROUND_MAX;
   if (rows.length === 1) {
     $('#fn-title').textContent = `${rows[0].total} points`;
     $('#fn-sub').textContent = `Out of ${max.toLocaleString()}. ${rows[0].total >= 750 ? 'Sharp mind.' : rows[0].total >= 500 ? 'Solid sorting.' : 'Tricky topics. Run it back.'}`;
