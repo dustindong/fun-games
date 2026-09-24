@@ -382,7 +382,7 @@ input[type=text]{font-size:16px}
     </div>
 
     <div class="rules">
-      <div class="rule"><b>1. Read the topic</b><p>Every round has a topic, like country population or animal weight. Everyone gets the same five things.</p></div>
+      <div class="rule"><b>1. Read the topic</b><p>Every round has a topic, like country population, movie box office or video game sales. Everyone gets the same five things.</p></div>
       <div class="rule"><b>2. Sort the list</b><p>Drag the rows or use the arrows. Each round tells you what goes on top, like biggest first or oldest first.</p></div>
       <div class="rule"><b>3. Lock in by 30 s</b><p>Ten rounds per game. When time runs out, whatever order you have counts.</p></div>
     </div>
@@ -492,7 +492,7 @@ input[type=text]{font-size:16px}
 
 /* ---------------- topics: every value checked Sept 2026 (sources in each topic's `src`) ----------------
    items: [name, value, note?] in the topic's base unit. Rounds use 5 items whose values are far enough apart
-   (`gap`: a ratio, or years for `year` topics) that small source differences can never flip the order. */
+   (`gap`: a ratio, or a plain difference for `year` and `abs` topics) that small source differences can never flip the order. */
 const FLAGS = {China:'🇨🇳', India:'🇮🇳', 'United States':'🇺🇸', Indonesia:'🇮🇩', Pakistan:'🇵🇰', Nigeria:'🇳🇬', Brazil:'🇧🇷', Bangladesh:'🇧🇩',
   Russia:'🇷🇺', Mexico:'🇲🇽', Ethiopia:'🇪🇹', Japan:'🇯🇵', Philippines:'🇵🇭', Egypt:'🇪🇬', 'DR Congo':'🇨🇩', Vietnam:'🇻🇳', Iran:'🇮🇷',
   Turkey:'🇹🇷', Germany:'🇩🇪', Thailand:'🇹🇭', 'United Kingdom':'🇬🇧', France:'🇫🇷', 'South Africa':'🇿🇦', Italy:'🇮🇹', Kenya:'🇰🇪',
@@ -637,6 +637,120 @@ const TOPICS = [
      ['Jog Falls',253],['Kaieteur Falls',226],['Multnomah Falls',189],['Bridalveil Fall',188],['Victoria Falls',108],['Iguazu Falls',82,'tallest drop'],
      ['Veliki Slap',78,'Plitvice, Croatia'],['Shoshone Falls',65],['Skógafoss',60],['Seljalandsfoss',60],['Horseshoe Falls',51,'Niagara'],
      ['Dettifoss',44],['Gullfoss',32],['Rhine Falls',23]]},
+
+  /* ---- video games ---- */
+  {id: 'gamesales', title: 'Video game sales', ask: 'Most copies sold to fewest', hi: 'Most sold', lo: 'Fewest sold', unit: 'mcopies', gap: 1.3, about: true,
+   src: 'Wikipedia’s list of best-selling video games, all platforms combined. Publishers report these at different times, so every game in a round sold at least 1.3× more than the next.',
+   items: [['Minecraft',350],['Grand Theft Auto V',220],['Wii Sports',82.9],['Red Dead Redemption 2',77],['Mario Kart 8 Deluxe',68,'plus the Wii U original'],
+     ['Terraria',64],['The Witcher 3',60],['Super Mario Bros.',58,'1985'],['Animal Crossing: New Horizons',47],['Stardew Valley',41],
+     ['Mario Kart Wii',37.4],['Super Smash Bros. Ultimate',36],['Cyberpunk 2077',35],['Breath of the Wild',32.6,'Zelda'],['Pokémon Red & Blue',31.4],
+     ['Elden Ring',30],['Hogwarts Legacy',30],['Super Mario Odyssey',29],['Grand Theft Auto: San Andreas',27.5],['Pokémon Gold & Silver',23.7],
+     ['Tears of the Kingdom',21.8,'Zelda'],['Sonic the Hedgehog',15,'1991, Genesis'],['Super Mario 64',11.9],['GoldenEye 007',8.1]]},
+
+  {id: 'gameyear', title: 'When video games came out', ask: 'Oldest game to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'First release year anywhere, from each game’s Wikipedia page.',
+   items: [['Pong',1972],['Space Invaders',1978],['Pac-Man',1980],['Donkey Kong',1981],['Tetris',1984],['Super Mario Bros.',1985],['The Legend of Zelda',1986],
+     ['Street Fighter II',1991],['Doom',1993],['Pokémon Red & Green',1996,'Japan'],['GoldenEye 007',1997],['The Sims',2000],['Halo',2001],
+     ['World of Warcraft',2004],['Wii Sports',2006],['Portal',2007],['Minecraft',2011,'full release'],['Grand Theft Auto V',2013],['The Witcher 3',2015],
+     ['Fortnite',2017],['Red Dead Redemption 2',2018],['Animal Crossing: New Horizons',2020],['Elden Ring',2022],['Baldur’s Gate 3',2023],
+     ['Mario Kart World',2025],['Hollow Knight: Silksong',2025]]},
+
+  {id: 'gamescore', title: 'Video game reviews', ask: 'Best Metacritic score to worst', hi: 'Best reviewed', lo: 'Worst reviewed', unit: 'meta', gap: 5, abs: true,
+   src: 'Critic score on Metacritic, using the platform the game is best known on. Every game in a round scored at least 5 points apart.',
+   items: [['Ocarina of Time',99],['Red Dead Redemption 2',97],['Super Mario Galaxy',97],['Breath of the Wild',97],['Half-Life 2',96],['Baldur’s Gate 3',96],
+     ['Portal 2',95],['God of War',94,'2018'],['Minecraft',93],['Hades',93],['Mario Kart 8 Deluxe',92],['Stardew Valley',89],['Cyberpunk 2077',86],
+     ['Hogwarts Legacy',84],['Pokémon Scarlet & Violet',72],['Sonic the Hedgehog',46,'2006'],['The Lord of the Rings: Gollum',34]]},
+
+  {id: 'consoles', title: 'Game console sales', ask: 'Most consoles sold to fewest', hi: 'Most sold', lo: 'Fewest sold', unit: 'munits', gap: 1.2, about: true,
+   src: 'Lifetime units sold, from Wikipedia’s list of best-selling game consoles.',
+   items: [['PlayStation 2',160],['Nintendo DS',154],['Nintendo Switch',150,'still selling'],['Game Boy',118.7,'with Game Boy Color'],['PlayStation 4',117],
+     ['PlayStation',102.5],['Wii',101.6],['PlayStation 3',87.4],['Xbox 360',84],['Game Boy Advance',81.5],['Nintendo 3DS',75.9],['NES',61.9],
+     ['SNES',49.1],['Nintendo 64',32.9],['Sega Genesis',30.8],['Atari 2600',30],['Xbox',24,'the original'],['GameCube',21.7],['Wii U',13.6],['Dreamcast',9.1]]},
+
+  /* ---- movies ---- */
+  {id: 'boxoffice', title: 'Movie box office', ask: 'Most money made to least', hi: 'Most money', lo: 'Least money', unit: 'musd', gap: 1.15,
+   src: 'Worldwide gross including re-releases, from Box Office Mojo. Not adjusted for inflation.',
+   items: [['Avatar',2923],['Avengers: Endgame',2799],['Avatar: The Way of Water',2320],['Titanic',2264],['Star Wars: The Force Awakens',2071],
+     ['Spider-Man: No Way Home',1922],['Inside Out 2',1699],['Jurassic World',1672],['The Lion King',1663,'2019 remake'],['Top Gun: Maverick',1496],
+     ['Frozen II',1453],['Barbie',1447],['The Super Mario Bros. Movie',1362],['Deadpool & Wolverine',1338],['Frozen',1306],['Joker',1079],
+     ['Lilo & Stitch',1038,'2025 remake'],['The Dark Knight',1006],['Oppenheimer',976],['A Minecraft Movie',958],['Finding Nemo',941],
+     ['Shrek 2',933],['E.T.',797],['Star Wars',775,'1977'],['Wicked',756],['Forrest Gump',678],['Home Alone',477],['The Matrix',467],
+     ['Back to the Future',381],['Pulp Fiction',214],['The Shawshank Redemption',73]]},
+
+  {id: 'movieyear', title: 'When movies came out', ask: 'Oldest movie to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'Original release year, from each movie’s Wikipedia page.',
+   items: [['Snow White and the Seven Dwarfs',1937],['The Wizard of Oz',1939],['Casablanca',1942],['Psycho',1960],['2001: A Space Odyssey',1968],
+     ['The Godfather',1972],['Jaws',1975],['Star Wars',1977],['E.T.',1982],['Back to the Future',1985],['Die Hard',1988],['Home Alone',1990],
+     ['Jurassic Park',1993],['The Lion King',1994,'animated'],['Toy Story',1995],['Titanic',1997],['The Matrix',1999],['Shrek',2001],['Finding Nemo',2003],
+     ['The Dark Knight',2008],['Avatar',2009],['Inception',2010],['The Avengers',2012],['Frozen',2013],['Get Out',2017],['Parasite',2019],
+     ['Everything Everywhere All at Once',2022],['Barbie',2023],['Wicked',2024],['A Minecraft Movie',2025]]},
+
+  {id: 'movierating', title: 'Movie ratings', ask: 'Highest IMDb rating to lowest', hi: 'Highest rated', lo: 'Lowest rated', unit: 'imdb', gap: 0.4, abs: true,
+   src: 'User rating on IMDb. Ratings drift a little, so every movie in a round is at least 0.4 apart.',
+   items: [['The Shawshank Redemption',9.3],['The Godfather',9.2],['The Dark Knight',9.0],['The Return of the King',9.0,'Lord of the Rings'],['Pulp Fiction',8.8],
+     ['Forrest Gump',8.8],['Inception',8.8],['Interstellar',8.7],['The Matrix',8.7],['Spirited Away',8.6],['Parasite',8.5],['Back to the Future',8.5],
+     ['Toy Story',8.3],['Up',8.3],['Jurassic Park',8.2],['Finding Nemo',8.2],['Shrek',7.9],['Titanic',7.9],['Avatar',7.9],['Frozen',7.4],
+     ['Jurassic World',6.9],['Barbie',6.8],['Twilight',5.3],['Fifty Shades of Grey',4.2],['The Last Airbender',4.0],['Batman & Robin',3.8],
+     ['The Emoji Movie',3.4],['Cats',2.8,'2019']]},
+
+  {id: 'oscars', title: 'Oscars won', ask: 'Most Oscars to fewest', hi: 'Most Oscars', lo: 'Fewest Oscars', unit: 'oscars', gap: 1, abs: true,
+   src: 'Competitive Academy Awards won, from the Academy’s awards database.',
+   items: [['Titanic',11],['Ben-Hur',11,'1959'],['The Return of the King',11,'Lord of the Rings'],['West Side Story',10,'1961'],['The Last Emperor',9],
+     ['The English Patient',9],['Slumdog Millionaire',8],['Amadeus',8],['Gone with the Wind',8],['Everything Everywhere All at Once',7],
+     ['Oppenheimer',7],['Schindler’s List',7],['Gravity',7],['Lawrence of Arabia',7],['Forrest Gump',6],['Mad Max: Fury Road',6],['La La Land',6],
+     ['Star Wars',6,'1977'],['Anora',5],['The Silence of the Lambs',5],['Parasite',4],['Inception',4],['The Godfather',3],['Avatar',3],['Jaws',3],
+     ['Black Panther',3],['Frozen',2],['The Dark Knight',2],['Up',2],['Barbie',1],['Top Gun: Maverick',1]]},
+
+  /* ---- tv ---- */
+  {id: 'tvrating', title: 'TV show ratings', ask: 'Highest IMDb rating to lowest', hi: 'Highest rated', lo: 'Lowest rated', unit: 'imdb', gap: 0.4, abs: true,
+   src: 'User rating for the whole series on IMDb. Ratings drift a little, so every show in a round is at least 0.4 apart.',
+   items: [['Breaking Bad',9.5],['Band of Brothers',9.4],['Planet Earth II',9.4],['Chernobyl',9.3],['The Wire',9.3],['Avatar: The Last Airbender',9.3],
+     ['The Sopranos',9.2],['Game of Thrones',9.2],['Rick and Morty',9.1],['Attack on Titan',9.1],['The Office',9.0,'US'],['Arcane',9.0],['Friends',8.9],
+     ['Seinfeld',8.9],['Succession',8.8],['Ted Lasso',8.8],['The Simpsons',8.7],['Severance',8.7],['Stranger Things',8.6],['The Bear',8.5],
+     ['House of the Dragon',8.3],['Lost',8.3],['How I Met Your Mother',8.3],['The Big Bang Theory',8.1],['The Walking Dead',8.1],['Squid Game',8.0],
+     ['Grey’s Anatomy',7.6],['Glee',6.8],['Riverdale',6.5],['Keeping Up with the Kardashians',2.9],['Velma',1.6]]},
+
+  {id: 'tvyear', title: 'When TV shows started', ask: 'Oldest show to newest', hi: 'Started first', lo: 'Started last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'Year of the first episode, from each show’s Wikipedia page.',
+   items: [['I Love Lucy',1951],['The Twilight Zone',1959],['The Flintstones',1960],['Star Trek',1966],['Sesame Street',1969],['Saturday Night Live',1975],
+     ['Cheers',1982],['The Simpsons',1989],['The X-Files',1993],['Friends',1994],['Buffy the Vampire Slayer',1997],['SpongeBob SquarePants',1999],
+     ['Survivor',2000,'US'],['The Office',2005,'US'],['Breaking Bad',2008],['Game of Thrones',2011],['Black Mirror',2011],['Stranger Things',2016],
+     ['The Mandalorian',2019],['Squid Game',2021],['Wednesday',2022],['The Last of Us',2023],['Shōgun',2024],['Adolescence',2025],['The Pitt',2025]]},
+
+  {id: 'tveps', title: 'TV show episodes', ask: 'Most episodes to fewest', hi: 'Most episodes', lo: 'Fewest episodes', unit: 'eps', gap: 1.25,
+   src: 'Episode count from each show’s Wikipedia page. Shows still airing keep adding more, so every show in a round has at least 1.25× the episodes of the next.',
+   items: [['The Simpsons',790,'still airing'],['Law & Order: SVU',570,'still airing'],['NCIS',480,'still airing'],['Grey’s Anatomy',450,'still airing'],
+     ['Family Guy',425,'still airing'],['South Park',330,'still airing'],['Supernatural',327],['SpongeBob SquarePants',300,'still airing'],
+     ['The Big Bang Theory',279],['Friends',236],['How I Met Your Mother',208],['The Office',201,'US'],['Seinfeld',180],['Lost',121],['The Sopranos',86],
+     ['Game of Thrones',73],['Breaking Bad',62],['Avatar: The Last Airbender',61],['The Wire',60],['Stranger Things',42],['Squid Game',22],
+     ['The Last of Us',16,'so far'],['Fleabag',12],['Band of Brothers',10],['Chernobyl',5],['Adolescence',4]]},
+
+  /* ---- music ---- */
+  {id: 'streams', title: 'Spotify streams', ask: 'Most streamed song to least', hi: 'Most streams', lo: 'Fewest streams', unit: 'bstreams', gap: 1.4, about: true,
+   src: 'Approximate all-time Spotify play counts in 2026. They climb every day, so every song in a round has at least 1.4× the streams of the next.',
+   items: [['Blinding Lights',5.2,'The Weeknd'],['Shape of You',4.5,'Ed Sheeran'],['Sweater Weather',3.9,'The Neighbourhood'],['As It Was',3.9,'Harry Styles'],
+     ['Die with a Smile',3.3,'Lady Gaga & Bruno Mars'],['Bohemian Rhapsody',2.8,'Queen'],['Flowers',2.8,'Miley Cyrus'],['Mr. Brightside',2.4,'The Killers'],
+     ['Espresso',2.2,'Sabrina Carpenter'],['Billie Jean',2.1,'Michael Jackson'],['Smells Like Teen Spirit',2.0,'Nirvana'],['Anti-Hero',1.9,'Taylor Swift'],
+     ['Hotel California',1.4,'Eagles'],['Thriller',1.0,'Michael Jackson'],['Hey Jude',0.8,'The Beatles'],['Gangnam Style',0.7,'PSY']]},
+
+  {id: 'songyear', title: 'When songs came out', ask: 'Oldest song to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'Original release year, from each song’s Wikipedia page.',
+   items: [['Hound Dog',1956,'Elvis Presley'],['Johnny B. Goode',1958,'Chuck Berry'],['I Want to Hold Your Hand',1963,'The Beatles'],
+     ['Respect',1967,'Aretha Franklin'],['Hey Jude',1968,'The Beatles'],['Imagine',1971,'John Lennon'],['Bohemian Rhapsody',1975,'Queen'],
+     ['Stayin’ Alive',1977,'Bee Gees'],['Billie Jean',1983,'Michael Jackson'],['Livin’ on a Prayer',1986,'Bon Jovi'],['Smells Like Teen Spirit',1991,'Nirvana'],
+     ['Wonderwall',1995,'Oasis'],['…Baby One More Time',1998,'Britney Spears'],['Hey Ya!',2003,'Outkast'],['Umbrella',2007,'Rihanna'],
+     ['Rolling in the Deep',2010,'Adele'],['Gangnam Style',2012,'PSY'],['Uptown Funk',2014,'Mark Ronson & Bruno Mars'],['Shape of You',2017,'Ed Sheeran'],
+     ['Blinding Lights',2019,'The Weeknd'],['drivers license',2021,'Olivia Rodrigo'],['Flowers',2023,'Miley Cyrus'],['Espresso',2024,'Sabrina Carpenter']]},
+
+  {id: 'songlen', title: 'Song length', ask: 'Longest song to shortest', hi: 'Longest', lo: 'Shortest', unit: 'sec', gap: 1.15,
+   src: 'Length of the original album version, from each song’s Wikipedia page.',
+   items: [['All Too Well (10 Minute Version)',613,'Taylor Swift'],['Free Bird',548,'Lynyrd Skynyrd'],['November Rain',537,'Guns N’ Roses'],
+     ['American Pie',516,'Don McLean'],['Stairway to Heaven',482,'Led Zeppelin'],['Hey Jude',431,'The Beatles'],['Hotel California',390,'Eagles'],
+     ['Sweet Child O’ Mine',356,'Guns N’ Roses'],['Bohemian Rhapsody',355,'Queen'],['Smells Like Teen Spirit',301,'Nirvana'],['Billie Jean',294,'Michael Jackson'],
+     ['Uptown Funk',270,'Mark Ronson & Bruno Mars'],['Wonderwall',258,'Oasis'],['Shape of You',233,'Ed Sheeran'],['Hey Ya!',235,'Outkast'],
+     ['Take On Me',225,'a-ha'],['Blinding Lights',200,'The Weeknd'],['Bad Guy',194,'Billie Eilish'],['Imagine',183,'John Lennon'],
+     ['Espresso',175,'Sabrina Carpenter'],['As It Was',167,'Harry Styles'],['I Want to Hold Your Hand',144,'The Beatles'],['Yesterday',125,'The Beatles'],
+     ['Old Town Road',113,'Lil Nas X, original']]},
 ];
 
 /* ---------------- rules ---------------- */
@@ -697,12 +811,21 @@ function fmtVal(t, v) {
     case 'kmh': return `${num(v * MI_PER_KM)} mph`;
     case 'm': return `${Math.round(v * 3.28084).toLocaleString('en-US')} ft`;
     case 'year': return v < 1000 ? `AD ${v}` : String(v);
+    case 'mcopies': return `${t.about ? 'about ' : ''}${num(v)} million copies`;
+    case 'munits': return `${t.about ? 'about ' : ''}${num(v)} million sold`;
+    case 'musd': return v >= 1000 ? `$${num(v / 1000)} billion` : `$${num(v)} million`;
+    case 'bstreams': return `about ${v >= 1 ? `${num(v)} billion` : `${num(v * 1000)} million`} streams`;
+    case 'meta': return `${v} / 100`;
+    case 'imdb': return `${v.toFixed(1)} / 10`;
+    case 'oscars': return `${v} Oscar${v === 1 ? '' : 's'}`;
+    case 'eps': return `${v.toLocaleString('en-US')} episodes`;
+    case 'sec': return `${Math.floor(v / 60)}:${String(v % 60).padStart(2, '0')}`;
   }
   return String(v);
 }
 
 /* ---------------- rounds and scoring ---------------- */
-const far = (t, a, b) => t.year ? Math.abs(a.v - b.v) >= t.gap : Math.max(a.v, b.v) / Math.min(a.v, b.v) >= t.gap;
+const far = (t, a, b) => t.year || t.abs ? Math.abs(a.v - b.v) >= t.gap : Math.max(a.v, b.v) / Math.min(a.v, b.v) >= t.gap;
 function pick5(t) {
   const pool = t.list.slice().sort((a, b) => b.v - a.v);
   // draw from a window of neighbors most of the time so rounds aren't all giant-vs-tiny
