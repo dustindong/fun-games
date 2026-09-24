@@ -1,0 +1,1546 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#E8EDF0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0C1722" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Order Up!">
+<meta name="description" content="Order Up! A multiplayer game about sorting five things from highest to lowest before time runs out.">
+<title>Order Up!</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='5' rx='2' fill='%23EE5E33'/%3E%3Crect x='4' y='11' width='19' height='5' rx='2' fill='%23EE5E33'/%3E%3Crect x='4' y='18' width='14' height='5' rx='2' fill='%23EE5E33'/%3E%3Crect x='4' y='25' width='9' height='5' rx='2' fill='%23EE5E33'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Sans:wght@400;500;600;700&family=Noto+Color+Emoji&display=swap">
+<style>
+:root{
+  --paper:#E8EDF0; --grid:rgba(20,33,44,.05); --surface:#FFFFFF; --surface-2:#F1F4F6;
+  --ink:#14212C; --muted:#586874; --line:#C8D2D9;
+  --accent:#EE5E33; --accent-ink:#2A0C02; --tape:#F2B21B; --tape-ink:#261C02;
+  --measure:#2D69AC; --red:#C93D26; --green:#1E8452; --amber:#B7791F;
+  --green-bg:rgba(30,132,82,.1); --amber-bg:rgba(242,178,27,.16); --red-bg:rgba(201,61,38,.08);
+  --focus:#2D69AC;
+  --shadow:0 1px 0 rgba(20,33,44,.05),0 10px 28px -16px rgba(20,33,44,.28);
+  --lift:0 2px 0 rgba(20,33,44,.06),0 18px 32px -14px rgba(20,33,44,.45);
+  --display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",Impact,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --emoji:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C1722; --grid:rgba(120,170,220,.06); --surface:#122130; --surface-2:#172a3b;
+    --ink:#E3EBF1; --muted:#8FA1B0; --line:#26394B;
+    --accent:#F7815C; --accent-ink:#2A0C02; --tape:#F4BE36; --tape-ink:#261C02;
+    --measure:#72AAE8; --red:#F06B51; --green:#45C182; --amber:#F4BE36;
+    --green-bg:rgba(69,193,130,.14); --amber-bg:rgba(244,190,54,.14); --red-bg:rgba(240,107,81,.12);
+    --focus:#72AAE8;
+    --shadow:0 1px 0 rgba(0,0,0,.2),0 12px 30px -16px rgba(0,0,0,.6);
+    --lift:0 2px 0 rgba(0,0,0,.25),0 20px 34px -14px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C1722; --grid:rgba(120,170,220,.06); --surface:#122130; --surface-2:#172a3b;
+  --ink:#E3EBF1; --muted:#8FA1B0; --line:#26394B;
+  --accent:#F7815C; --accent-ink:#2A0C02; --tape:#F4BE36; --tape-ink:#261C02;
+  --measure:#72AAE8; --red:#F06B51; --green:#45C182; --amber:#F4BE36;
+  --green-bg:rgba(69,193,130,.14); --amber-bg:rgba(244,190,54,.14); --red-bg:rgba(240,107,81,.12);
+  --focus:#72AAE8;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 12px 30px -16px rgba(0,0,0,.6);
+  --lift:0 2px 0 rgba(0,0,0,.25),0 20px 34px -14px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  color:var(--ink); font:15px/1.5 var(--body); padding-inline:max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:940px;margin:0 auto;padding-block:10px 56px}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+[hidden]{display:none!important}
+.eyebrow{font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;margin-bottom:10px}
+.brand{font:900 22px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.brand i{display:inline-grid;gap:2px;width:18px}
+.brand i b{display:block;height:3px;border-radius:1px;background:var(--accent)}
+.brand i b:nth-child(2){width:78%}.brand i b:nth-child(3){width:56%}.brand i b:nth-child(4){width:34%}
+.top-right{display:flex;align-items:center;gap:10px}
+.chip{font:600 12px/1 var(--mono);letter-spacing:.08em;padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:var(--surface);white-space:nowrap}
+
+/* buttons */
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:11px 16px;font-weight:600;cursor:pointer;
+  transition:transform .08s ease,background-color .15s ease,border-color .15s ease;line-height:1.1}
+.btn:hover{border-color:var(--muted)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.05);border-color:var(--accent-ink)}
+.btn.small{padding:7px 11px;font-size:13px}
+.btn.link{border:none;background:none;padding:6px 0;text-decoration:underline;text-underline-offset:3px;color:var(--muted)}
+.btn.link:hover{color:var(--ink)}
+a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap}
+input[type=text]{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:6px;padding:11px 12px;outline:none}
+input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+
+/* ---------- home ---------- */
+.hero{display:grid;gap:14px;margin-bottom:22px}
+.title{font:900 clamp(92px,21vw,200px)/.78 var(--display);letter-spacing:-.005em;text-transform:uppercase;margin-top:6px}
+.title span{color:var(--accent)}
+.stairs{display:grid;gap:4px}
+.stairs span{height:7px;border-radius:2px;background:var(--accent)}
+.stairs span:nth-child(2){width:80%;opacity:.8}.stairs span:nth-child(3){width:60%;opacity:.62}.stairs span:nth-child(4){width:40%;opacity:.46}.stairs span:nth-child(5){width:20%;opacity:.32}
+.tagline{font-size:clamp(17px,2.3vw,21px);max-width:36ch;line-height:1.35}
+.home-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;align-items:start}
+.demo{padding:0;overflow:hidden;margin:0}
+.demo-body{padding:14px 16px 16px;background:var(--surface-2)}
+.demo figcaption{padding:10px 14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.play{padding:18px;display:grid;gap:12px}
+.play label{font-weight:600;font-size:13px}
+.field{display:grid;gap:6px}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}
+.or::before,.or::after{content:"";height:1px;background:var(--line);flex:1}
+.join{display:flex;gap:8px}
+.join input{text-transform:uppercase;letter-spacing:.2em;font-family:var(--mono);font-weight:600}
+.note{font-size:13px;color:var(--muted)}
+.err{font-size:13px;color:var(--red);font-weight:500}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+.rule{display:grid;gap:6px;align-content:start;padding-top:12px;border-top:2px solid var(--ink)}
+.rule b{font:800 20px/1.05 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.rule p{color:var(--muted);font-size:14px}
+.scoring{margin-top:22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;padding:16px 18px}
+.scoring h3{font:800 22px/1 var(--display);text-transform:uppercase}
+.pts-key{display:flex;gap:8px;flex-wrap:wrap}
+.pts-key span{display:inline-flex;align-items:center;gap:8px;font:600 12px/1 var(--mono);padding:8px 10px;border-radius:6px;border:1px solid var(--line)}
+.pts-key b{font:800 20px/1 var(--display)}
+.k-exact{background:var(--green-bg);border-color:var(--green)!important}.k-exact b{color:var(--green)}
+.k-near{background:var(--amber-bg);border-color:var(--amber)!important}.k-near b{color:var(--amber)}
+.k-far{background:var(--surface-2)}.k-far b{color:var(--muted)}
+
+/* ---------- lobby ---------- */
+.lobby{display:grid;gap:18px}
+.lobby-head{display:flex;flex-wrap:wrap;gap:18px 28px;align-items:end;justify-content:space-between}
+.lobby-head .eyebrow{display:block}
+.code{display:inline-flex;gap:4px;margin-top:8px}
+.code span{width:clamp(52px,12vw,72px);height:clamp(64px,15vw,86px);display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);
+  font:900 clamp(40px,9vw,58px)/1 var(--display);border-radius:3px;position:relative}
+.invite{display:grid;gap:10px;flex:1 1 300px;max-width:460px}
+.invite p{color:var(--muted)}
+#btn-copy{white-space:nowrap}
+.invite .join input{text-transform:none;letter-spacing:0;font:500 12px/1.2 var(--mono)}
+.players{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.players li{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.players li.away{opacity:.55}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.tag{font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:3px 5px;border-radius:3px}
+.nm{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lobby-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 16px}
+.facts{display:flex;gap:18px;flex-wrap:wrap}
+.facts div{display:grid;gap:2px}
+.facts b{font:800 26px/1 var(--display)}
+
+/* ---------- round ---------- */
+.roundbar{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;margin-bottom:14px}
+.stat{display:grid;gap:3px}
+.stat b{font:800 30px/1 var(--display);font-variant-numeric:tabular-nums}
+.stat b small{font-size:18px;color:var(--muted);font-weight:700}
+.stat.right{text-align:right}
+.tape{position:relative;height:34px;border-radius:3px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.tape-fill{position:absolute;left:0;top:0;bottom:0;width:100%;background-color:var(--tape);
+  background-image:repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 40px);
+  background-size:100% 7px,100% 14px;background-repeat:no-repeat;background-position:left top,left top}
+.tape.low .tape-fill{background-color:var(--red)}
+.tape-sec{position:absolute;right:8px;top:50%;transform:translateY(-35%);font:600 13px/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.ask{display:grid;gap:6px;margin-bottom:12px}
+.prompt{font:800 clamp(28px,4.6vw,44px)/1 var(--display);text-transform:uppercase;letter-spacing:.005em}
+.prompt em{font-style:normal;color:var(--accent)}
+
+.board-wrap{padding:10px;display:grid;gap:6px;background:var(--surface-2)}
+.end{display:flex;align-items:center;gap:8px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:2px 4px}
+.end::after{content:"";flex:1;height:1px;background:var(--line)}
+.end svg{flex:none}
+.sorter{list-style:none;margin:0;padding:0;display:grid;gap:6px;position:relative}
+.row{display:grid;grid-template-columns:30px auto minmax(0,1fr) auto;align-items:center;gap:10px;min-height:54px;padding:6px 8px 6px 10px;
+  background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:0 1px 0 rgba(20,33,44,.04);
+  user-select:none;-webkit-user-select:none;touch-action:none;cursor:grab;position:relative;transition:transform .16s ease,box-shadow .16s ease,border-color .16s}
+.row:hover{border-color:var(--muted)}
+.row.dragging{z-index:5;cursor:grabbing;box-shadow:var(--lift);border-color:var(--accent);transition:box-shadow .16s ease}
+.sorter.sorting .row:not(.dragging){transition:transform .16s ease}
+.sorter.still .row{cursor:default;touch-action:auto}
+.sorter.still .row:hover{border-color:var(--line)}
+.pos{font:800 22px/1 var(--display);color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.emo{font:22px/1 var(--emoji);width:28px;text-align:center}
+.sorter:not(.flags) .emo{display:none}
+.sorter:not(.flags) .row{grid-template-columns:30px minmax(0,1fr) auto}
+.row .lbl{display:grid;gap:1px;min-width:0}
+.row .lbl b{font-weight:600;font-size:16px;line-height:1.2;overflow-wrap:anywhere}
+.row .lbl small{font-size:12px;color:var(--muted);line-height:1.2}
+.moves{display:flex;gap:4px;align-items:center}
+.mv{appearance:none;width:38px;height:38px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
+.mv:hover{border-color:var(--muted)}
+.mv:disabled{opacity:.3;cursor:default}
+.grip{color:var(--muted);display:grid;place-items:center;width:14px}
+.sorter.still .moves,.sorter.still .grip{display:none}
+/* reveal state of the list */
+.ans{display:flex;align-items:center;gap:8px;justify-content:flex-end;text-align:right}
+.ans .val{font:600 13px/1.2 var(--mono);white-space:nowrap}
+.you{font:600 11px/1 var(--mono);letter-spacing:.04em;padding:5px 7px;border-radius:4px;white-space:nowrap;border:1px solid transparent}
+.row.exact{border-color:var(--green);background:linear-gradient(90deg,var(--green-bg),transparent 60%),var(--surface)}
+.row.exact .you{color:var(--green);background:var(--green-bg);border-color:var(--green)}
+.row.near{border-color:var(--amber);background:linear-gradient(90deg,var(--amber-bg),transparent 60%),var(--surface)}
+.row.near .you{color:var(--amber);background:var(--amber-bg);border-color:var(--amber)}
+.row.far .you{color:var(--red);background:var(--red-bg);border-color:var(--red)}
+.row.exact .pos{color:var(--green)}.row.near .pos{color:var(--amber)}
+
+.controls{display:flex;align-items:center;justify-content:space-between;gap:10px 14px;margin-top:12px}
+.hint{font-size:13px;color:var(--muted)}
+.hint-touch{display:none}
+@media (hover:none) and (pointer:coarse){ .hint-desk{display:none} .hint-touch{display:inline} }
+#btn-lock{min-width:180px;padding:14px 20px;font-size:16px}
+.waiting{margin-top:12px;padding:12px 14px;border-radius:8px;background:var(--surface);border:1px dashed var(--line);font-size:14px}
+.waiting b{color:var(--green)}
+
+.reveal{margin-top:14px;display:grid;grid-template-columns:minmax(220px,1fr) 1.4fr;gap:14px;align-items:start}
+.rv-main{padding:16px 18px;display:grid;gap:8px}
+.rv-pts{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.rv-pts b{font:900 64px/.9 var(--display);font-variant-numeric:tabular-nums}
+.rv-pts span{font:800 22px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.rv-off{font:600 13px/1.2 var(--mono);color:var(--muted)}
+.rv-fact{font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+.rv-side{padding:10px 12px;display:grid;gap:8px}
+.rv-list{list-style:none;margin:0;padding:0;display:grid}
+.rv-list li{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--line)}
+.rv-list li:last-child{border-bottom:none}
+.rv-list .off{font:500 12px/1 var(--mono);color:var(--muted);white-space:nowrap}
+.rv-list .pts{font:800 20px/1 var(--display);font-variant-numeric:tabular-nums;min-width:3ch;text-align:right}
+.rv-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:4px 4px 2px}
+.muted{color:var(--muted);font-size:13px}
+
+/* ---------- final ---------- */
+.final{display:grid;gap:18px}
+.final h2{font:900 clamp(56px,11vw,110px)/.85 var(--display);text-transform:uppercase}
+.final .sub{color:var(--muted);font-size:16px}
+.board{list-style:none;margin:0;padding:6px 0}
+.board li{display:grid;grid-template-columns:34px auto minmax(0,1fr) auto 64px;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line)}
+.board li:last-child{border-bottom:none}
+.board .rank{font:800 22px/1 var(--display);color:var(--muted)}
+.board .total{font:900 30px/1 var(--display);text-align:right;font-variant-numeric:tabular-nums}
+.board li.win{background:var(--accent);color:var(--accent-ink)}
+.board li.win .rank,.board li.win .tag{color:var(--accent-ink);border-color:rgba(42,12,2,.35)}
+.bars{display:flex;gap:2px;align-items:flex-end;height:26px}
+.bars s{display:block;width:6px;height:calc(var(--v) * .24px + 2px);background:currentColor;opacity:.55;border-radius:1px}
+.final-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:calc(100% - 32px);
+  background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:8px;font-size:14px;box-shadow:var(--shadow);z-index:10}
+
+button{touch-action:manipulation}
+input[type=text]{font-size:16px}
+
+@media (max-width:760px){
+  .wrap{padding-block:6px 24px}
+  body.in-room .wrap{padding-bottom:0}
+  .top{min-height:40px;margin-bottom:6px}
+  .brand{font-size:19px}
+  .chip{padding:6px 8px;font-size:11px}
+  .btn.small{padding:9px 11px}
+  .title{font-size:clamp(76px,24vw,120px)}
+  .tagline{font-size:17px}
+  .home-grid{grid-template-columns:1fr}
+  .home-grid .play{order:-1}
+  .play .btn{padding:13px 16px}
+  .join .btn{min-width:72px}
+  .rules{grid-template-columns:1fr;gap:12px}
+  .scoring{grid-template-columns:1fr;gap:10px}
+  .roundbar{gap:10px;margin-bottom:8px}
+  .stat b{font-size:22px}
+  .stat b small{font-size:15px}
+  .tape{height:28px}
+  .ask{gap:4px;margin-bottom:8px}
+  .prompt{font-size:clamp(22px,6.4vw,30px);line-height:1.02}
+  .board-wrap{padding:8px;gap:5px}
+  .sorter{gap:5px}
+  .row{min-height:50px;gap:8px;padding:5px 6px 5px 8px;grid-template-columns:24px auto minmax(0,1fr) auto}
+  .pos{font-size:19px}
+  .sorter:not(.flags) .row{grid-template-columns:24px minmax(0,1fr) auto}
+  .row .lbl b{font-size:15px}
+  .mv{width:40px;height:40px}
+  .grip{display:none}
+  .controls{margin-top:8px}
+  .controls .hint{display:none}
+  #btn-lock{flex:1;min-width:0}
+  #play-ui{padding-bottom:env(safe-area-inset-bottom,0px)}
+  .waiting{margin-top:8px;padding:10px 12px}
+  .reveal{grid-template-columns:1fr;margin-top:10px;gap:10px;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+  .rv-main{padding:14px 16px}
+  .rv-pts b{font-size:48px}
+  .rv-actions{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);
+    padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+    box-shadow:0 -10px 24px -16px rgba(0,0,0,.35)}
+  .rv-actions .btn.small{padding:12px 18px;font-size:15px}
+  .ans{flex-direction:column;align-items:flex-end;gap:4px}
+  .ans .val{font-size:12px}
+  .lobby-foot{flex-direction:column;align-items:stretch}
+  .lobby-foot > div:last-child{justify-items:stretch !important}
+  #btn-start,#btn-again{width:100%;padding:14px}
+  .final-actions .btn{flex:1}
+  .invite .join{flex-wrap:wrap}
+  .invite .join input{flex:1 1 180px}
+  .board li{grid-template-columns:26px auto minmax(0,1fr) 56px;gap:10px;padding:12px}
+  .board .bars{display:none}
+}
+@media (max-width:370px){
+  body.in-room .brand span{display:none}
+  .row .lbl b{font-size:14px}
+  .mv{width:36px;height:40px}
+}
+@media (orientation:landscape) and (max-height:520px){
+  .wrap{padding-block:4px 8px}
+  .top{min-height:36px;margin-bottom:4px}
+  .roundbar{margin-bottom:6px}
+  .stat b{font-size:20px}
+  .tape{height:24px}
+  .prompt{font-size:22px}
+  /* phones held sideways: topic and Lock in on the left, the list on the right */
+  #scr-round{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);grid-template-areas:"bar bar" "ask list" "ui list" "rev rev";column-gap:14px;align-items:start}
+  #scr-round .roundbar{grid-area:bar}
+  #scr-round .ask{grid-area:ask}
+  #scr-round .board-wrap{grid-area:list;padding:6px;gap:3px}
+  #scr-round #play-ui{grid-area:ui}
+  #scr-round .reveal{grid-area:rev}
+  .sorter{gap:4px}
+  .row{min-height:40px;padding-block:3px}
+  .mv{width:34px;height:34px}
+  .controls{flex-direction:column;align-items:stretch}
+  #btn-lock{min-width:0;width:100%}
+  .reveal{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .rv-actions{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);
+    padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+    box-shadow:0 -10px 24px -16px rgba(0,0,0,.35)}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><i aria-hidden="true"><b></b><b></b><b></b><b></b></i><span>Order Up!</span></div>
+    <div class="top-right">
+      <a class="btn small" id="btn-hub" href="../">All games</a>
+      <span class="chip" id="room-chip" hidden></span>
+      <button class="btn small" id="btn-leave" hidden>Leave room</button>
+    </div>
+  </header>
+
+  <!-- HOME -->
+  <section class="screen" id="scr-home">
+    <div class="hero">
+      <h1 class="title">Order <span>Up!</span></h1>
+      <div class="stairs" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <p class="tagline">Five things, one question. Sort them from highest to lowest before the clock runs out. Closest order wins.</p>
+    </div>
+
+    <div class="home-grid">
+      <figure class="card demo">
+        <div class="demo-body">
+          <div class="end" id="demo-hi"></div>
+          <ol class="sorter still" id="demo-list" aria-label="Example round"></ol>
+          <div class="end" id="demo-lo"></div>
+        </div>
+        <figcaption id="demo-cap">Example round: sort these by size, biggest at the top.</figcaption>
+      </figure>
+
+      <div class="card play">
+        <div class="field">
+          <label for="nm">Your name</label>
+          <input type="text" id="nm" maxlength="16" autocomplete="nickname" placeholder="e.g. Dustin">
+        </div>
+        <button class="btn primary" id="btn-create">Create a room</button>
+        <div class="or">or join a friend's room</div>
+        <div class="join">
+          <input type="text" id="code-in" maxlength="4" placeholder="CODE" aria-label="Room code" autocomplete="off" autocapitalize="characters">
+          <button class="btn" id="btn-join">Join</button>
+        </div>
+        <p class="err" id="home-err" hidden></p>
+        <p class="note" id="net-note">Connecting to online rooms…</p>
+        <button class="btn link" id="btn-solo">Practice solo</button>
+      </div>
+    </div>
+
+    <div class="rules">
+      <div class="rule"><b>1. Read the topic</b><p>Every round has a topic, like country population or animal weight. Everyone gets the same five things.</p></div>
+      <div class="rule"><b>2. Sort the list</b><p>Drag the rows or use the arrows. Highest goes at the top, lowest at the bottom.</p></div>
+      <div class="rule"><b>3. Lock in by 30 s</b><p>Ten rounds per game. When time runs out, whatever order you have counts.</p></div>
+    </div>
+
+    <div class="card scoring">
+      <h3>100 points<br>per round</h3>
+      <div class="scale-row" style="display:grid;gap:8px">
+        <div class="pts-key"><span class="k-exact"><b>20</b> right spot</span><span class="k-near"><b>10</b> one spot off</span><span class="k-far"><b>0</b> two or more off</span></div>
+        <p class="note">Each of the five things scores on its own, so a list with two neighbors swapped still earns 80. If you never move anything, the round scores 0.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOBBY -->
+  <section class="screen lobby" id="scr-lobby" hidden>
+    <div class="lobby-head">
+      <div>
+        <span class="eyebrow">Room code</span>
+        <div class="code" id="lb-code"></div>
+      </div>
+      <div class="invite">
+        <p id="lb-share"></p>
+        <div class="join">
+          <input type="text" id="lb-link" readonly aria-label="Invite link">
+          <button class="btn" id="btn-copy">Copy invite link</button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:8px" id="lb-count">Players</div>
+      <ul class="players" id="lb-players"></ul>
+    </div>
+    <div class="card lobby-foot">
+      <div class="facts">
+        <div><span class="eyebrow">Rounds</span><b>10</b></div>
+        <div><span class="eyebrow">Per round</span><b>30 s</b></div>
+        <div><span class="eyebrow">Max score</span><b>1,000</b></div>
+      </div>
+      <div style="display:grid;gap:6px;justify-items:end">
+        <button class="btn primary" id="btn-start">Start game</button>
+        <span class="muted" id="lb-wait" hidden></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROUND -->
+  <section class="screen" id="scr-round" hidden>
+    <div class="roundbar">
+      <div class="stat"><span class="eyebrow">Round</span><b><span id="rb-num">1</span><small id="rb-of">/10</small></b></div>
+      <div class="tape" id="tape" aria-hidden="true"><div class="tape-fill" id="tape-fill"></div><span class="tape-sec" id="tape-sec">30</span></div>
+      <div class="stat right"><span class="eyebrow">Score</span><b id="rb-score">0</b></div>
+    </div>
+    <div class="ask">
+      <span class="eyebrow" id="ask-sub"></span>
+      <h2 class="prompt" id="prompt"></h2>
+    </div>
+    <div class="card board-wrap">
+      <div class="end" id="lbl-hi"></div>
+      <ol class="sorter" id="sorter" aria-label="Your order, highest first"></ol>
+      <div class="end" id="lbl-lo"></div>
+    </div>
+
+    <div id="play-ui">
+      <div class="controls">
+        <p class="hint" id="hint"><span class="hint-desk">Drag the rows, or click one and use the ↑ ↓ keys. Enter locks in.</span><span class="hint-touch">Drag a row, or tap the arrows.</span></p>
+        <button class="btn primary" id="btn-lock">Lock in</button>
+      </div>
+      <div class="waiting" id="waiting" hidden></div>
+    </div>
+
+    <div class="reveal" id="reveal" hidden>
+      <div class="card rv-main" aria-live="polite">
+        <div class="rv-pts"><b id="rv-pts">+0</b><span id="rv-verdict"></span></div>
+        <div class="rv-off" id="rv-off"></div>
+        <p class="rv-fact" id="rv-fact"></p>
+      </div>
+      <div class="card rv-side">
+        <ol class="rv-list" id="rv-list"></ol>
+        <div class="rv-actions">
+          <span class="muted" id="rv-auto"></span>
+          <button class="btn primary small" id="btn-next">Next round</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="screen final" id="scr-final" hidden>
+    <div>
+      <span class="eyebrow">Final scores</span>
+      <h2 id="fn-title"></h2>
+      <p class="sub" id="fn-sub"></p>
+    </div>
+    <ol class="card board" id="fn-board"></ol>
+    <div class="final-actions">
+      <button class="btn primary" id="btn-again">Play again</button>
+      <span class="muted" id="fn-wait" hidden></span>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script>
+(() => {
+'use strict';
+
+/* ---------------- topics: every value checked Sept 2026 (sources in each topic's `src`) ----------------
+   items: [name, value, note?] in the topic's base unit. Rounds use 5 items whose values are far enough apart
+   (`gap`: a ratio, or years for `year` topics) that small source differences can never flip the order. */
+const FLAGS = {China:'🇨🇳', India:'🇮🇳', 'United States':'🇺🇸', Indonesia:'🇮🇩', Pakistan:'🇵🇰', Nigeria:'🇳🇬', Brazil:'🇧🇷', Bangladesh:'🇧🇩',
+  Russia:'🇷🇺', Mexico:'🇲🇽', Ethiopia:'🇪🇹', Japan:'🇯🇵', Philippines:'🇵🇭', Egypt:'🇪🇬', 'DR Congo':'🇨🇩', Vietnam:'🇻🇳', Iran:'🇮🇷',
+  Turkey:'🇹🇷', Germany:'🇩🇪', Thailand:'🇹🇭', 'United Kingdom':'🇬🇧', France:'🇫🇷', 'South Africa':'🇿🇦', Italy:'🇮🇹', Kenya:'🇰🇪',
+  Colombia:'🇨🇴', 'South Korea':'🇰🇷', Spain:'🇪🇸', Argentina:'🇦🇷', Canada:'🇨🇦', Poland:'🇵🇱', Morocco:'🇲🇦', Peru:'🇵🇪',
+  'Saudi Arabia':'🇸🇦', Australia:'🇦🇺', Chile:'🇨🇱', Netherlands:'🇳🇱', Sweden:'🇸🇪', Portugal:'🇵🇹', Greece:'🇬🇷', Israel:'🇮🇱',
+  Switzerland:'🇨🇭', Norway:'🇳🇴', Ireland:'🇮🇪', 'New Zealand':'🇳🇿', Jamaica:'🇯🇲', Iceland:'🇮🇸', Kazakhstan:'🇰🇿', Algeria:'🇩🇿',
+  Sudan:'🇸🇩', Libya:'🇱🇾', Mongolia:'🇲🇳', Singapore:'🇸🇬', Monaco:'🇲🇨'};
+
+const TOPICS = [
+  {id: 'pop', title: 'Country population', hi: 'Most people', lo: 'Fewest people', unit: 'people', gap: 1.08, flags: true,
+   src: 'UN population estimates for mid-2023 (World Population Prospects 2024).',
+   items: [['India',1438069596],['China',1422584933,'mainland only'],['United States',343477335],['Indonesia',281190067],['Pakistan',247504495],
+     ['Nigeria',227882945],['Brazil',211140729],['Bangladesh',171466990],['Russia',145440500],['Mexico',129739759],['Ethiopia',128691692],
+     ['Japan',124370947],['Philippines',114891199],['Egypt',114535772],['DR Congo',105789731],['Vietnam',100352192],['Iran',90608707],
+     ['Turkey',87270501],['Germany',84548231],['Thailand',71702435],['United Kingdom',68682962],['France',66438822,'mainland France'],
+     ['South Africa',63212384],['Italy',59499453],['Kenya',55339003],['Colombia',52321152],['South Korea',51748739],['Spain',47911579],
+     ['Argentina',45538401],['Canada',39299105],['Poland',38762844],['Morocco',37712505],['Peru',33845617],['Saudi Arabia',32264292],
+     ['Australia',26451124],['Chile',19658835],['Netherlands',18092524],['Sweden',10551494],['Portugal',10430738],['Greece',10242908],
+     ['Israel',9256314],['Switzerland',8870561],['Norway',5519167],['Ireland',5196630],['New Zealand',5172836],['Jamaica',2839786],['Iceland',387558]]},
+
+  {id: 'area', title: 'Country area', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08, flags: true,
+   src: 'Total area including lakes and rivers, from Wikipedia’s list of countries by area (UN Statistics Division).',
+   items: [['Russia',17098246],['Canada',9984670],['China',9596960],['United States',9525067],['Brazil',8510346],['Australia',7741220],
+     ['India',3287263],['Argentina',2780400],['Kazakhstan',2724910],['Algeria',2381741],['DR Congo',2344858],['Saudi Arabia',2149690],
+     ['Mexico',1964375],['Indonesia',1904569],['Sudan',1878000],['Libya',1759540],['Iran',1648195],['Mongolia',1564116],['Peru',1285216],
+     ['South Africa',1219090],['Colombia',1138910],['Ethiopia',1104300],['Egypt',1001450],['France',551500,'mainland France'],['Spain',505370],
+     ['Sweden',450295],['Norway',386224,'with Svalbard'],['Japan',377915],['Germany',357581],['Italy',302068],['Philippines',300000],
+     ['New Zealand',268838],['United Kingdom',244376],['Greece',131957],['South Korea',100432],['Portugal',92090],['Ireland',70273],
+     ['Netherlands',41865],['Switzerland',41291],['Israel',21937],['Jamaica',10991],['Singapore',745],['Monaco',2]]},
+
+  {id: 'statepop', title: 'US state population', hi: 'Most people', lo: 'Fewest people', unit: 'people', gap: 1.06,
+   src: '2020 US Census.',
+   items: [['California',39538223],['Texas',29145505],['Florida',21538187],['New York',20201249],['Pennsylvania',13002700],['Illinois',12812508],
+     ['Ohio',11799448],['Georgia',10711908],['North Carolina',10439388],['Michigan',10077331],['New Jersey',9288994],['Virginia',8631393],
+     ['Washington',7705281],['Arizona',7151502],['Massachusetts',7029917],['Tennessee',6910840],['Indiana',6785528],['Maryland',6177224],
+     ['Missouri',6154913],['Wisconsin',5893718],['Colorado',5773714],['Minnesota',5706494],['South Carolina',5118425],['Alabama',5024279],
+     ['Louisiana',4657757],['Kentucky',4505836],['Oregon',4237256],['Oklahoma',3959353],['Connecticut',3605944],['Utah',3271616],
+     ['Iowa',3190369],['Nevada',3104614],['Arkansas',3011524],['Mississippi',2961279],['Kansas',2937880],['New Mexico',2117522],
+     ['Nebraska',1961504],['Idaho',1839106],['West Virginia',1793716],['Hawaii',1455271],['New Hampshire',1377529],['Maine',1362359],
+     ['Rhode Island',1097379],['Montana',1084225],['Delaware',989948],['South Dakota',886667],['North Dakota',779094],['Alaska',733391],
+     ['Vermont',643077],['Wyoming',576851]]},
+
+  {id: 'statearea', title: 'US state area', hi: 'Biggest', lo: 'Smallest', unit: 'sqmi', gap: 1.06,
+   src: 'Total area including water, US Census Bureau.',
+   items: [['Alaska',665384],['Texas',268596],['California',163695],['Montana',147040],['New Mexico',121590],['Arizona',113990],['Nevada',110572],
+     ['Colorado',104094],['Oregon',98379],['Wyoming',97813],['Michigan',96714,'lots of Great Lakes water'],['Minnesota',86936],['Utah',84897],
+     ['Idaho',83569],['Kansas',82278],['Nebraska',77348],['South Dakota',77116],['Washington',71298],['North Dakota',70698],['Oklahoma',69899],
+     ['Missouri',69707],['Florida',65758],['Wisconsin',65496],['Georgia',59425],['Illinois',57914],['Iowa',56273],['New York',54555],
+     ['North Carolina',53819],['Arkansas',53179],['Alabama',52420],['Louisiana',52378],['Mississippi',48432],['Pennsylvania',46054],['Ohio',44826],
+     ['Virginia',42775],['Tennessee',42144],['Kentucky',40408],['Indiana',36420],['Maine',35380],['South Carolina',32020],['West Virginia',24230],
+     ['Maryland',12406],['Hawaii',10932],['Massachusetts',10554],['Vermont',9616],['New Hampshire',9349],['New Jersey',8723],['Connecticut',5543],
+     ['Delaware',2489],['Rhode Island',1545]]},
+
+  {id: 'lakes', title: 'Lake size', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08,
+   src: 'Surface area, from Wikipedia’s list of lakes by area.',
+   items: [['Caspian Sea',389000,'counted as a lake'],['Lake Superior',82100],['Lake Victoria',59940],['Lake Huron',59570],['Lake Michigan',57800],
+     ['Lake Tanganyika',32900],['Lake Baikal',31722],['Great Bear Lake',31153],['Lake Malawi',29600],['Great Slave Lake',27200],['Lake Erie',25667],
+     ['Lake Winnipeg',24514],['Lake Ontario',19011],['Lake Ladoga',17700],['Lake Onega',9700],['Lake Titicaca',8372],['Lake Nicaragua',8264],
+     ['Lake Athabasca',7850],['Reindeer Lake',6650],['Issyk-Kul',6236],['Lake Vänern',5650],['Lake of the Woods',4350],['Lake Geneva',580],
+     ['Lake Tahoe',490],['Lake Garda',370],['Loch Ness',56]]},
+
+  {id: 'islands', title: 'Island size', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08,
+   src: 'Area of the island itself, from Wikipedia’s list of islands by area.',
+   items: [['Greenland',2108459],['New Guinea',773751],['Borneo',723154],['Madagascar',592521],['Baffin Island',507205],['Sumatra',428134],
+     ['Honshu',228296,'Japan’s main island'],['Victoria Island',219191,'Canada'],['Great Britain',218635],['Ellesmere Island',197790],['Sulawesi',169981],
+     ['South Island',150683,'New Zealand'],['Java',127467],['North Island',114573,'New Zealand'],['Newfoundland',108878],['Cuba',105468,'main island'],
+     ['Luzon',104835],['Iceland',100261],['Mindanao',94469],['Ireland',83721],['Hokkaido',77659],['Hispaniola',74366],['Sakhalin',74237],
+     ['Sri Lanka',65916],['Tasmania',64333],['Kyushu',36838],['Vancouver Island',31815],['Sicily',25498],['Sardinia',23827],['Jamaica',11037],
+     ['Hawaiʻi (Big Island)',10493],['Cyprus',9284],['Puerto Rico',8759],['Corsica',8730],['Crete',8296],['Mallorca',3630],['Long Island',3505],
+     ['Tenerife',2047],['Maui',1893],['Oʻahu',1560],['Isle of Man',574],['Martha’s Vineyard',250],['Manhattan',59]]},
+
+  {id: 'space', title: 'Size in space', hi: 'Biggest', lo: 'Smallest', unit: 'kmd', gap: 1.025,
+   src: 'Mean diameter, from NASA fact sheets.',
+   items: [['The Sun',1391400],['Jupiter',139772],['Saturn',116464],['Uranus',50724],['Neptune',49244],['Earth',12742],['Venus',12104],
+     ['Mars',6779],['Ganymede',5268,'moon of Jupiter'],['Titan',5149,'moon of Saturn'],['Mercury',4879],['Callisto',4821,'moon of Jupiter'],
+     ['Io',3643,'moon of Jupiter'],['The Moon',3475],['Europa',3122,'moon of Jupiter'],['Triton',2707,'moon of Neptune'],['Pluto',2377],
+     ['Titania',1577,'moon of Uranus'],['Charon',1212,'moon of Pluto'],['Ceres',939,'dwarf planet'],['Enceladus',504,'moon of Saturn']]},
+
+  {id: 'sundist', title: 'Distance from the Sun', hi: 'Farthest', lo: 'Closest', unit: 'mkm', gap: 1.1,
+   src: 'Average distance, from NASA fact sheets.',
+   items: [['Mercury',57.9],['Venus',108.2],['Earth',149.6],['Mars',228.0],['Ceres',414,'dwarf planet'],['Jupiter',778.5],['Saturn',1432],
+     ['Uranus',2867],['Neptune',4515],['Pluto',5906],['Eris',10126,'dwarf planet']]},
+
+  {id: 'rivers', title: 'River length', hi: 'Longest', lo: 'Shortest', unit: 'km', gap: 1.12,
+   src: 'Wikipedia’s list of river systems by length. River lengths vary between sources, so every river in a round is at least 12% longer than the next.',
+   items: [['Nile',6650],['Yangtze',6300],['Mississippi–Missouri',6275,'as one river system'],['Yellow River',5464],['Ob–Irtysh',5410,'as one river system'],
+     ['Congo',4700],['Lena',4400],['Mackenzie',4241],['Niger',4200],['Volga',3645],['Yukon',3185],['Rio Grande',3057],['Danube',2850],
+     ['Colorado River',2330],['Dnieper',2287],['Orinoco',2140],['Columbia River',2000],['Rhine',1230],['Loire',1006],['Seine',777],
+     ['Hudson River',507],['Thames',346]]},
+
+  {id: 'weight', title: 'Animal weight', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.8, about: true,
+   src: 'Typical adult weight, from each animal’s Wikipedia article. Weights vary a lot, so every animal in a round is at least 1.8× heavier than the next.',
+   items: [['Blue whale',100000],['Sperm whale',30000],['Orca',5000],['African elephant',4500],['Asian elephant',3350],['White rhino',1900],
+     ['Hippo',1420],['Giraffe',1010],['Walrus',900],['Cow',700],['American bison',620],['Horse',465],['Moose',450],['Polar bear',390],
+     ['Bengal tiger',160],['Lion',155],['Gorilla',140,'adult male'],['Ostrich',110],['Giant panda',108],['Adult human',62,'world average'],
+     ['Red kangaroo',50],['Cheetah',43],['Gray wolf',40],['Chimpanzee',35],['Emperor penguin',34],['Bald eagle',4.85],['House cat',4.5],
+     ['Chicken',2.5],['Rabbit',2.25],['Hummingbird',0.0036,'ruby-throated']]},
+
+  {id: 'speed', title: 'Top speed', hi: 'Fastest', lo: 'Slowest', unit: 'kmh', gap: 1.25,
+   src: 'Top recorded speed, from Wikipedia’s list of the fastest animals and each animal’s article.',
+   items: [['Peregrine falcon',389,'in a dive'],['Golden eagle',280,'in a dive'],['Cheetah',104],['Pronghorn',88.5],['Lion',80,'short bursts'],
+     ['Greyhound',69],['Orca',56],['White rhino',50],['Grizzly bear',48],['Usain Bolt',44.35,'at his fastest in 2009'],['Bottlenose dolphin',35],
+     ['Hippo',30],['African elephant',25],['Great white shark',24.1],['Garden snail',0.047]]},
+
+  {id: 'founded', title: 'Year founded', hi: 'Newest', lo: 'Oldest', unit: 'year', gap: 2, year: true,
+   src: 'The “Founded” year on each company’s Wikipedia page (launch year for apps and sites).',
+   items: [['Johnson & Johnson',1886],['Nintendo',1889],['Coca-Cola',1892],['General Electric',1892],['Ford',1903],['Harley-Davidson',1903],
+     ['IBM',1911],['BMW',1916],['Disney',1923],['LEGO',1932],['Toyota',1937],['Samsung',1938],['IKEA',1943],['Sony',1946],['Nike',1964],
+     ['Intel',1968],['Starbucks',1971],['Microsoft',1975],['Apple',1976],['Oracle',1977],['Dell',1984],['Nvidia',1993],['Amazon',1994],
+     ['eBay',1995],['Netflix',1997],['Google',1998],['Wikipedia',2001],['Tesla',2003],['Facebook',2004],['YouTube',2005],['Twitter',2006],
+     ['Spotify',2006],['Airbnb',2008],['Uber',2009],['WhatsApp',2009],['Instagram',2010],['Snapchat',2011],['Zoom',2011],['OpenAI',2015],['Discord',2015]]},
+
+  {id: 'opened', title: 'Year it opened', hi: 'Newest', lo: 'Oldest', unit: 'year', gap: 3, year: true,
+   src: 'The year each landmark was completed or opened, from Wikipedia.',
+   items: [['The Colosseum',80],['Leaning Tower of Pisa',1372],['The White House',1800],['Big Ben',1859],['Brooklyn Bridge',1883],
+     ['Statue of Liberty',1886],['Washington Monument',1888],['Eiffel Tower',1889],['Tower Bridge',1894],['Panama Canal',1914],['Hollywood Sign',1923],
+     ['Chrysler Building',1930],['Empire State Building',1931],['Christ the Redeemer',1931],['Sydney Harbour Bridge',1932],['Hoover Dam',1936],
+     ['Golden Gate Bridge',1937],['Mount Rushmore',1941],['Disneyland',1955],['Atomium',1958],['Space Needle',1962],['Gateway Arch',1965],
+     ['Sydney Opera House',1973],['CN Tower',1976],['Channel Tunnel',1994],['Petronas Towers',1999],['Burj Al Arab',1999],['London Eye',2000],
+     ['Taipei 101',2004],['Burj Khalifa',2010],['Tokyo Skytree',2012],['One World Trade Center',2014]]},
+
+  {id: 'peaks', title: 'Mountain height', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.05,
+   src: 'Height above sea level, from Wikipedia.',
+   items: [['Mount Everest',8849],['K2',8611],['Kangchenjunga',8586],['Lhotse',8516],['Makalu',8485],['Aconcagua',6961],['Chimborazo',6263],
+     ['Denali',6190],['Kilimanjaro',5895],['Cotopaxi',5897],['Mount Elbrus',5642],['Mount Kenya',5199],['Mount Ararat',5137],['Mount Vinson',4892],
+     ['Mont Blanc',4806],['Matterhorn',4478],['Mount Whitney',4421],['Mount Rainier',4392],['Mauna Kea',4207],['Mount Kinabalu',4095],['Eiger',3967],
+     ['Mount Fuji',3776],['Aoraki / Mount Cook',3724],['Mount Teide',3715],['Mount Hood',3429],['Zugspitze',2962],['Mount Olympus',2918,'Greece'],
+     ['Mount Kosciuszko',2228],['Mount Mitchell',2037],['Mount Washington',1917],['Ben Nevis',1345],['Snowdon',1085],['Scafell Pike',978]]},
+
+  {id: 'towers', title: 'Building height', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.05,
+   src: 'Height to the tip, from Wikipedia and the Council on Tall Buildings.',
+   items: [['Burj Khalifa',828],['Merdeka 118',678.9],['Shanghai Tower',632],['Canton Tower',602],['Ping An Finance Centre',599.1],['Lotte World Tower',554.5],
+     ['CN Tower',553],['One World Trade Center',541],['Ostankino Tower',540.1],['Taipei 101',508],['Shanghai World Financial Center',492],
+     ['Central Park Tower',472.4],['Oriental Pearl Tower',468],['Lakhta Center',462],['Petronas Towers',451.9],['Empire State Building',443],
+     ['Willis Tower',442.1],['Milad Tower',435],['432 Park Avenue',425.5],['Jin Mao Tower',420.5],['30 Hudson Yards',387.1],['Berlin TV Tower',368],
+     ['Bank of China Tower',367.4],['The Strat',350.2],['Tokyo Tower',333],['Eiffel Tower',330],['Chrysler Building',319],['The Shard',309.6],
+     ['Transamerica Pyramid',260],['Woolworth Building',241],['Space Needle',184],['The Gherkin',180],['Washington Monument',169],['Big Ben',96]]},
+
+  {id: 'falls', title: 'Waterfall height', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.08,
+   src: 'Total drop, from Wikipedia.',
+   items: [['Tugela Falls',983],['Angel Falls',979],['Vinnufossen',845],['Gocta Falls',771],['Yosemite Falls',739],['Sutherland Falls',580],
+     ['Jog Falls',253],['Kaieteur Falls',226],['Multnomah Falls',189],['Bridalveil Fall',188],['Victoria Falls',108],['Iguazu Falls',82,'tallest drop'],
+     ['Veliki Slap',78,'Plitvice, Croatia'],['Shoshone Falls',65],['Skógafoss',60],['Seljalandsfoss',60],['Horseshoe Falls',51,'Niagara'],
+     ['Dettifoss',44],['Gullfoss',32],['Rhine Falls',23]]},
+];
+
+/* ---------------- rules ---------------- */
+const ROUNDS = 10, SECONDS = 30, REVEAL_MS = 11000, N = 5;
+const COLORS = ['#E4572E','#3A7FD0','#23905A','#9B5DE5','#D99A00','#D6337F','#12A4B6','#7F8F2A','#C0632B','#5C6BC0'];
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------------- helpers ---------------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const rid = n => Array.from(crypto.getRandomValues(new Uint8Array(n)), b => 'abcdefghijkmnpqrstuvwxyz23456789'[b % 32]).join('');
+const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const LS = {
+  get(k) { try { return localStorage.getItem('orderup.' + k) ?? (k === 'name' ? localStorage.getItem('sizeup.name') : null); } catch { return null; } },
+  set(k, v) { try { v == null ? localStorage.removeItem('orderup.' + k) : localStorage.setItem('orderup.' + k, v); } catch {} },
+};
+let toastT;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 3600);
+}
+
+/* topics -> lookup tables */
+const TOP = {};
+for (const t of TOPICS) {
+  t.byId = {};
+  t.list = t.items.map(([name, v, note]) => {
+    const it = {id: slug(name), name, v, note: note || '', emo: t.flags ? (FLAGS[name] || '') : ''};
+    t.byId[it.id] = it;
+    return it;
+  });
+  TOP[t.id] = t;
+}
+
+/* numbers are stored in metric (as the sources give them) and shown in US units */
+function sig(x, n = 3) {
+  if (!x) return 0;
+  const p = Math.pow(10, n - 1 - Math.floor(Math.log10(Math.abs(x))));
+  return Math.round(x * p) / p;
+}
+const num = x => sig(x).toLocaleString('en-US', {maximumFractionDigits: 6});
+function big(x, unit) {
+  if (x >= 1e9) return `${sig(x / 1e9)} billion ${unit}`;
+  if (x >= 1e6) return `${sig(x / 1e6)} million ${unit}`;
+  return `${num(x)} ${unit}`;
+}
+const KM2_PER_SQMI = 2.589988, MI_PER_KM = 0.621371;
+function fmtVal(t, v) {
+  switch (t.unit) {
+    case 'people': return big(v, 'people');
+    case 'km2': return big(v / KM2_PER_SQMI, 'sq mi');
+    case 'sqmi': return `${Math.round(v).toLocaleString('en-US')} sq mi`;
+    case 'km': case 'kmd': return `${num(v * MI_PER_KM)} mi`;
+    case 'mkm': return big(v * 1e6 * MI_PER_KM, 'mi');
+    case 'kg': { const lb = v * 2.20462; return (t.about ? 'about ' : '') + (lb < 1 ? `${num(lb * 16)} oz` : big(lb, 'lb')); }
+    case 'kmh': return `${num(v * MI_PER_KM)} mph`;
+    case 'm': return `${Math.round(v * 3.28084).toLocaleString('en-US')} ft`;
+    case 'year': return v < 1000 ? `AD ${v}` : String(v);
+  }
+  return String(v);
+}
+
+/* ---------------- rounds and scoring ---------------- */
+const far = (t, a, b) => t.year ? Math.abs(a.v - b.v) >= t.gap : Math.max(a.v, b.v) / Math.min(a.v, b.v) >= t.gap;
+function pick5(t) {
+  const pool = t.list.slice().sort((a, b) => b.v - a.v);
+  // draw from a window of neighbors most of the time so rounds aren't all giant-vs-tiny
+  for (let tries = 0; tries < 80; tries++) {
+    const w = tries < 60 ? Math.min(pool.length, Math.max(10, Math.ceil(pool.length * 0.55))) : pool.length;
+    const s = Math.floor(Math.random() * (pool.length - w + 1));
+    const got = [];
+    for (const it of shuffle(pool.slice(s, s + w))) {
+      if (got.every(g => far(t, g, it))) got.push(it);
+      if (got.length === N) return got;
+    }
+  }
+  return null;
+}
+const rightOrder = R => R.ids.slice().sort((a, b) => R.t.byId[b].v - R.t.byId[a].v);
+function scoreOrder(order, R) {
+  if (!order) return 0;
+  const right = rightOrder(R);
+  return order.reduce((p, id, i) => { const d = Math.abs(right.indexOf(id) - i); return p + (d === 0 ? 20 : d === 1 ? 10 : 0); }, 0);
+}
+function makeRounds(n) {
+  const out = [];
+  for (const t of shuffle(TOPICS.slice())) {
+    if (out.length >= n) break;
+    const five = pick5(t);
+    if (!five) continue;
+    const R = {t, ids: five.map(x => x.id)};
+    // the starting order is the same for everyone and never already close to right
+    for (let k = 0; k < 50; k++) { shuffle(R.ids); if (scoreOrder(R.ids, R) <= 40) break; }
+    out.push(`${t.id}|${R.ids.join(',')}`);
+  }
+  return out;
+}
+const roundOf = i => { const [tid, ids] = room.rounds[i].split('|'); return {t: TOP[tid], ids: ids.split(',')}; };
+function cleanOrder(o, R) {
+  if (typeof o !== 'string') return null;
+  const ids = o.split(',');
+  if (ids.length !== N || new Set(ids).size !== N || !ids.every(id => R.ids.includes(id))) return null;
+  return ids;
+}
+function verdict(p, answered) {
+  if (!answered) return 'No answer';
+  if (p === 100) return 'Perfect order';
+  if (p >= 80) return 'So close';
+  if (p >= 60) return 'Solid';
+  if (p >= 40) return 'Mixed up';
+  if (p > 0) return 'Scrambled';
+  return 'Upside down';
+}
+function rightCount(order, R) {
+  if (!order) return 'no answer';
+  const right = rightOrder(R), k = order.filter((id, i) => right[i] === id).length;
+  return `${k} of ${N} in the right spot`;
+}
+
+/* ---------------- in-memory store (solo, host copy, guest mirror) ---------------- */
+function makeMemDB(onChange) {
+  const docs = new Map(), subs = new Set();
+  const snap = p => { const d = docs.get(p); return {id: p.split('/').pop(), exists: !!d, data: () => d && structuredClone(d), metadata: {}}; };
+  const ping = () => queueMicrotask(() => { subs.forEach(f => f()); if (onChange) onChange(); });
+  const merge = (a, b) => { for (const k in b) { const v = b[k]; if (v && typeof v === 'object' && !Array.isArray(v) && a[k] && typeof a[k] === 'object') merge(a[k], v); else a[k] = structuredClone(v); } };
+  const listen = f => { subs.add(f); queueMicrotask(f); return () => subs.delete(f); };
+  const docRef = p => ({
+    path: p, id: p.split('/').pop(),
+    get: async () => snap(p),
+    set: async d => { docs.set(p, structuredClone(d)); ping(); },
+    update: async d => { const cur = docs.get(p); if (!cur) throw {code: 'invalid_argument'}; merge(cur, d); ping(); },
+    delete: async () => { docs.delete(p); ping(); },
+    onSnapshot: next => listen(() => next(snap(p))),
+  });
+  const query = cp => { const out = []; for (const p of docs.keys()) if (p.slice(0, p.lastIndexOf('/')) === cp) out.push(snap(p)); return {docs: out, size: out.length, empty: !out.length}; };
+  const colRef = cp => ({
+    path: cp, doc: id => docRef(`${cp}/${id || rid(10)}`),
+    get: async () => query(cp), onSnapshot: next => listen(() => next(query(cp))),
+  });
+  return {
+    doc: docRef, collection: colRef,
+    dump: () => Object.fromEntries(docs),
+    load: obj => { docs.clear(); for (const k of Object.keys(obj)) docs.set(k, obj[k]); ping(); },
+  };
+}
+/* a guest reads a mirror of the host's store and sends its writes to the host */
+function makeGuestDB(mirror, send) {
+  return {
+    doc: p => ({
+      ...mirror.doc(p),
+      set: async d => send({t: 'write', op: 'set', path: p, data: d}),
+      update: async d => send({t: 'write', op: 'update', path: p, data: d}),
+      delete: async () => send({t: 'write', op: 'delete', path: p}),
+    }),
+    collection: cp => mirror.collection(cp),
+  };
+}
+
+
+/* ---------------- state ---------------- */
+let db = null, mode = null; // mode: 'solo' | 'host' | 'guest'
+const me = {pid: LS.get('pid') || rid(10), name: LS.get('name') || ''};
+LS.set('pid', me.pid);
+
+let code = null, room = null, players = [], unsubs = [];
+let screen = 'home';
+let local = {key: null};
+let hostT = {key: null, t: null, busy: false};
+
+function show(name) {
+  if (screen !== name) window.scrollTo(0, 0);
+  screen = name;
+  for (const s of ['home', 'lobby', 'round', 'final']) $('#scr-' + s).hidden = s !== name;
+  const inRoom = name !== 'home';
+  $('#btn-leave').hidden = !inRoom;
+  $('#btn-hub').hidden = inRoom;
+  $('#room-chip').hidden = !inRoom;
+  $('#room-chip').textContent = mode === 'solo' ? 'Solo practice' : `Room ${code || ''}`;
+  $('#btn-leave').textContent = mode === 'solo' ? 'Quit' : mode === 'host' ? 'Close room' : 'Leave room';
+  document.body.classList.toggle('in-room', inRoom);
+  keepAwake(inRoom);
+  demo.run(name === 'home');
+}
+
+const isHost = () => !!room && room.host === me.pid;
+const scoreRec = (p, i) => p?.scores?.[room.game]?.['r' + i];
+const totalOf = p => { const g = p?.scores?.[room?.game]; return g ? Object.values(g).reduce((t, x) => t + (x?.p || 0), 0) : 0; };
+const mine = () => players.find(p => p.pid === me.pid);
+const activePlayers = () => players.filter(p => p.online !== false);
+
+/* ---------------- peer-to-peer networking (PeerJS) ---------------- */
+const PeerCtor = window.Peer || (window.peerjs && window.peerjs.Peer);
+const PEER_PREFIX = 'orderup-game-v1-';
+const MAX_PLAYERS = 16;
+const peerOpts = (() => {
+  const o = {debug: 0};
+  // optional self-hosted PeerServer, e.g. ?peer=myserver.example.com:443
+  const q = new URLSearchParams(location.search).get('peer');
+  if (q) {
+    const [host, port] = q.split(':');
+    Object.assign(o, {host, port: +port || 443, path: '/', secure: (+port || 443) === 443});
+  }
+  return o;
+})();
+let peer = null, hostConn = null;
+const conns = new Map(); // host only: pid -> connection
+
+function cleanupPeer() {
+  const p = peer;
+  hostConn = null; peer = null;
+  for (const c of conns.values()) { try { c.close(); } catch {} }
+  conns.clear();
+  if (p) { try { p.destroy(); } catch {} }
+}
+function broadcast() {
+  if (mode !== 'host' || !db) return;
+  const msg = {t: 'state', docs: db.dump()};
+  for (const c of conns.values()) if (c.open) { try { c.send(msg); } catch {} }
+}
+function genCode() {
+  return Array.from(crypto.getRandomValues(new Uint8Array(4)), b => 'ABCDEFGHJKLMNPQRSTUVWXYZ'[b % 24]).join('');
+}
+function openHostPeer(c) {
+  return new Promise((resolve, reject) => {
+    const p = new PeerCtor(PEER_PREFIX + c.toLowerCase(), peerOpts);
+    const t = setTimeout(() => { p.off('error', onErr); try { p.destroy(); } catch {} reject({type: 'timeout'}); }, 12000);
+    const onErr = e => { clearTimeout(t); p.off('error', onErr); try { p.destroy(); } catch {} reject(e); };
+    p.on('error', onErr);
+    p.on('open', () => { clearTimeout(t); p.off('error', onErr); resolve(p); });
+  });
+}
+
+async function hostHandle(conn, msg) {
+  if (!msg || typeof msg !== 'object' || !code || mode !== 'host') return;
+  if (msg.t === 'hello') {
+    const pid = String(msg.pid || '').replace(/[^a-z0-9]/gi, '').slice(0, 24);
+    if (!pid || pid === me.pid) { try { conn.send({t: 'error', reason: 'dup'}); } catch {} return; }
+    const name = String(msg.name || '').replace(/\s+/g, ' ').trim().slice(0, 16) || 'Player';
+    const ref = db.doc(`rooms/${code}/players/${pid}`);
+    const s = await ref.get();
+    if (!s.exists && players.length >= MAX_PLAYERS) { try { conn.send({t: 'error', reason: 'full'}); } catch {} return; }
+    const old = conns.get(pid);
+    if (old && old !== conn) { old.pid = null; try { old.close(); } catch {} }
+    conn.pid = pid; conns.set(pid, conn);
+    if (s.exists) await ref.update({name, online: true});
+    else {
+      const taken = new Set(players.map(p => p.color));
+      await ref.set({pid, name, color: COLORS.find(x => !taken.has(x)) || pick(COLORS), joined: Date.now(), online: true, scores: {}});
+    }
+    try { conn.send({t: 'state', docs: db.dump()}); } catch {}
+    return;
+  }
+  if (!conn.pid) return;
+  const own = `rooms/${code}/players/${conn.pid}`;
+  if (msg.t === 'write' && msg.op === 'update' && msg.path === own && room && room.game && room.phase !== 'final') {
+    // only accept an answer for the round in play, once; the host scores it
+    const rec = msg.data?.scores?.[room.game]?.['r' + room.round];
+    const pl = players.find(p => p.pid === conn.pid);
+    if (!rec || !pl || scoreRec(pl, room.round)) return;
+    const R = roundOf(room.round), o = cleanOrder(rec.o, R);
+    await db.doc(own).update({scores: {[room.game]: {['r' + room.round]: {o: o && o.join(','), p: scoreOrder(o, R)}}}});
+  } else if (msg.t === 'bye') {
+    if (conns.get(conn.pid) === conn) conns.delete(conn.pid);
+    await db.doc(own).delete();
+    try { conn.close(); } catch {}
+  }
+}
+function hostDrop(conn) {
+  if (mode !== 'host' || !conn.pid || conns.get(conn.pid) !== conn) return;
+  conns.delete(conn.pid);
+  const ref = db.doc(`rooms/${code}/players/${conn.pid}`);
+  ref.get().then(s => { if (s.exists) ref.update({online: false}); });
+}
+function onGuestConn(conn) {
+  conn.on('data', msg => hostHandle(conn, msg));
+  conn.on('close', () => hostDrop(conn));
+  conn.on('error', () => hostDrop(conn));
+}
+
+function connectAsGuest(c) {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const p = new PeerCtor(peerOpts);
+    peer = p;
+    const fail = msg => {
+      if (settled) return;
+      settled = true; clearTimeout(timer);
+      if (peer === p) cleanupPeer(); else { try { p.destroy(); } catch {} }
+      reject(new Error(msg));
+    };
+    const timer = setTimeout(() => fail(`Couldn't reach room ${c}. Check the code, and make sure the host still has the game open.`), 15000);
+    p.on('error', e => {
+      if (e?.type === 'peer-unavailable') fail(`No room called ${c} is open right now. Double-check the code with your host.`);
+      else if (!settled) fail("Couldn't connect. Check your internet connection and try again.");
+    });
+    p.on('open', () => {
+      const conn = p.connect(PEER_PREFIX + c.toLowerCase(), {reliable: true, serialization: 'json'});
+      hostConn = conn;
+      const mirror = makeMemDB();
+      const send = async d => { if (!conn.open) throw {code: 'unavailable'}; conn.send(d); };
+      conn.on('open', () => conn.send({t: 'hello', pid: me.pid, name: me.name}));
+      conn.on('data', msg => {
+        if (msg?.t === 'state' && msg.docs && typeof msg.docs === 'object') {
+          mirror.load(msg.docs);
+          if (!settled) {
+            settled = true; clearTimeout(timer);
+            mode = 'guest'; db = makeGuestDB(mirror, send);
+            LS.set('room', c);
+            enterRoom(c);
+            resolve();
+          }
+        } else if (msg?.t === 'error') {
+          fail(msg.reason === 'dup' ? "You're already in this room in another tab."
+            : msg.reason === 'full' ? `That room is full (${MAX_PLAYERS} players max).` : "Couldn't join that room.");
+        } else if (msg?.t === 'closed' && hostConn === conn) {
+          LS.set('room', null);
+          toast('The host closed the room.');
+          exitToHome();
+        }
+      });
+      conn.on('close', () => {
+        if (!settled) { fail(`Couldn't reach room ${c}. Check the code, and make sure the host still has the game open.`); return; }
+        if (hostConn === conn) {
+          toast('Lost the connection to the host, so the game ended.');
+          exitToHome();
+        }
+      });
+    });
+  });
+}
+
+
+/* ---------------- room lifecycle ---------------- */
+function stopSubs() { unsubs.forEach(u => { try { u(); } catch {} }); unsubs = []; }
+
+function enterRoom(c) {
+  stopSubs();
+  code = c; room = null; players = []; local = {key: null};
+  unsubs.push(db.doc(`rooms/${c}`).onSnapshot(s => {
+    if (!s.exists) { if (code) { toast('This room has closed.'); exitToHome(); } return; }
+    room = s.data();
+    sync();
+  }));
+  unsubs.push(db.collection(`rooms/${c}/players`).onSnapshot(q => {
+    players = q.docs.filter(d => d.exists).map(d => d.data()).sort((a, b) => (a.joined || 0) - (b.joined || 0));
+    sync();
+  }));
+}
+function exitToHome() {
+  stopSubs(); clearTimeout(hostT.t);
+  hostT = {key: null, t: null, busy: false};
+  cleanupPeer();
+  code = null; room = null; players = []; local = {key: null};
+  mode = null; db = null;
+  show('home');
+  redrawAll();
+}
+
+async function withBusy(btn, fn) {
+  btn.disabled = true;
+  try { await fn(); } finally { btn.disabled = false; if (btn.id === 'btn-create' || btn.id === 'btn-join') setNet(); }
+}
+function homeErr(msg) { const e = $('#home-err'); e.textContent = msg || ''; e.hidden = !msg; }
+function readName() {
+  const n = $('#nm').value.trim().replace(/\s+/g, ' ').slice(0, 16);
+  if (!n) { homeErr('Add your name first so other players know who you are.'); $('#nm').focus(); return null; }
+  me.name = n; LS.set('name', n);
+  return n;
+}
+
+async function createRoom() {
+  homeErr();
+  if (!readName() || !PeerCtor) return;
+  let c = '', p = null;
+  for (let i = 0; i < 5 && !p; i++) {
+    c = genCode();
+    try { p = await openHostPeer(c); }
+    catch (e) {
+      if (e?.type !== 'unavailable-id') { homeErr("Couldn't open a room. Check your internet connection and try again."); return; }
+    }
+  }
+  if (!p) { homeErr("Couldn't open a room. Try again in a moment."); return; }
+  peer = p; mode = 'host'; db = makeMemDB(broadcast);
+  p.on('connection', onGuestConn);
+  p.on('disconnected', () => { setTimeout(() => { if (peer === p && !p.destroyed) { try { p.reconnect(); } catch {} } }, 1500); });
+  p.on('error', () => {});
+  await db.doc(`rooms/${c}`).set({code: c, host: me.pid, phase: 'lobby', game: '', round: 0, rounds: [], created: Date.now()});
+  await db.doc(`rooms/${c}/players/${me.pid}`).set({pid: me.pid, name: me.name, color: COLORS[0], joined: Date.now(), online: true, scores: {}});
+  enterRoom(c);
+}
+async function joinRoom() {
+  homeErr();
+  if (!readName() || !PeerCtor) return;
+  const c = $('#code-in').value.trim().toUpperCase();
+  if (!/^[A-Z]{4}$/.test(c)) { homeErr('Room codes are 4 letters. Ask your host for theirs.'); $('#code-in').focus(); return; }
+  $('#net-note').textContent = `Connecting to room ${c}…`;
+  try { await connectAsGuest(c); }
+  catch (e) { homeErr(e.message); }
+  finally { setNet(); }
+}
+async function startSolo() {
+  homeErr();
+  me.name = $('#nm').value.trim().slice(0, 16) || 'You';
+  mode = 'solo'; db = makeMemDB();
+  await db.doc('rooms/SOLO').set({code: 'SOLO', host: me.pid, phase: 'lobby', game: '', round: 0, rounds: [], created: Date.now()});
+  await db.doc(`rooms/SOLO/players/${me.pid}`).set({pid: me.pid, name: me.name, color: COLORS[0], joined: Date.now(), online: true, scores: {}});
+  enterRoom('SOLO');
+  await startGame();
+}
+function leave() {
+  const m = mode;
+  if (m === 'guest' && hostConn?.open) { try { hostConn.send({t: 'bye'}); } catch {} }
+  if (m === 'host') for (const c of conns.values()) { try { c.send({t: 'closed'}); } catch {} }
+  if (m === 'guest') LS.set('room', null);
+  // give the goodbye a moment to go out before the connection closes
+  const p = peer, list = [...conns.values()];
+  peer = null; hostConn = null; conns.clear();
+  exitToHome();
+  setTimeout(() => { list.forEach(c => { try { c.close(); } catch {} }); if (p) { try { p.destroy(); } catch {} } }, 400);
+}
+
+async function startGame() {
+  if (!db || (!isHost() && mode !== 'solo')) return;
+  const rounds = makeRounds(ROUNDS);
+  await db.doc(`rooms/${code}`).update({phase: 'play', game: 'g' + rid(6), round: 0, rounds, at: Date.now()});
+}
+
+/* host moves the room forward */
+function hostDuty() {
+  if (!room || !isHost() || mode === 'guest') { clearTimeout(hostT.t); hostT = {key: null, t: null, busy: false}; return; }
+  const key = `${room.phase}|${room.game}|${room.round}`;
+  if (hostT.key !== key) {
+    clearTimeout(hostT.t);
+    hostT = {key, t: null, busy: false};
+    if (room.phase === 'play') hostT.t = setTimeout(() => advance(key), (SECONDS + 2) * 1000);
+    if (room.phase === 'reveal') hostT.t = setTimeout(() => advance(key), REVEAL_MS);
+  }
+  const act = activePlayers();
+  if (room.phase === 'play' && act.length && act.every(p => scoreRec(p, room.round))) advance(key);
+}
+async function advance(key) {
+  if (!room || !isHost() || hostT.busy || hostT.key !== key) return;
+  hostT.busy = true;
+  let patch;
+  if (room.phase === 'play') patch = {phase: 'reveal', at: Date.now()};
+  else if (room.phase === 'reveal') patch = room.round + 1 >= room.rounds.length ? {phase: 'final', at: Date.now()} : {phase: 'play', round: room.round + 1, at: Date.now()};
+  else { hostT.busy = false; return; }
+  await db.doc(`rooms/${code}`).update(patch);
+}
+
+
+/* ---------------- per-round local state ---------------- */
+function syncLocal() {
+  const key = `${room.game}|${room.round}`;
+  if (local.key === key) return;
+  const R = roundOf(room.round), rec = scoreRec(mine(), room.round);
+  local = {key, start: performance.now(), order: R.ids.slice(), touched: false, locked: !!rec, submitted: !!rec, revealAt: 0};
+  if (rec?.o) { local.order = String(rec.o).split(','); local.touched = true; }
+  buildRows(R);
+}
+async function submit(manual) {
+  if (local.submitted || !room || room.phase === 'final') return;
+  const key = local.key, round = room.round, game = room.game;
+  const R = roundOf(round);
+  // pressing Lock in always counts; running out of time only counts if you moved something
+  const o = local.touched || manual ? local.order.slice() : null;
+  const p = scoreOrder(o, R);
+  local.locked = local.submitted = true;
+  renderRound();
+  const body = {scores: {[game]: {['r' + round]: {o: o && o.join(','), p}}}};
+  const pref = db.doc(`rooms/${code}/players/${me.pid}`);
+  try { await pref.update(body); }
+  catch (e) {
+    try {
+      if (e?.code === 'invalid_argument') await pref.set({pid: me.pid, name: me.name, color: COLORS[0], joined: Date.now(), online: true, ...body});
+      else throw e;
+    } catch {
+      if (local.key === key) { local.submitted = false; toast("Couldn't save your answer. Trying again…"); setTimeout(() => submit(manual), 1500); }
+    }
+  }
+}
+
+/* ---------------- render ---------------- */
+function sync() {
+  if (!room) return;
+  if (room.phase === 'lobby') { show('lobby'); renderLobby(); }
+  else if (room.phase === 'play' || room.phase === 'reveal') {
+    if (!room.rounds?.[room.round]) return;
+    syncLocal();
+    if (room.phase === 'reveal') {
+      if (!local.submitted) submit();
+      if (!local.revealAt) local.revealAt = performance.now();
+    }
+    show('round'); renderRound();
+  } else if (room.phase === 'final') { show('final'); renderFinal(); }
+  hostDuty();
+}
+
+function renderLobby() {
+  $('#lb-code').innerHTML = code.split('').map(ch => `<span>${ch}</span>`).join('');
+  $('#lb-count').textContent = `Players (${players.length})`;
+  $('#lb-players').innerHTML = players.map(p => `
+    <li class="${p.online === false ? 'away' : ''}"><i class="dot" style="background:${esc(p.color)}"></i><span class="nm">${esc(p.name)}</span>
+    ${p.pid === room.host ? '<span class="tag">host</span>' : ''}${p.pid === me.pid ? '<span class="tag">you</span>' : ''}${p.online === false ? '<span class="tag">away</span>' : ''}</li>`).join('');
+  const host = isHost();
+  $('#btn-start').hidden = !host;
+  $('#btn-start').disabled = !players.length;
+  const hostP = players.find(p => p.pid === room.host);
+  $('#lb-wait').hidden = host;
+  $('#lb-link').value = inviteLink();
+  $('#lb-share').textContent = host
+    ? 'Send friends the invite link, or have them open this page and type the code. Keep this tab open: the game runs in your browser.'
+    : "You're in. The game runs in the host's browser, so it ends if they close their tab.";
+  $('#lb-wait').textContent = hostP ? `Waiting for ${hostP.name} to start the game` : 'Waiting for the host to start the game';
+}
+
+const ARROW_UP = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2 2 7h8z" fill="currentColor"/></svg>';
+const ARROW_DN = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10 2 5h8z" fill="currentColor"/></svg>';
+const GRIP = '<svg width="10" height="16" viewBox="0 0 10 16" aria-hidden="true"><g fill="currentColor"><circle cx="2" cy="3" r="1.4"/><circle cx="8" cy="3" r="1.4"/><circle cx="2" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="2" cy="13" r="1.4"/><circle cx="8" cy="13" r="1.4"/></g></svg>';
+
+function rowHTML(it) {
+  return `<span class="pos"></span><span class="emo">${it.emo}</span>
+    <span class="lbl"><b>${esc(it.name)}</b>${it.note ? `<small>${esc(it.note)}</small>` : ''}</span>
+    <span class="moves"><button class="mv" data-mv="-1" aria-label="Move ${esc(it.name)} up">${ARROW_UP}</button><button class="mv" data-mv="1" aria-label="Move ${esc(it.name)} down">${ARROW_DN}</button><span class="grip">${GRIP}</span></span>
+    <span class="ans" hidden><span class="val"></span><span class="you"></span></span>`;
+}
+const sorterEl = $('#sorter');
+function buildRows(R) {
+  sorterEl.classList.toggle('flags', !!R.t.flags);
+  sorterEl.innerHTML = '';
+  for (const id of local.order) {
+    const it = R.t.byId[id], li = document.createElement('li');
+    li.className = 'row'; li.dataset.id = id; li.tabIndex = 0;
+    li.innerHTML = rowHTML(it);
+    sorterEl.appendChild(li);
+  }
+  paintRows();
+}
+/* put the DOM rows in the given order, sliding them from where they were */
+function placeRows(order, skipAnim) {
+  const rows = new Map([...sorterEl.children].map(li => [li.dataset.id, li]));
+  const before = new Map([...rows].map(([id, li]) => [id, li.getBoundingClientRect().top]));
+  for (const id of order) sorterEl.appendChild(rows.get(id));
+  if (!REDUCED && !skipAnim) {
+    for (const [id, li] of rows) {
+      const dy = before.get(id) - li.getBoundingClientRect().top;
+      if (!dy) continue;
+      li.style.transition = 'none'; li.style.transform = `translateY(${dy}px)`;
+      li.getBoundingClientRect();
+      li.style.transition = ''; li.style.transform = '';
+    }
+  }
+  paintRows();
+}
+function paintRows() {
+  const rows = [...sorterEl.children];
+  rows.forEach((li, i) => {
+    li.querySelector('.pos').textContent = i + 1;
+    const [up, dn] = li.querySelectorAll('.mv');
+    up.disabled = i === 0 || local.locked; dn.disabled = i === rows.length - 1 || local.locked;
+  });
+}
+function moveItem(id, delta, keepFocus) {
+  if (!canSort()) return;
+  const i = local.order.indexOf(id), j = i + delta;
+  if (i < 0 || j < 0 || j >= N) return;
+  [local.order[i], local.order[j]] = [local.order[j], local.order[i]];
+  local.touched = true;
+  placeRows(local.order);
+  if (keepFocus) sorterEl.querySelector(`[data-id="${id}"]`)?.focus({preventScroll: true});
+}
+
+function renderRound() {
+  if (!room || screen !== 'round') return;
+  const R = roundOf(room.round), t = R.t;
+  const reveal = room.phase === 'reveal';
+  $('#rb-num').textContent = room.round + 1;
+  $('#rb-of').textContent = '/' + room.rounds.length;
+  const cur = scoreRec(mine(), room.round);
+  $('#rb-score').textContent = totalOf(mine()) - (reveal || !cur ? 0 : cur.p || 0);
+  $('#ask-sub').textContent = reveal ? 'The right order' : 'Sort from highest to lowest';
+  $('#prompt').textContent = t.title;
+  $('#lbl-hi').innerHTML = `${ARROW_UP}${esc(t.hi)}`;
+  $('#lbl-lo').innerHTML = `${ARROW_DN}${esc(t.lo)}`;
+
+  $('#play-ui').hidden = reveal;
+  $('#reveal').hidden = !reveal;
+  sorterEl.classList.toggle('still', reveal || local.locked);
+  $('#btn-lock').disabled = local.locked;
+  $('#btn-lock').textContent = local.locked ? 'Locked' : 'Lock in';
+  $('#hint').hidden = local.locked;
+  paintRows();
+
+  const w = $('#waiting');
+  w.hidden = !(local.locked && !reveal);
+  if (!w.hidden) {
+    const left = activePlayers().filter(p => !scoreRec(p, room.round)).map(p => esc(p.name));
+    const rec = scoreRec(mine(), room.round);
+    const lead = rec && !rec.o ? "<b>Time's up.</b>" : '<b>Locked in.</b>';
+    w.innerHTML = mode === 'solo' ? `${lead} Revealing…`
+      : left.length ? `${lead} Waiting on ${left.length > 3 ? left.slice(0, 3).join(', ') + ` and ${left.length - 3} more` : left.join(', ')}.`
+      : `${lead} Revealing…`;
+  }
+
+  if (reveal) {
+    const rec = scoreRec(mine(), room.round);
+    const mineO = rec ? (rec.o ? (Array.isArray(rec.o) ? rec.o : rec.o.split(',')) : null) : (local.touched ? local.order : null);
+    const p = rec ? rec.p : scoreOrder(mineO, R);
+    const right = rightOrder(R);
+    if (!sorterEl.dataset.revealed || sorterEl.dataset.revealed !== local.key) {
+      sorterEl.dataset.revealed = local.key;
+      local.order = right.slice();
+      placeRows(right);
+    }
+    [...sorterEl.children].forEach((li, i) => {
+      const id = li.dataset.id, it = t.byId[id];
+      const at = mineO ? mineO.indexOf(id) : -1, d = at < 0 ? -1 : Math.abs(at - i);
+      li.classList.remove('exact', 'near', 'far');
+      if (d >= 0) li.classList.add(d === 0 ? 'exact' : d === 1 ? 'near' : 'far');
+      const ans = li.querySelector('.ans'); ans.hidden = false;
+      li.querySelector('.val').textContent = fmtVal(t, it.v);
+      const you = li.querySelector('.you');
+      you.hidden = d < 0;
+      if (d >= 0) you.textContent = `you: ${at + 1} · +${d === 0 ? 20 : d === 1 ? 10 : 0}`;
+    });
+    $('#rv-pts').textContent = '+' + p;
+    $('#rv-pts').style.color = p >= 60 ? 'var(--green)' : p > 0 ? 'var(--ink)' : 'var(--red)';
+    $('#rv-verdict').textContent = verdict(p, !!mineO);
+    const near = mineO ? mineO.filter((id, i) => Math.abs(right.indexOf(id) - i) === 1).length : 0;
+    $('#rv-off').textContent = mineO ? `${rightCount(mineO, R)}${near ? `, ${near} one spot off` : ''}` : "You didn't move anything this round.";
+    $('#rv-fact').textContent = t.src;
+    const rows = players.map(pl => ({pl, rec: scoreRec(pl, room.round)}))
+      .sort((a, b) => (b.rec?.p ?? -1) - (a.rec?.p ?? -1));
+    $('#rv-list').innerHTML = rows.map(({pl, rec}) => `
+      <li><i class="dot" style="background:${esc(pl.color)}"></i>
+      <span class="nm">${esc(pl.name)}${pl.pid === me.pid ? ' <span class="tag">you</span>' : ''}</span>
+      <span class="off">${rec ? rightCount(rec.o ? String(rec.o).split(',') : null, R) : 'no answer'}</span>
+      <span class="pts">${rec ? rec.p : 0}</span></li>`).join('');
+    const last = room.round + 1 >= room.rounds.length;
+    $('#btn-next').hidden = !isHost();
+    $('#btn-next').textContent = last ? 'See final scores' : 'Next round';
+  } else {
+    delete sorterEl.dataset.revealed;
+    for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far'); li.querySelector('.ans').hidden = true; }
+  }
+}
+
+function renderFinal() {
+  const rows = players.map(p => ({p, total: totalOf(p), per: room.rounds.map((_, i) => scoreRec(p, i)?.p ?? 0)}))
+    .sort((a, b) => b.total - a.total || a.p.name.localeCompare(b.p.name));
+  const max = room.rounds.length * 100;
+  if (rows.length === 1) {
+    $('#fn-title').textContent = `${rows[0].total} points`;
+    $('#fn-sub').textContent = `Out of ${max.toLocaleString()}. ${rows[0].total >= 750 ? 'Sharp mind.' : rows[0].total >= 500 ? 'Solid sorting.' : 'Tricky topics. Run it back.'}`;
+  } else {
+    const tie = rows.length > 1 && rows[0].total === rows[1].total;
+    $('#fn-title').textContent = tie ? "It's a tie" : `${rows[0].p.name} wins`;
+    $('#fn-sub').textContent = `${rows[0].total} of ${max.toLocaleString()} possible points${tie ? ' at the top' : ''}.`;
+  }
+  $('#fn-board').innerHTML = rows.map((r, i) => `
+    <li class="${i === 0 && r.total > 0 ? 'win' : ''}">
+      <span class="rank">${i + 1}</span>
+      <i class="dot" style="background:${esc(r.p.color)}"></i>
+      <span class="nm">${esc(r.p.name)}${r.p.pid === me.pid ? ' <span class="tag">you</span>' : ''}</span>
+      <span class="bars" title="Points per round">${r.per.map(v => `<s style="--v:${v}"></s>`).join('')}</span>
+      <span class="total">${r.total}</span>
+    </li>`).join('');
+  $('#btn-again').hidden = !isHost();
+  const hostP = players.find(p => p.pid === room.host);
+  $('#fn-wait').hidden = isHost();
+  $('#fn-wait').textContent = `${hostP ? hostP.name : 'The host'} can start another game.`;
+}
+function redrawAll() {}
+
+/* ---------------- sorting input: drag, arrows, keys ---------------- */
+const canSort = () => screen === 'round' && room?.phase === 'play' && !local.locked;
+let drag = null;
+sorterEl.addEventListener('pointerdown', e => {
+  if (!canSort() || e.button > 0 || e.target.closest('button')) return;
+  const li = e.target.closest('.row');
+  if (!li || drag) return;
+  const rows = [...sorterEl.children], idx = rows.indexOf(li);
+  const step = rows.length > 1 ? rows[1].getBoundingClientRect().top - rows[0].getBoundingClientRect().top : li.offsetHeight;
+  drag = {li, idx, to: idx, y0: e.clientY, step, rows, pid: e.pointerId, moved: false};
+  try { li.setPointerCapture(e.pointerId); } catch {}
+});
+sorterEl.addEventListener('pointermove', e => {
+  if (!drag || e.pointerId !== drag.pid) return;
+  let dy = e.clientY - drag.y0;
+  if (!drag.moved) {
+    if (Math.abs(dy) < 4) return;
+    drag.moved = true;
+    drag.li.classList.add('dragging'); sorterEl.classList.add('sorting');
+  }
+  e.preventDefault();
+  const {idx, step, rows} = drag;
+  dy = Math.max(-idx * step, Math.min((rows.length - 1 - idx) * step, dy));
+  drag.li.style.transform = `translateY(${dy}px)`;
+  const to = Math.max(0, Math.min(rows.length - 1, Math.round(idx + dy / step)));
+  drag.to = to; drag.dy = dy;
+  rows.forEach((r, j) => {
+    // number the rows as they would land, so the drop spot reads clearly
+    const at = r === drag.li ? to : j > idx && j <= to ? j - 1 : j < idx && j >= to ? j + 1 : j;
+    r.querySelector('.pos').textContent = at + 1;
+    if (r === drag.li) return;
+    const shift = j > idx && j <= to ? -step : j < idx && j >= to ? step : 0;
+    r.style.transform = shift ? `translateY(${shift}px)` : '';
+  });
+});
+function endDrag(e) {
+  if (!drag || (e && e.pointerId !== drag.pid)) return;
+  const {li, idx, to, rows, moved} = drag;
+  drag = null;
+  li.classList.remove('dragging'); sorterEl.classList.remove('sorting');
+  if (!moved) return;
+  const top = li.getBoundingClientRect().top;
+  rows.forEach(r => { r.style.transition = 'none'; r.style.transform = ''; });
+  if (to !== idx && canSort()) {
+    const [id] = local.order.splice(idx, 1);
+    local.order.splice(to, 0, id);
+    local.touched = true;
+  }
+  for (const id of local.order) sorterEl.appendChild(sorterEl.querySelector(`[data-id="${id}"]`));
+  // let the dropped row glide from where the finger let go into its slot
+  const dy = top - li.getBoundingClientRect().top;
+  li.style.transform = `translateY(${dy}px)`;
+  li.getBoundingClientRect();
+  rows.forEach(r => { r.style.transition = ''; });
+  li.style.transform = '';
+  paintRows();
+  try { navigator.vibrate?.(8); } catch {}
+}
+sorterEl.addEventListener('pointerup', endDrag);
+sorterEl.addEventListener('pointercancel', endDrag);
+sorterEl.addEventListener('lostpointercapture', endDrag);
+sorterEl.addEventListener('click', e => {
+  const b = e.target.closest('.mv');
+  if (b) moveItem(b.closest('.row').dataset.id, +b.dataset.mv, false);
+});
+sorterEl.addEventListener('keydown', e => {
+  const li = e.target.closest('.row');
+  if (!li || e.target !== li) return;
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { e.preventDefault(); e.stopPropagation(); moveItem(li.dataset.id, e.key === 'ArrowUp' ? -1 : 1, true); }
+});
+$('#btn-lock').addEventListener('click', () => { if (!local.locked) { try { navigator.vibrate?.(12); } catch {} submit(true); } });
+document.addEventListener('keydown', e => {
+  if (screen !== 'round' || room?.phase !== 'play' || local.locked) return;
+  if (e.target.matches('input[type=text], button')) return;
+  if (e.key === 'Enter') { e.preventDefault(); submit(true); }
+});
+
+/* keep the phone awake during a game (a sleeping host ends the game for everyone) */
+let wakeLock = null;
+async function keepAwake(on) {
+  try {
+    if (on && !wakeLock && navigator.wakeLock && document.visibilityState === 'visible') {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } else if (!on && wakeLock) { const w = wakeLock; wakeLock = null; await w.release(); }
+  } catch { wakeLock = null; }
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && screen !== 'home') keepAwake(true); });
+
+/* ---------------- demo on home: a list sorting itself ---------------- */
+const demo = (() => {
+  const t = TOP.space, ids = ['earth', 'saturn', 'the-moon', 'neptune', 'mars'];
+  const el = $('#demo-list');
+  $('#demo-hi').innerHTML = `${ARROW_UP}${t.hi}`; $('#demo-lo').innerHTML = `${ARROW_DN}${t.lo}`;
+  $('#demo-cap').textContent = 'Example round: sort by size in space, biggest at the top. The list sorts itself here; in the game you drag it.';
+  let order, timer = null, on = false;
+  const right = ids.slice().sort((a, b) => t.byId[b].v - t.byId[a].v);
+  function paint(done) {
+    [...el.children].forEach((li, i) => {
+      li.querySelector('.pos').textContent = i + 1;
+      li.classList.toggle('exact', !!done);
+      const ans = li.querySelector('.ans'); ans.hidden = !done;
+      li.querySelector('.val').textContent = fmtVal(t, t.byId[li.dataset.id].v);
+      li.querySelector('.you').hidden = true;
+    });
+  }
+  function place() {
+    const rows = new Map([...el.children].map(li => [li.dataset.id, li]));
+    const before = new Map([...rows].map(([id, li]) => [id, li.getBoundingClientRect().top]));
+    for (const id of order) el.appendChild(rows.get(id));
+    if (REDUCED) return;
+    for (const [id, li] of rows) {
+      const dy = before.get(id) - li.getBoundingClientRect().top;
+      if (!dy) continue;
+      li.style.transition = 'none'; li.style.transform = `translateY(${dy}px)`;
+      li.getBoundingClientRect();
+      li.style.transition = 'transform .45s cubic-bezier(.2,.8,.2,1)'; li.style.transform = '';
+    }
+  }
+  function reset() {
+    order = ids.slice();
+    el.innerHTML = order.map(id => `<li class="row" data-id="${id}">${rowHTML(t.byId[id])}</li>`).join('');
+    paint(false);
+  }
+  function step() {
+    const k = order.findIndex((id, i) => id !== right[i]);
+    if (k < 0) { paint(true); timer = setTimeout(() => { reset(); timer = setTimeout(step, 1200); }, 3600); return; }
+    const from = order.indexOf(right[k]);
+    order.splice(from, 1); order.splice(k, 0, right[k]);
+    place(); paint(false);
+    timer = setTimeout(step, 1100);
+  }
+  reset();
+  if (REDUCED) { order = right.slice(); place(); paint(true); }
+  return {run(v) {
+    if (REDUCED || v === on) return;
+    on = v; clearTimeout(timer);
+    if (on) timer = setTimeout(step, 900);
+  }};
+})();
+
+/* ---------------- frame loop: timer and reveal countdown ---------------- */
+let lastSec = '', lastW = '';
+function frame(now) {
+  requestAnimationFrame(frame);
+  if (screen !== 'round' || !room) return;
+  const tape = $('#tape'), fill = $('#tape-fill');
+  if (room.phase === 'play') {
+    const left = Math.max(0, SECONDS - (now - local.start) / 1000);
+    const w = (left / SECONDS * 100).toFixed(1) + '%';
+    if (w !== lastW) { fill.style.width = w; lastW = w; }
+    const sec = 'p' + local.key + Math.ceil(left);
+    if (sec !== lastSec) { $('#tape-sec').textContent = Math.ceil(left) + 's'; lastSec = sec; tape.classList.toggle('low', left <= 5); }
+    if (left <= 0 && !local.locked) { if (drag) endDrag(); submit(false); }
+  } else if (room.phase === 'reveal') {
+    const left = Math.max(0, Math.ceil((REVEAL_MS - (now - local.revealAt)) / 1000));
+    const sk = 'r' + local.key + left;
+    if (sk !== lastSec) {
+      lastSec = sk;
+      const last = room.round + 1 >= room.rounds.length;
+      $('#rv-auto').textContent = left > 0 ? `${last ? 'Final scores' : 'Next round'} in ${left}s` : 'Moving on…';
+      $('#tape-sec').textContent = '';
+      tape.classList.remove('low');
+      if (lastW !== '0%') { fill.style.width = '0%'; lastW = '0%'; }
+    }
+  }
+}
+requestAnimationFrame(frame);
+
+$('#btn-create').addEventListener('click', e => withBusy(e.currentTarget, createRoom));
+$('#btn-join').addEventListener('click', e => withBusy(e.currentTarget, joinRoom));
+$('#code-in').addEventListener('keydown', e => { if (e.key === 'Enter') $('#btn-join').click(); });
+$('#code-in').addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, ''); });
+$('#btn-solo').addEventListener('click', startSolo);
+$('#btn-leave').addEventListener('click', leave);
+$('#btn-start').addEventListener('click', e => withBusy(e.currentTarget, startGame));
+$('#btn-again').addEventListener('click', e => withBusy(e.currentTarget, startGame));
+$('#btn-next').addEventListener('click', () => advance(hostT.key));
+$('#nm').value = me.name;
+
+/* ---------------- connect ---------------- */
+function setNet() {
+  const off = !PeerCtor;
+  $('#btn-create').disabled = off;
+  $('#btn-join').disabled = off;
+  $('#code-in').disabled = off;
+  $('#net-note').textContent = off
+    ? "Couldn't load the multiplayer library, so rooms are off. Solo practice still works."
+    : 'Browsers connect directly, so the host needs to keep their tab open for the whole game.';
+}
+function inviteLink() {
+  const u = new URL(location.href);
+  u.hash = '';
+  u.searchParams.set('room', code);
+  return u.toString();
+}
+$('#btn-copy').addEventListener('click', async () => {
+  const link = inviteLink();
+  try { await navigator.clipboard.writeText(link); toast('Invite link copied.'); }
+  catch { const i = $('#lb-link'); i.focus(); i.select(); toast('Press Ctrl+C (or Cmd+C) to copy the link.'); }
+});
+window.addEventListener('beforeunload', e => {
+  if (mode === 'host' && conns.size) {
+    for (const c of conns.values()) { try { c.send({t: 'closed'}); } catch {} }
+    e.preventDefault(); e.returnValue = '';
+  }
+});
+
+async function boot() {
+  setNet();
+  const q = new URLSearchParams(location.search).get('room');
+  if (q && /^[a-z]{4}$/i.test(q)) {
+    $('#code-in').value = q.toUpperCase();
+    if (!me.name) $('#nm').focus();
+    else $('#btn-join').focus();
+  }
+  const saved = LS.get('room');
+  if (PeerCtor && saved && me.name && screen === 'home') {
+    $('#net-note').textContent = `Reconnecting to room ${saved}…`;
+    try { await connectAsGuest(saved); }
+    catch { LS.set('room', null); }
+    finally { setNet(); }
+  }
+}
+
+show('home');
+boot();
+})();
+</script>
+</body>
+</html>
