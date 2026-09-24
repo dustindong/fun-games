@@ -109,7 +109,22 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .demo-body{padding:14px 16px 16px;background:var(--surface-2)}
 .demo figcaption{padding:10px 14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
 .play{padding:18px;display:grid;gap:12px}
-.play label{font-weight:600;font-size:13px}
+.play label,.play .lbl{font-weight:600;font-size:13px}
+.cats{display:grid;gap:8px}
+.cat-row{display:flex;flex-wrap:wrap;gap:6px}
+.cat-chip{appearance:none;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;
+  background:var(--surface);color:var(--ink);font:600 13px/1.1 var(--body);cursor:pointer;transition:background-color .12s,border-color .12s,color .12s}
+.cat-chip:hover{border-color:var(--muted)}
+.cat-chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.cat-chip[aria-pressed="true"]::after{content:"✓";font-size:12px}
+.cat-chip:disabled{cursor:default}
+.cat-grid{padding-top:2px}
+.cat-tools{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cat-tools .btn.link{padding:2px 0;font-size:13px}
+.cat-hint{font-size:12px;color:var(--muted);margin-left:auto}
+.cat-hint.warn{color:var(--red);font-weight:500}
+.cat-summary{font-weight:600}
+.lobby-cats{padding:14px 16px;display:grid;gap:10px}
 .field{display:grid;gap:6px}
 .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}
 .or::before,.or::after{content:"";height:1px;background:var(--line);flex:1}
@@ -300,6 +315,7 @@ input[type=text]{font-size:16px}
   .top{min-height:40px;margin-bottom:6px}
   .brand{font-size:19px}
   .chip{padding:6px 8px;font-size:11px}
+  .cat-chip{min-height:40px;padding:8px 12px}
   .btn.small{padding:9px 11px}
   .title{font-size:clamp(76px,24vw,120px)}
   .tagline{font-size:17px}
@@ -413,6 +429,10 @@ input[type=text]{font-size:16px}
           <label for="nm">Your name</label>
           <input type="text" id="nm" maxlength="16" autocomplete="nickname" placeholder="e.g. Dustin">
         </div>
+        <div class="field">
+          <span class="lbl" id="home-cats-lbl">Topics</span>
+          <div class="cats" id="home-cats" role="group" aria-labelledby="home-cats-lbl"></div>
+        </div>
         <button class="btn primary" id="btn-create">Create a room</button>
         <div class="or">or join a friend's room</div>
         <div class="join">
@@ -458,6 +478,10 @@ input[type=text]{font-size:16px}
     <div>
       <div class="eyebrow" style="margin-bottom:8px" id="lb-count">Players</div>
       <ul class="players" id="lb-players"></ul>
+    </div>
+    <div class="card lobby-cats">
+      <span class="eyebrow">Categories</span>
+      <div class="cats" id="lb-cats"></div>
     </div>
     <div class="card lobby-foot">
       <div class="facts">
@@ -1093,14 +1117,57 @@ const TOPICS = [
    items: [['iPhone',2007,'the original'],['iPhone 3G',2008],['iPhone 3GS',2009],['iPhone 4',2010],['iPhone 4S',2011],['iPhone 5',2012],['iPhone 5s',2013],
      ['iPhone 6',2014],['iPhone 6s',2015],['iPhone 7',2016],['iPhone X',2017],['iPhone XR',2018],['iPhone 11',2019],['iPhone 12',2020],['iPhone 13',2021],
      ['iPhone 14',2022],['iPhone 15',2023],['iPhone 16',2024],['iPhone 17',2025]]},
+
+  /* ---- sports ---- */
+  {id: 'sportsballs', title: 'Sports balls: weight', ask: 'Heaviest ball to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.35,
+   src: 'Official weights from each sport’s rulebook, using the middle of the allowed range. Every ball in a round is at least 1.35× heavier than the next.',
+   items: [['Bowling ball',7.26,'the heaviest allowed'],['Basketball',0.62],['Rugby ball',0.44],['Soccer ball',0.43],['American football',0.41],
+     ['Volleyball',0.27],['Softball',0.19],['Hockey puck',0.17],['Cricket ball',0.16],['Baseball',0.145],['Tennis ball',0.058],['Golf ball',0.046],
+     ['Squash ball',0.024],['Ping-pong ball',0.0027]]},
+
+  {id: 'sportslen', title: 'Sports: how long', ask: 'Longest to shortest', hi: 'Longest', lo: 'Shortest', unit: 'ftin', gap: 1.25,
+   src: 'Official measurements from each league’s or sport’s rulebook.',
+   items: [['American football field',109.7,'including end zones'],['NHL rink',60.96],['Olympic swimming pool',50],['NBA court',28.65],
+     ['Baseball base path',27.43,'home to first'],['Tennis court',23.77],['Cricket pitch',20.12],['Pitcher’s mound to home plate',18.44],
+     ['Bowling lane',18.29,'foul line to head pin'],['Badminton court',13.4],['Soccer goal',7.32,'post to post'],['NBA three-point line',7.24,'at the top of the arc'],
+     ['NBA free-throw line',4.57,'from the backboard'],['Hockey goal',1.83,'post to post'],['Ping-pong table',2.74],['Golf hole',0.108,'across']]},
+
+  {id: 'sportspeed', title: 'Sports: fastest ever', ask: 'Fastest to slowest', hi: 'Fastest', lo: 'Slowest', unit: 'mph', gap: 1.35,
+   src: 'Fastest recorded speeds from Guinness World Records and each sport’s governing body. Every item in a round is at least 1.35× faster than the next.',
+   items: [['Badminton smash',351],['Formula 1 car',231],['Jai alai ball',188],['Tennis serve',163],['Hockey slapshot',108.8],['Baseball pitch',105.8],
+     ['Cricket bowl',100.2],['Speed skater',37,'500 m race'],['Usain Bolt',27.8,'at top speed'],['Tour de France pack',26,'average for the race'],
+     ['Marathon world record',13.1,'average pace'],['Olympic swimmer',5.4,'50 m freestyle']]},
+
+  /* ---- technology ---- */
+  {id: 'apps', title: 'When websites & apps launched', ask: 'Oldest to newest', hi: 'Launched first', lo: 'Launched last', asc: true, unit: 'year', gap: 2, year: true,
+   src: 'Public launch year, from each service’s Wikipedia page.',
+   items: [['Amazon',1995,'as an online bookstore'],['Google',1998],['Wikipedia',2001],['iTunes Store',2003],['Facebook',2004],['Gmail',2004],['YouTube',2005],
+     ['Google Maps',2005],['Twitter',2006],['Netflix streaming',2007],['App Store',2008],['Spotify',2008],['WhatsApp',2009],['Instagram',2010],['Snapchat',2011],
+     ['Twitch',2011],['Tinder',2012],['Zoom',2013],['Discord',2015],['TikTok',2017,'outside China'],['ChatGPT',2022],['Threads',2023]]},
 ];
 
 /* each game mixes about a third of each kind of topic */
 const MIX = {
-  know: 'pop area statepop statearea lakes islands rivers founded opened peaks towers falls oceans carbrands uscities worldcities parkarea parkvisits airports stadiums',
-  guess: 'stuffweight stufflen stuffheight stuffcount stuffspeed candy foodcal fastfood caffeine peppers dogs lifespan weight speed dinos trees horsepower zero60 planes ships coasterspeed coasterheight',
-  pop: 'gamesales gameyear gamescore consoles boxoffice movieyear movierating oscars tvrating tvyear tveps streams songyear songlen debut celebage insta youtube chains franchises disney sitcoms pkweight pkheight pkdex albums artists techyear consoleyear disneybox iphones',
+  know: 'pop area statepop statearea lakes islands rivers founded opened peaks towers falls oceans carbrands uscities worldcities parkarea parkvisits airports stadiums sportspeed',
+  guess: 'sportsballs sportslen stuffweight stufflen stuffheight stuffcount stuffspeed candy foodcal fastfood caffeine peppers dogs lifespan weight speed dinos trees horsepower zero60 planes ships coasterspeed coasterheight',
+  pop: 'gamesales gameyear gamescore consoles boxoffice movieyear movierating oscars tvrating tvyear tveps streams songyear songlen debut celebage insta youtube chains franchises disney sitcoms pkweight pkheight pkdex albums artists techyear consoleyear disneybox iphones apps',
 };
+
+/* broad categories players can pick from, each listing its topics. A new topic just goes in one list here. */
+const CATEGORIES = [
+  {id: 'geo', name: 'Geography', topics: 'pop area statepop statearea uscities worldcities parkarea'},
+  {id: 'nature', name: 'Science & Nature', topics: 'peaks falls oceans lakes rivers islands trees'},
+  {id: 'animals', name: 'Animals', topics: 'weight speed dogs lifespan dinos'},
+  {id: 'screen', name: 'Movies & TV', topics: 'boxoffice movieyear movierating oscars franchises disney disneybox tvrating tvyear tveps sitcoms'},
+  {id: 'gaming', name: 'Gaming', topics: 'gamesales gameyear gamescore consoles consoleyear pkweight pkheight pkdex'},
+  {id: 'music', name: 'Music', topics: 'streams songyear songlen albums artists'},
+  {id: 'food', name: 'Food & Drink', topics: 'fastfood caffeine candy peppers chains'},
+  {id: 'sports', name: 'Sports', topics: 'stadiums sportsballs sportslen sportspeed'},
+  {id: 'cars', name: 'Cars & Transportation', topics: 'horsepower zero60 carbrands planes ships'},
+  {id: 'tech', name: 'Technology', topics: 'techyear iphones apps founded'},
+  {id: 'fun', name: 'Entertainment & Travel', topics: 'coasterspeed coasterheight airports parkvisits opened towers debut celebage insta youtube'},
+  {id: 'stuff', name: 'Everyday Stuff', topics: 'stuffweight stufflen stuffheight stuffcount stuffspeed foodcal'},
+];
 
 /* ---------------- rules ---------------- */
 const ROUNDS = 10, SECONDS = 30, REVEAL_MS = 15000, STEP_MS = 650, N = 5;
@@ -1135,6 +1202,15 @@ for (const t of TOPICS) {
   });
   TOP[t.id] = t;
 }
+const CAT = {};
+for (const c of CATEGORIES) {
+  CAT[c.id] = c;
+  c.list = c.topics.split(' ').map(id => TOP[id]);
+  for (const t of c.list) t.cat = c;
+}
+// null means every category; otherwise a list of category ids (possibly empty while someone is choosing)
+const cleanCats = v => Array.isArray(v) ? CATEGORIES.map(c => c.id).filter(id => v.includes(id)) : null;
+const catsLabel = cats => !cats ? 'All topics' : cats.length ? cats.map(id => CAT[id].name).join(' · ') : 'None yet';
 
 /* numbers are stored in metric (as the sources give them) and shown in US units */
 function sig(x, n = 3) {
@@ -1221,20 +1297,46 @@ function scoreOrder(order, R) {
   const right = rightOrder(R);
   return order.reduce((p, id, i) => { const d = Math.abs(right.indexOf(id) - i); return p + (d === 0 ? 20 : d === 1 ? 10 : 0); }, 0);
 }
-function makeRounds(n) {
-  const out = [], pools = {};
-  for (const k in MIX) pools[k] = shuffle(MIX[k].split(' ').map(id => TOP[id]));
-  // an even share of each kind, with any leftover rounds going to random kinds
-  const kinds = Object.keys(MIX), plan = [];
-  for (let i = 0; i < n; i++) plan.push(i < n - n % kinds.length ? kinds[i % kinds.length] : null);
-  const extra = shuffle(kinds.slice());
-  for (let i = 0; i < n; i++) if (!plan[i]) plan[i] = extra.pop();
-  shuffle(plan);
-  for (const kind of plan) {
-    const t = pools[kind].pop() || shuffle(TOPICS.filter(x => !out.some(o => o.startsWith(x.id + '|'))))[0];
-    if (!t) break;
-    const five = pick5(t);
+function makeRounds(n, cats) {
+  const plan = [];
+  if (!cats) {
+    // all topics: an even share of knowledge, estimation and pop culture, leftover rounds to random kinds
+    const pools = {};
+    for (const k in MIX) pools[k] = shuffle(MIX[k].split(' ').map(id => TOP[id]));
+    const kinds = Object.keys(MIX), extra = shuffle(kinds.slice());
+    const plannedKinds = Array.from({length: n}, (_, i) => i < n - n % kinds.length ? kinds[i % kinds.length] : extra.pop());
+    for (const kind of shuffle(plannedKinds)) plan.push(pools[kind].pop() || pick(TOPICS));
+  } else {
+    // chosen categories: shuffled passes through the categories so each gets a fair share,
+    // and within a category, every topic comes up once before any repeats
+    const order = [];
+    while (order.length < n) {
+      const pass = shuffle(cats.slice());
+      if (pass.length > 1 && pass[0] === order[order.length - 1]) pass.push(pass.shift());
+      order.push(...pass);
+    }
+    const queues = {}, last = {};
+    for (const c of order.slice(0, n)) {
+      if (!queues[c]?.length) {
+        queues[c] = shuffle(CAT[c].list.slice());
+        // don't start the refill with the topic this category just had
+        if (queues[c].length > 1 && queues[c][queues[c].length - 1] === last[c]) queues[c].unshift(queues[c].pop());
+      }
+      plan.push(last[c] = queues[c].pop());
+    }
+  }
+  const out = [], used = new Set();
+  for (const t of plan) {
+    // when a topic comes back, try for a different set of five
+    let five = null;
+    for (let k = 0; k < 8; k++) {
+      const f = pick5(t);
+      if (!f) break;
+      five = f;
+      if (!used.has(t.id + '|' + f.map(x => x.id).sort().join(','))) break;
+    }
     if (!five) continue;
+    used.add(t.id + '|' + five.map(x => x.id).sort().join(','));
     const R = {t, ids: five.map(x => x.id)};
     // the starting order is the same for everyone; reshuffle only if it would already score 80+
     for (let k = 0; k < 50; k++) { shuffle(R.ids); if (scoreOrder(R.ids, R) < 80) break; }
@@ -1518,6 +1620,61 @@ function readName() {
   return n;
 }
 
+/* category picker: "All topics" or a hand-picked set. Used on the home card (solo, and the default for a new room)
+   and in the lobby, where only the host can change it. */
+let homeCats = (() => { try { return cleanCats(JSON.parse(LS.get('cats'))); } catch { return null; } })();
+const lastPicked = () => { try { const v = cleanCats(JSON.parse(LS.get('catsPicked'))); return v && v.length ? v : []; } catch { return []; } };
+function catPickerHTML(cats) {
+  const all = !cats, chip = (attrs, on, label) => `<button type="button" class="cat-chip" ${attrs} aria-pressed="${on}">${esc(label)}</button>`;
+  return `<div class="cat-row">${chip('data-mode="all"', all, 'All topics')}${chip('data-mode="pick"', !all, 'Choose categories')}</div>` + (all ? '' :
+    `<div class="cat-row cat-grid">${CATEGORIES.map(c => chip(`data-cat="${c.id}"`, cats.includes(c.id), c.name)).join('')}</div>
+     <div class="cat-tools"><button type="button" class="btn link" data-tool="all">Select all</button><button type="button" class="btn link" data-tool="none">Clear all</button>
+     <span class="cat-hint${cats.length ? '' : ' warn'}" aria-live="polite">${cats.length ? `${cats.length} of ${CATEGORIES.length} categories` : 'Pick at least one category'}</span></div>`);
+}
+function catPickerClick(e, cats) {
+  const b = e.target.closest('button');
+  if (!b) return undefined;
+  if (b.dataset.mode === 'all') return null;
+  if (b.dataset.mode === 'pick') return cats || lastPicked();
+  if (b.dataset.tool === 'all') return CATEGORIES.map(c => c.id);
+  if (b.dataset.tool === 'none') return [];
+  const id = b.dataset.cat, cur = cats || [];
+  return cleanCats(cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id]);
+}
+function paintPicker(el, cats, focusSel) {
+  el.innerHTML = catPickerHTML(cats);
+  if (focusSel) el.querySelector(focusSel)?.focus();
+}
+const focusKey = b => b.dataset.mode ? `[data-mode="${b.dataset.mode}"]` : b.dataset.cat ? `[data-cat="${b.dataset.cat}"]` : `[data-tool="${b.dataset.tool}"]`;
+function setHomeCats(cats, focusSel) {
+  homeCats = cats;
+  LS.set('cats', JSON.stringify(cats));
+  if (cats && cats.length) LS.set('catsPicked', JSON.stringify(cats));
+  paintPicker($('#home-cats'), cats, focusSel);
+  $('#btn-solo').disabled = !!cats && !cats.length;
+  if (!cats || cats.length) homeErr();
+}
+$('#home-cats').addEventListener('click', e => {
+  const next = catPickerClick(e, homeCats);
+  if (next !== undefined) setHomeCats(next, focusKey(e.target.closest('button')));
+});
+function renderLobbyCats(cats, host) {
+  const el = $('#lb-cats'), key = JSON.stringify([cats, host]);
+  if (el.dataset.key === key) return; // only repaint when something changed, so chips keep focus
+  el.dataset.key = key;
+  if (host) { paintPicker(el, cats, el.dataset.focus); delete el.dataset.focus; }
+  else el.innerHTML = `<p class="cat-summary">${esc(catsLabel(cats))}</p><p class="note">The host picks the categories.</p>`;
+}
+$('#lb-cats').addEventListener('click', e => {
+  if (!room || !isHost() || room.phase !== 'lobby') return;
+  const next = catPickerClick(e, cleanCats(room.cats));
+  if (next === undefined) return;
+  if (next && next.length) LS.set('catsPicked', JSON.stringify(next));
+  LS.set('cats', JSON.stringify(next)); homeCats = next;
+  $('#lb-cats').dataset.focus = focusKey(e.target.closest('button'));
+  db.doc(`rooms/${code}`).update({cats: next});
+});
+
 async function createRoom() {
   homeErr();
   if (!readName() || !PeerCtor) return;
@@ -1534,7 +1691,7 @@ async function createRoom() {
   p.on('connection', onGuestConn);
   p.on('disconnected', () => { setTimeout(() => { if (peer === p && !p.destroyed) { try { p.reconnect(); } catch {} } }, 1500); });
   p.on('error', () => {});
-  await db.doc(`rooms/${c}`).set({code: c, host: me.pid, phase: 'lobby', game: '', round: 0, rounds: [], created: Date.now()});
+  await db.doc(`rooms/${c}`).set({code: c, host: me.pid, phase: 'lobby', game: '', round: 0, rounds: [], cats: homeCats, created: Date.now()});
   await db.doc(`rooms/${c}/players/${me.pid}`).set({pid: me.pid, name: me.name, color: COLORS[0], joined: Date.now(), online: true, scores: {}});
   enterRoom(c);
 }
@@ -1550,9 +1707,10 @@ async function joinRoom() {
 }
 async function startSolo() {
   homeErr();
+  if (homeCats && !homeCats.length) { homeErr('Pick at least one category, or choose All topics.'); return; }
   me.name = $('#nm').value.trim().slice(0, 16) || 'You';
   mode = 'solo'; db = makeMemDB();
-  await db.doc('rooms/SOLO').set({code: 'SOLO', host: me.pid, phase: 'lobby', game: '', round: 0, rounds: [], created: Date.now()});
+  await db.doc('rooms/SOLO').set({code: 'SOLO', host: me.pid, phase: 'lobby', game: '', round: 0, rounds: [], cats: homeCats, created: Date.now()});
   await db.doc(`rooms/SOLO/players/${me.pid}`).set({pid: me.pid, name: me.name, color: COLORS[0], joined: Date.now(), online: true, scores: {}});
   enterRoom('SOLO');
   await startGame();
@@ -1571,7 +1729,10 @@ function leave() {
 
 async function startGame() {
   if (!db || (!isHost() && mode !== 'solo')) return;
-  const rounds = makeRounds(ROUNDS);
+  // read the stored room: in solo, the game starts before the first sync has filled in `room`
+  const cats = cleanCats((await db.doc(`rooms/${code}`).get()).data()?.cats);
+  if (cats && !cats.length) return;
+  const rounds = makeRounds(ROUNDS, cats);
   await db.doc(`rooms/${code}`).update({phase: 'play', game: 'g' + rid(6), round: 0, rounds, at: Date.now()});
 }
 
@@ -1652,9 +1813,10 @@ function renderLobby() {
   $('#lb-players').innerHTML = players.map(p => `
     <li class="${p.online === false ? 'away' : ''}"><i class="dot" style="background:${esc(p.color)}"></i><span class="nm">${esc(p.name)}</span>
     ${p.pid === room.host ? '<span class="tag">host</span>' : ''}${p.pid === me.pid ? '<span class="tag">you</span>' : ''}${p.online === false ? '<span class="tag">away</span>' : ''}</li>`).join('');
-  const host = isHost();
+  const host = isHost(), cats = cleanCats(room.cats);
+  renderLobbyCats(cats, host);
   $('#btn-start').hidden = !host;
-  $('#btn-start').disabled = !players.length;
+  $('#btn-start').disabled = !players.length || (cats && !cats.length);
   const hostP = players.find(p => p.pid === room.host);
   $('#lb-wait').hidden = host;
   $('#lb-link').value = inviteLink();
@@ -1805,7 +1967,7 @@ function renderRound() {
   $('#rb-of').textContent = '/' + room.rounds.length;
   const cur = scoreRec(mine(), room.round);
   $('#rb-score').textContent = totalOf(mine()) - (reveal || !cur ? 0 : cur.p || 0);
-  $('#ask-sub').textContent = reveal ? `${t.title}: the right order` : t.title;
+  $('#ask-sub').textContent = reveal ? `${t.title}: the right order` : `${t.cat.name} · ${t.title}`;
   $('#prompt').textContent = t.ask;
   $('#lbl-hi').innerHTML = `${ARROW_UP}${esc(t.hi)}`;
   $('#lbl-lo').innerHTML = `${ARROW_DN}${esc(t.lo)}`;
@@ -2164,6 +2326,7 @@ $('#btn-start').addEventListener('click', e => withBusy(e.currentTarget, startGa
 $('#btn-again').addEventListener('click', e => withBusy(e.currentTarget, startGame));
 $('#btn-next').addEventListener('click', () => advance(hostT.key));
 $('#nm').value = me.name;
+setHomeCats(homeCats);
 
 /* ---------------- connect ---------------- */
 function setNet() {
