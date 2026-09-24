@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Order Up!">
-<meta name="description" content="Order Up! A multiplayer game about sorting five things from highest to lowest before time runs out.">
+<meta name="description" content="Order Up! A multiplayer game about putting five things in order before time runs out.">
 <title>Order Up!</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='5' rx='2' fill='%23EE5E33'/%3E%3Crect x='4' y='11' width='19' height='5' rx='2' fill='%23EE5E33'/%3E%3Crect x='4' y='18' width='14' height='5' rx='2' fill='%23EE5E33'/%3E%3Crect x='4' y='25' width='9' height='5' rx='2' fill='%23EE5E33'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -351,7 +351,7 @@ input[type=text]{font-size:16px}
     <div class="hero">
       <h1 class="title">Order <span>Up!</span></h1>
       <div class="stairs" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-      <p class="tagline">Five things, one question. Sort them from highest to lowest before the clock runs out. Closest order wins.</p>
+      <p class="tagline">Five things, one topic. Put them in order before the clock runs out. Closest order wins.</p>
     </div>
 
     <div class="home-grid">
@@ -383,7 +383,7 @@ input[type=text]{font-size:16px}
 
     <div class="rules">
       <div class="rule"><b>1. Read the topic</b><p>Every round has a topic, like country population, movie box office or video game sales. Everyone gets the same five things.</p></div>
-      <div class="rule"><b>2. Sort the list</b><p>Drag the rows or use the arrows. Highest goes at the top, lowest at the bottom.</p></div>
+      <div class="rule"><b>2. Sort the list</b><p>Drag the rows or use the arrows. Each round tells you what goes on top, like biggest first or oldest first.</p></div>
       <div class="rule"><b>3. Lock in by 30 s</b><p>Ten rounds per game. When time runs out, whatever order you have counts.</p></div>
     </div>
 
@@ -441,7 +441,7 @@ input[type=text]{font-size:16px}
     </div>
     <div class="card board-wrap">
       <div class="end" id="lbl-hi"></div>
-      <ol class="sorter" id="sorter" aria-label="Your order, highest first"></ol>
+      <ol class="sorter" id="sorter" aria-label="Your order"></ol>
       <div class="end" id="lbl-lo"></div>
     </div>
 
@@ -502,7 +502,7 @@ const FLAGS = {China:'🇨🇳', India:'🇮🇳', 'United States':'🇺🇸', I
   Sudan:'🇸🇩', Libya:'🇱🇾', Mongolia:'🇲🇳', Singapore:'🇸🇬', Monaco:'🇲🇨'};
 
 const TOPICS = [
-  {id: 'pop', title: 'Country population', hi: 'Most people', lo: 'Fewest people', unit: 'people', gap: 1.08, flags: true,
+  {id: 'pop', title: 'Country population', ask: 'Most people to fewest', hi: 'Most people', lo: 'Fewest people', unit: 'people', gap: 1.08, flags: true,
    src: 'UN population estimates for mid-2023 (World Population Prospects 2024).',
    items: [['India',1438069596],['China',1422584933,'mainland only'],['United States',343477335],['Indonesia',281190067],['Pakistan',247504495],
      ['Nigeria',227882945],['Brazil',211140729],['Bangladesh',171466990],['Russia',145440500],['Mexico',129739759],['Ethiopia',128691692],
@@ -513,7 +513,7 @@ const TOPICS = [
      ['Australia',26451124],['Chile',19658835],['Netherlands',18092524],['Sweden',10551494],['Portugal',10430738],['Greece',10242908],
      ['Israel',9256314],['Switzerland',8870561],['Norway',5519167],['Ireland',5196630],['New Zealand',5172836],['Jamaica',2839786],['Iceland',387558]]},
 
-  {id: 'area', title: 'Country area', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08, flags: true,
+  {id: 'area', title: 'Country size', ask: 'Biggest country to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08, flags: true,
    src: 'Total area including lakes and rivers, from Wikipedia’s list of countries by area (UN Statistics Division).',
    items: [['Russia',17098246],['Canada',9984670],['China',9596960],['United States',9525067],['Brazil',8510346],['Australia',7741220],
      ['India',3287263],['Argentina',2780400],['Kazakhstan',2724910],['Algeria',2381741],['DR Congo',2344858],['Saudi Arabia',2149690],
@@ -523,7 +523,7 @@ const TOPICS = [
      ['New Zealand',268838],['United Kingdom',244376],['Greece',131957],['South Korea',100432],['Portugal',92090],['Ireland',70273],
      ['Netherlands',41865],['Switzerland',41291],['Israel',21937],['Jamaica',10991],['Singapore',745],['Monaco',2]]},
 
-  {id: 'statepop', title: 'US state population', hi: 'Most people', lo: 'Fewest people', unit: 'people', gap: 1.06,
+  {id: 'statepop', title: 'US state population', ask: 'Most people to fewest', hi: 'Most people', lo: 'Fewest people', unit: 'people', gap: 1.06,
    src: '2020 US Census.',
    items: [['California',39538223],['Texas',29145505],['Florida',21538187],['New York',20201249],['Pennsylvania',13002700],['Illinois',12812508],
      ['Ohio',11799448],['Georgia',10711908],['North Carolina',10439388],['Michigan',10077331],['New Jersey',9288994],['Virginia',8631393],
@@ -535,7 +535,7 @@ const TOPICS = [
      ['Rhode Island',1097379],['Montana',1084225],['Delaware',989948],['South Dakota',886667],['North Dakota',779094],['Alaska',733391],
      ['Vermont',643077],['Wyoming',576851]]},
 
-  {id: 'statearea', title: 'US state area', hi: 'Biggest', lo: 'Smallest', unit: 'sqmi', gap: 1.06,
+  {id: 'statearea', title: 'US state size', ask: 'Biggest state to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'sqmi', gap: 1.06,
    src: 'Total area including water, US Census Bureau.',
    items: [['Alaska',665384],['Texas',268596],['California',163695],['Montana',147040],['New Mexico',121590],['Arizona',113990],['Nevada',110572],
      ['Colorado',104094],['Oregon',98379],['Wyoming',97813],['Michigan',96714,'lots of Great Lakes water'],['Minnesota',86936],['Utah',84897],
@@ -546,7 +546,7 @@ const TOPICS = [
      ['Maryland',12406],['Hawaii',10932],['Massachusetts',10554],['Vermont',9616],['New Hampshire',9349],['New Jersey',8723],['Connecticut',5543],
      ['Delaware',2489],['Rhode Island',1545]]},
 
-  {id: 'lakes', title: 'Lake size', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08,
+  {id: 'lakes', title: 'Lake size', ask: 'Biggest lake to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08,
    src: 'Surface area, from Wikipedia’s list of lakes by area.',
    items: [['Caspian Sea',389000,'counted as a lake'],['Lake Superior',82100],['Lake Victoria',59940],['Lake Huron',59570],['Lake Michigan',57800],
      ['Lake Tanganyika',32900],['Lake Baikal',31722],['Great Bear Lake',31153],['Lake Malawi',29600],['Great Slave Lake',27200],['Lake Erie',25667],
@@ -554,7 +554,7 @@ const TOPICS = [
      ['Lake Athabasca',7850],['Reindeer Lake',6650],['Issyk-Kul',6236],['Lake Vänern',5650],['Lake of the Woods',4350],['Lake Geneva',580],
      ['Lake Tahoe',490],['Lake Garda',370],['Loch Ness',56]]},
 
-  {id: 'islands', title: 'Island size', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08,
+  {id: 'islands', title: 'Island size', ask: 'Biggest island to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08,
    src: 'Area of the island itself, from Wikipedia’s list of islands by area.',
    items: [['Greenland',2108459],['New Guinea',773751],['Borneo',723154],['Madagascar',592521],['Baffin Island',507205],['Sumatra',428134],
      ['Honshu',228296,'Japan’s main island'],['Victoria Island',219191,'Canada'],['Great Britain',218635],['Ellesmere Island',197790],['Sulawesi',169981],
@@ -564,26 +564,26 @@ const TOPICS = [
      ['Hawaiʻi (Big Island)',10493],['Cyprus',9284],['Puerto Rico',8759],['Corsica',8730],['Crete',8296],['Mallorca',3630],['Long Island',3505],
      ['Tenerife',2047],['Maui',1893],['Oʻahu',1560],['Isle of Man',574],['Martha’s Vineyard',250],['Manhattan',59]]},
 
-  {id: 'space', title: 'Size in space', hi: 'Biggest', lo: 'Smallest', unit: 'kmd', gap: 1.025,
+  {id: 'space', title: 'Size in space', ask: 'Biggest to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'kmd', gap: 1.025,
    src: 'Mean diameter, from NASA fact sheets.',
    items: [['The Sun',1391400],['Jupiter',139772],['Saturn',116464],['Uranus',50724],['Neptune',49244],['Earth',12742],['Venus',12104],
      ['Mars',6779],['Ganymede',5268,'moon of Jupiter'],['Titan',5149,'moon of Saturn'],['Mercury',4879],['Callisto',4821,'moon of Jupiter'],
      ['Io',3643,'moon of Jupiter'],['The Moon',3475],['Europa',3122,'moon of Jupiter'],['Triton',2707,'moon of Neptune'],['Pluto',2377],
      ['Titania',1577,'moon of Uranus'],['Charon',1212,'moon of Pluto'],['Ceres',939,'dwarf planet'],['Enceladus',504,'moon of Saturn']]},
 
-  {id: 'sundist', title: 'Distance from the Sun', hi: 'Farthest', lo: 'Closest', unit: 'mkm', gap: 1.1,
+  {id: 'sundist', title: 'Distance from the Sun', ask: 'Farthest from the Sun to closest', hi: 'Farthest', lo: 'Closest', unit: 'mkm', gap: 1.1,
    src: 'Average distance, from NASA fact sheets.',
    items: [['Mercury',57.9],['Venus',108.2],['Earth',149.6],['Mars',228.0],['Ceres',414,'dwarf planet'],['Jupiter',778.5],['Saturn',1432],
      ['Uranus',2867],['Neptune',4515],['Pluto',5906],['Eris',10126,'dwarf planet']]},
 
-  {id: 'rivers', title: 'River length', hi: 'Longest', lo: 'Shortest', unit: 'km', gap: 1.12,
+  {id: 'rivers', title: 'River length', ask: 'Longest river to shortest', hi: 'Longest', lo: 'Shortest', unit: 'km', gap: 1.12,
    src: 'Wikipedia’s list of river systems by length. River lengths vary between sources, so every river in a round is at least 12% longer than the next.',
    items: [['Nile',6650],['Yangtze',6300],['Mississippi–Missouri',6275,'as one river system'],['Yellow River',5464],['Ob–Irtysh',5410,'as one river system'],
      ['Congo',4700],['Lena',4400],['Mackenzie',4241],['Niger',4200],['Volga',3645],['Yukon',3185],['Rio Grande',3057],['Danube',2850],
      ['Colorado River',2330],['Dnieper',2287],['Orinoco',2140],['Columbia River',2000],['Rhine',1230],['Loire',1006],['Seine',777],
      ['Hudson River',507],['Thames',346]]},
 
-  {id: 'weight', title: 'Animal weight', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.8, about: true,
+  {id: 'weight', title: 'Animal weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.8, about: true,
    src: 'Typical adult weight, from each animal’s Wikipedia article. Weights vary a lot, so every animal in a round is at least 1.8× heavier than the next.',
    items: [['Blue whale',100000],['Sperm whale',30000],['Orca',5000],['African elephant',4500],['Asian elephant',3350],['White rhino',1900],
      ['Hippo',1420],['Giraffe',1010],['Walrus',900],['Cow',700],['American bison',620],['Horse',465],['Moose',450],['Polar bear',390],
@@ -591,30 +591,30 @@ const TOPICS = [
      ['Red kangaroo',50],['Cheetah',43],['Gray wolf',40],['Chimpanzee',35],['Emperor penguin',34],['Bald eagle',4.85],['House cat',4.5],
      ['Chicken',2.5],['Rabbit',2.25],['Hummingbird',0.0036,'ruby-throated']]},
 
-  {id: 'speed', title: 'Top speed', hi: 'Fastest', lo: 'Slowest', unit: 'kmh', gap: 1.25,
+  {id: 'speed', title: 'Top speed', ask: 'Fastest to slowest', hi: 'Fastest', lo: 'Slowest', unit: 'kmh', gap: 1.25,
    src: 'Top recorded speed, from Wikipedia’s list of the fastest animals and each animal’s article.',
    items: [['Peregrine falcon',389,'in a dive'],['Golden eagle',280,'in a dive'],['Cheetah',104],['Pronghorn',88.5],['Lion',80,'short bursts'],
      ['Greyhound',69],['Orca',56],['White rhino',50],['Grizzly bear',48],['Usain Bolt',44.35,'at his fastest in 2009'],['Bottlenose dolphin',35],
      ['Hippo',30],['African elephant',25],['Great white shark',24.1],['Garden snail',0.047]]},
 
-  {id: 'founded', title: 'Year founded', hi: 'Newest', lo: 'Oldest', unit: 'year', gap: 2, year: true,
+  {id: 'founded', title: 'When companies started', ask: 'Oldest company to newest', hi: 'Started first', lo: 'Started last', asc: true, unit: 'year', gap: 2, year: true,
    src: 'The “Founded” year on each company’s Wikipedia page (launch year for apps and sites).',
    items: [['Johnson & Johnson',1886],['Nintendo',1889],['Coca-Cola',1892],['General Electric',1892],['Ford',1903],['Harley-Davidson',1903],
      ['IBM',1911],['BMW',1916],['Disney',1923],['LEGO',1932],['Toyota',1937],['Samsung',1938],['IKEA',1943],['Sony',1946],['Nike',1964],
      ['Intel',1968],['Starbucks',1971],['Microsoft',1975],['Apple',1976],['Oracle',1977],['Dell',1984],['Nvidia',1993],['Amazon',1994],
-     ['eBay',1995],['Netflix',1997],['Google',1998],['Wikipedia',2001],['Tesla',2003],['Facebook',2004],['YouTube',2005],['Twitter',2006],
+     ['eBay',1995],['Netflix',1997],['Google',1998],['Wikipedia',2001,'launched'],['Tesla',2003],['Facebook',2004],['YouTube',2005],['Twitter',2006],
      ['Spotify',2006],['Airbnb',2008],['Uber',2009],['WhatsApp',2009],['Instagram',2010],['Snapchat',2011],['Zoom',2011],['OpenAI',2015],['Discord',2015]]},
 
-  {id: 'opened', title: 'Year it opened', hi: 'Newest', lo: 'Oldest', unit: 'year', gap: 3, year: true,
-   src: 'The year each landmark was completed or opened, from Wikipedia.',
-   items: [['The Colosseum',80],['Leaning Tower of Pisa',1372],['The White House',1800],['Big Ben',1859],['Brooklyn Bridge',1883],
-     ['Statue of Liberty',1886],['Washington Monument',1888],['Eiffel Tower',1889],['Tower Bridge',1894],['Panama Canal',1914],['Hollywood Sign',1923],
-     ['Chrysler Building',1930],['Empire State Building',1931],['Christ the Redeemer',1931],['Sydney Harbour Bridge',1932],['Hoover Dam',1936],
-     ['Golden Gate Bridge',1937],['Mount Rushmore',1941],['Disneyland',1955],['Atomium',1958],['Space Needle',1962],['Gateway Arch',1965],
+  {id: 'opened', title: 'When landmarks opened', ask: 'Oldest to newest', hi: 'Opened first', lo: 'Opened last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'The year each landmark opened, or was finished or unveiled where noted, from Wikipedia.',
+   items: [['The Colosseum',80,'finished'],['Leaning Tower of Pisa',1372,'finished'],['The White House',1800,'first lived in'],['Big Ben',1859,'finished'],['Brooklyn Bridge',1883],
+     ['Statue of Liberty',1886,'unveiled'],['Washington Monument',1888],['Eiffel Tower',1889],['Tower Bridge',1894],['Panama Canal',1914],['Hollywood Sign',1923,'put up'],
+     ['Chrysler Building',1930],['Empire State Building',1931],['Christ the Redeemer',1931,'unveiled'],['Sydney Harbour Bridge',1932],['Hoover Dam',1936],
+     ['Golden Gate Bridge',1937],['Mount Rushmore',1941,'carving finished'],['Disneyland',1955],['Atomium',1958],['Space Needle',1962],['Gateway Arch',1965,'finished'],
      ['Sydney Opera House',1973],['CN Tower',1976],['Channel Tunnel',1994],['Petronas Towers',1999],['Burj Al Arab',1999],['London Eye',2000],
      ['Taipei 101',2004],['Burj Khalifa',2010],['Tokyo Skytree',2012],['One World Trade Center',2014]]},
 
-  {id: 'peaks', title: 'Mountain height', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.05,
+  {id: 'peaks', title: 'Mountain height', ask: 'Tallest mountain to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.05,
    src: 'Height above sea level, from Wikipedia.',
    items: [['Mount Everest',8849],['K2',8611],['Kangchenjunga',8586],['Lhotse',8516],['Makalu',8485],['Aconcagua',6961],['Chimborazo',6263],
      ['Denali',6190],['Kilimanjaro',5895],['Cotopaxi',5897],['Mount Elbrus',5642],['Mount Kenya',5199],['Mount Ararat',5137],['Mount Vinson',4892],
@@ -622,7 +622,7 @@ const TOPICS = [
      ['Mount Fuji',3776],['Aoraki / Mount Cook',3724],['Mount Teide',3715],['Mount Hood',3429],['Zugspitze',2962],['Mount Olympus',2918,'Greece'],
      ['Mount Kosciuszko',2228],['Mount Mitchell',2037],['Mount Washington',1917],['Ben Nevis',1345],['Snowdon',1085],['Scafell Pike',978]]},
 
-  {id: 'towers', title: 'Building height', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.05,
+  {id: 'towers', title: 'Building height', ask: 'Tallest to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.05,
    src: 'Height to the tip, from Wikipedia and the Council on Tall Buildings.',
    items: [['Burj Khalifa',828],['Merdeka 118',678.9],['Shanghai Tower',632],['Canton Tower',602],['Ping An Finance Centre',599.1],['Lotte World Tower',554.5],
      ['CN Tower',553],['One World Trade Center',541],['Ostankino Tower',540.1],['Taipei 101',508],['Shanghai World Financial Center',492],
@@ -631,7 +631,7 @@ const TOPICS = [
      ['Bank of China Tower',367.4],['The Strat',350.2],['Tokyo Tower',333],['Eiffel Tower',330],['Chrysler Building',319],['The Shard',309.6],
      ['Transamerica Pyramid',260],['Woolworth Building',241],['Space Needle',184],['The Gherkin',180],['Washington Monument',169],['Big Ben',96]]},
 
-  {id: 'falls', title: 'Waterfall height', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.08,
+  {id: 'falls', title: 'Waterfall height', ask: 'Tallest waterfall to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.08,
    src: 'Total drop, from Wikipedia.',
    items: [['Tugela Falls',983],['Angel Falls',979],['Vinnufossen',845],['Gocta Falls',771],['Yosemite Falls',739],['Sutherland Falls',580],
      ['Jog Falls',253],['Kaieteur Falls',226],['Multnomah Falls',189],['Bridalveil Fall',188],['Victoria Falls',108],['Iguazu Falls',82,'tallest drop'],
@@ -639,7 +639,7 @@ const TOPICS = [
      ['Dettifoss',44],['Gullfoss',32],['Rhine Falls',23]]},
 
   /* ---- video games ---- */
-  {id: 'gamesales', cat: 'Video games', title: 'Copies sold', hi: 'Most sold', lo: 'Fewest sold', unit: 'mcopies', gap: 1.3, about: true,
+  {id: 'gamesales', title: 'Video game sales', ask: 'Most copies sold to fewest', hi: 'Most sold', lo: 'Fewest sold', unit: 'mcopies', gap: 1.3, about: true,
    src: 'Wikipedia’s list of best-selling video games, all platforms combined. Publishers report these at different times, so every game in a round sold at least 1.3× more than the next.',
    items: [['Minecraft',350],['Grand Theft Auto V',220],['Wii Sports',82.9],['Red Dead Redemption 2',77],['Mario Kart 8 Deluxe',68,'plus the Wii U original'],
      ['Terraria',64],['The Witcher 3',60],['Super Mario Bros.',58,'1985'],['Animal Crossing: New Horizons',47],['Stardew Valley',41],
@@ -647,7 +647,7 @@ const TOPICS = [
      ['Elden Ring',30],['Hogwarts Legacy',30],['Super Mario Odyssey',29],['Grand Theft Auto: San Andreas',27.5],['Pokémon Gold & Silver',23.7],
      ['Tears of the Kingdom',21.8,'Zelda'],['Sonic the Hedgehog',15,'1991, Genesis'],['Super Mario 64',11.9],['GoldenEye 007',8.1]]},
 
-  {id: 'gameyear', cat: 'Video games', title: 'Year released', hi: 'Newest', lo: 'Oldest', unit: 'year', gap: 3, year: true,
+  {id: 'gameyear', title: 'When video games came out', ask: 'Oldest game to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 3, year: true,
    src: 'First release year anywhere, from each game’s Wikipedia page.',
    items: [['Pong',1972],['Space Invaders',1978],['Pac-Man',1980],['Donkey Kong',1981],['Tetris',1984],['Super Mario Bros.',1985],['The Legend of Zelda',1986],
      ['Street Fighter II',1991],['Doom',1993],['Pokémon Red & Green',1996,'Japan'],['GoldenEye 007',1997],['The Sims',2000],['Halo',2001],
@@ -655,20 +655,20 @@ const TOPICS = [
      ['Fortnite',2017],['Red Dead Redemption 2',2018],['Animal Crossing: New Horizons',2020],['Elden Ring',2022],['Baldur’s Gate 3',2023],
      ['Mario Kart World',2025],['Hollow Knight: Silksong',2025]]},
 
-  {id: 'gamescore', cat: 'Video games', title: 'Metacritic score', hi: 'Best reviewed', lo: 'Worst reviewed', unit: 'meta', gap: 5, abs: true,
+  {id: 'gamescore', title: 'Video game reviews', ask: 'Best Metacritic score to worst', hi: 'Best reviewed', lo: 'Worst reviewed', unit: 'meta', gap: 5, abs: true,
    src: 'Critic score on Metacritic, using the platform the game is best known on. Every game in a round scored at least 5 points apart.',
    items: [['Ocarina of Time',99],['Red Dead Redemption 2',97],['Super Mario Galaxy',97],['Breath of the Wild',97],['Half-Life 2',96],['Baldur’s Gate 3',96],
      ['Portal 2',95],['God of War',94,'2018'],['Minecraft',93],['Hades',93],['Mario Kart 8 Deluxe',92],['Stardew Valley',89],['Cyberpunk 2077',86],
      ['Hogwarts Legacy',84],['Pokémon Scarlet & Violet',72],['Sonic the Hedgehog',46,'2006'],['The Lord of the Rings: Gollum',34]]},
 
-  {id: 'consoles', cat: 'Video games', title: 'Consoles sold', hi: 'Most sold', lo: 'Fewest sold', unit: 'munits', gap: 1.2, about: true,
+  {id: 'consoles', title: 'Game console sales', ask: 'Most consoles sold to fewest', hi: 'Most sold', lo: 'Fewest sold', unit: 'munits', gap: 1.2, about: true,
    src: 'Lifetime units sold, from Wikipedia’s list of best-selling game consoles.',
    items: [['PlayStation 2',160],['Nintendo DS',154],['Nintendo Switch',150,'still selling'],['Game Boy',118.7,'with Game Boy Color'],['PlayStation 4',117],
      ['PlayStation',102.5],['Wii',101.6],['PlayStation 3',87.4],['Xbox 360',84],['Game Boy Advance',81.5],['Nintendo 3DS',75.9],['NES',61.9],
      ['SNES',49.1],['Nintendo 64',32.9],['Sega Genesis',30.8],['Atari 2600',30],['Xbox',24,'the original'],['GameCube',21.7],['Wii U',13.6],['Dreamcast',9.1]]},
 
   /* ---- movies ---- */
-  {id: 'boxoffice', cat: 'Movies', title: 'Box office', hi: 'Most money', lo: 'Least money', unit: 'musd', gap: 1.15,
+  {id: 'boxoffice', title: 'Movie box office', ask: 'Most money made to least', hi: 'Most money', lo: 'Least money', unit: 'musd', gap: 1.15,
    src: 'Worldwide gross including re-releases, from Box Office Mojo. Not adjusted for inflation.',
    items: [['Avatar',2923],['Avengers: Endgame',2799],['Avatar: The Way of Water',2320],['Titanic',2264],['Star Wars: The Force Awakens',2071],
      ['Spider-Man: No Way Home',1922],['Inside Out 2',1699],['Jurassic World',1672],['The Lion King',1663,'2019 remake'],['Top Gun: Maverick',1496],
@@ -677,7 +677,7 @@ const TOPICS = [
      ['Shrek 2',933],['E.T.',797],['Star Wars',775,'1977'],['Wicked',756],['Forrest Gump',678],['Home Alone',477],['The Matrix',467],
      ['Back to the Future',381],['Pulp Fiction',214],['The Shawshank Redemption',73]]},
 
-  {id: 'movieyear', cat: 'Movies', title: 'Year released', hi: 'Newest', lo: 'Oldest', unit: 'year', gap: 3, year: true,
+  {id: 'movieyear', title: 'When movies came out', ask: 'Oldest movie to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 3, year: true,
    src: 'Original release year, from each movie’s Wikipedia page.',
    items: [['Snow White and the Seven Dwarfs',1937],['The Wizard of Oz',1939],['Casablanca',1942],['Psycho',1960],['2001: A Space Odyssey',1968],
      ['The Godfather',1972],['Jaws',1975],['Star Wars',1977],['E.T.',1982],['Back to the Future',1985],['Die Hard',1988],['Home Alone',1990],
@@ -685,7 +685,7 @@ const TOPICS = [
      ['The Dark Knight',2008],['Avatar',2009],['Inception',2010],['The Avengers',2012],['Frozen',2013],['Get Out',2017],['Parasite',2019],
      ['Everything Everywhere All at Once',2022],['Barbie',2023],['Wicked',2024],['A Minecraft Movie',2025]]},
 
-  {id: 'movierating', cat: 'Movies', title: 'IMDb rating', hi: 'Highest rated', lo: 'Lowest rated', unit: 'imdb', gap: 0.4, abs: true,
+  {id: 'movierating', title: 'Movie ratings', ask: 'Highest IMDb rating to lowest', hi: 'Highest rated', lo: 'Lowest rated', unit: 'imdb', gap: 0.4, abs: true,
    src: 'User rating on IMDb. Ratings drift a little, so every movie in a round is at least 0.4 apart.',
    items: [['The Shawshank Redemption',9.3],['The Godfather',9.2],['The Dark Knight',9.0],['The Return of the King',9.0,'Lord of the Rings'],['Pulp Fiction',8.8],
      ['Forrest Gump',8.8],['Inception',8.8],['Interstellar',8.7],['The Matrix',8.7],['Spirited Away',8.6],['Parasite',8.5],['Back to the Future',8.5],
@@ -693,7 +693,7 @@ const TOPICS = [
      ['Jurassic World',6.9],['Barbie',6.8],['Twilight',5.3],['Fifty Shades of Grey',4.2],['The Last Airbender',4.0],['Batman & Robin',3.8],
      ['The Emoji Movie',3.4],['Cats',2.8,'2019']]},
 
-  {id: 'oscars', cat: 'Movies', title: 'Oscars won', hi: 'Most Oscars', lo: 'Fewest Oscars', unit: 'oscars', gap: 1, abs: true,
+  {id: 'oscars', title: 'Oscars won', ask: 'Most Oscars to fewest', hi: 'Most Oscars', lo: 'Fewest Oscars', unit: 'oscars', gap: 1, abs: true,
    src: 'Competitive Academy Awards won, from the Academy’s awards database.',
    items: [['Titanic',11],['Ben-Hur',11,'1959'],['The Return of the King',11,'Lord of the Rings'],['West Side Story',10,'1961'],['The Last Emperor',9],
      ['The English Patient',9],['Slumdog Millionaire',8],['Amadeus',8],['Gone with the Wind',8],['Everything Everywhere All at Once',7],
@@ -702,7 +702,7 @@ const TOPICS = [
      ['Black Panther',3],['Frozen',2],['The Dark Knight',2],['Up',2],['Barbie',1],['Top Gun: Maverick',1]]},
 
   /* ---- tv ---- */
-  {id: 'tvrating', cat: 'TV shows', title: 'IMDb rating', hi: 'Highest rated', lo: 'Lowest rated', unit: 'imdb', gap: 0.4, abs: true,
+  {id: 'tvrating', title: 'TV show ratings', ask: 'Highest IMDb rating to lowest', hi: 'Highest rated', lo: 'Lowest rated', unit: 'imdb', gap: 0.4, abs: true,
    src: 'User rating for the whole series on IMDb. Ratings drift a little, so every show in a round is at least 0.4 apart.',
    items: [['Breaking Bad',9.5],['Band of Brothers',9.4],['Planet Earth II',9.4],['Chernobyl',9.3],['The Wire',9.3],['Avatar: The Last Airbender',9.3],
      ['The Sopranos',9.2],['Game of Thrones',9.2],['Rick and Morty',9.1],['Attack on Titan',9.1],['The Office',9.0,'US'],['Arcane',9.0],['Friends',8.9],
@@ -710,14 +710,14 @@ const TOPICS = [
      ['House of the Dragon',8.3],['Lost',8.3],['How I Met Your Mother',8.3],['The Big Bang Theory',8.1],['The Walking Dead',8.1],['Squid Game',8.0],
      ['Grey’s Anatomy',7.6],['Glee',6.8],['Riverdale',6.5],['Keeping Up with the Kardashians',2.9],['Velma',1.6]]},
 
-  {id: 'tvyear', cat: 'TV shows', title: 'Year it premiered', hi: 'Newest', lo: 'Oldest', unit: 'year', gap: 3, year: true,
+  {id: 'tvyear', title: 'When TV shows started', ask: 'Oldest show to newest', hi: 'Started first', lo: 'Started last', asc: true, unit: 'year', gap: 3, year: true,
    src: 'Year of the first episode, from each show’s Wikipedia page.',
    items: [['I Love Lucy',1951],['The Twilight Zone',1959],['The Flintstones',1960],['Star Trek',1966],['Sesame Street',1969],['Saturday Night Live',1975],
      ['Cheers',1982],['The Simpsons',1989],['The X-Files',1993],['Friends',1994],['Buffy the Vampire Slayer',1997],['SpongeBob SquarePants',1999],
      ['Survivor',2000,'US'],['The Office',2005,'US'],['Breaking Bad',2008],['Game of Thrones',2011],['Black Mirror',2011],['Stranger Things',2016],
      ['The Mandalorian',2019],['Squid Game',2021],['Wednesday',2022],['The Last of Us',2023],['Shōgun',2024],['Adolescence',2025],['The Pitt',2025]]},
 
-  {id: 'tveps', cat: 'TV shows', title: 'Number of episodes', hi: 'Most episodes', lo: 'Fewest episodes', unit: 'eps', gap: 1.25,
+  {id: 'tveps', title: 'TV show episodes', ask: 'Most episodes to fewest', hi: 'Most episodes', lo: 'Fewest episodes', unit: 'eps', gap: 1.25,
    src: 'Episode count from each show’s Wikipedia page. Shows still airing keep adding more, so every show in a round has at least 1.25× the episodes of the next.',
    items: [['The Simpsons',790,'still airing'],['Law & Order: SVU',570,'still airing'],['NCIS',480,'still airing'],['Grey’s Anatomy',450,'still airing'],
      ['Family Guy',425,'still airing'],['South Park',330,'still airing'],['Supernatural',327],['SpongeBob SquarePants',300,'still airing'],
@@ -726,14 +726,14 @@ const TOPICS = [
      ['The Last of Us',16,'so far'],['Fleabag',12],['Band of Brothers',10],['Chernobyl',5],['Adolescence',4]]},
 
   /* ---- music ---- */
-  {id: 'streams', cat: 'Music', title: 'Spotify streams', hi: 'Most streams', lo: 'Fewest streams', unit: 'bstreams', gap: 1.4, about: true,
+  {id: 'streams', title: 'Spotify streams', ask: 'Most streamed song to least', hi: 'Most streams', lo: 'Fewest streams', unit: 'bstreams', gap: 1.4, about: true,
    src: 'Approximate all-time Spotify play counts in 2026. They climb every day, so every song in a round has at least 1.4× the streams of the next.',
    items: [['Blinding Lights',5.2,'The Weeknd'],['Shape of You',4.5,'Ed Sheeran'],['Sweater Weather',3.9,'The Neighbourhood'],['As It Was',3.9,'Harry Styles'],
      ['Die with a Smile',3.3,'Lady Gaga & Bruno Mars'],['Bohemian Rhapsody',2.8,'Queen'],['Flowers',2.8,'Miley Cyrus'],['Mr. Brightside',2.4,'The Killers'],
      ['Espresso',2.2,'Sabrina Carpenter'],['Billie Jean',2.1,'Michael Jackson'],['Smells Like Teen Spirit',2.0,'Nirvana'],['Anti-Hero',1.9,'Taylor Swift'],
      ['Hotel California',1.4,'Eagles'],['Thriller',1.0,'Michael Jackson'],['Hey Jude',0.8,'The Beatles'],['Gangnam Style',0.7,'PSY']]},
 
-  {id: 'songyear', cat: 'Music', title: 'Year released', hi: 'Newest', lo: 'Oldest', unit: 'year', gap: 3, year: true,
+  {id: 'songyear', title: 'When songs came out', ask: 'Oldest song to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 3, year: true,
    src: 'Original release year, from each song’s Wikipedia page.',
    items: [['Hound Dog',1956,'Elvis Presley'],['Johnny B. Goode',1958,'Chuck Berry'],['I Want to Hold Your Hand',1963,'The Beatles'],
      ['Respect',1967,'Aretha Franklin'],['Hey Jude',1968,'The Beatles'],['Imagine',1971,'John Lennon'],['Bohemian Rhapsody',1975,'Queen'],
@@ -742,7 +742,7 @@ const TOPICS = [
      ['Rolling in the Deep',2010,'Adele'],['Gangnam Style',2012,'PSY'],['Uptown Funk',2014,'Mark Ronson & Bruno Mars'],['Shape of You',2017,'Ed Sheeran'],
      ['Blinding Lights',2019,'The Weeknd'],['drivers license',2021,'Olivia Rodrigo'],['Flowers',2023,'Miley Cyrus'],['Espresso',2024,'Sabrina Carpenter']]},
 
-  {id: 'songlen', cat: 'Music', title: 'Song length', hi: 'Longest', lo: 'Shortest', unit: 'sec', gap: 1.15,
+  {id: 'songlen', title: 'Song length', ask: 'Longest song to shortest', hi: 'Longest', lo: 'Shortest', unit: 'sec', gap: 1.15,
    src: 'Length of the original album version, from each song’s Wikipedia page.',
    items: [['All Too Well (10 Minute Version)',613,'Taylor Swift'],['Free Bird',548,'Lynyrd Skynyrd'],['November Rain',537,'Guns N’ Roses'],
      ['American Pie',516,'Don McLean'],['Stairway to Heaven',482,'Led Zeppelin'],['Hey Jude',431,'The Beatles'],['Hotel California',390,'Eagles'],
@@ -840,7 +840,8 @@ function pick5(t) {
   }
   return null;
 }
-const rightOrder = R => R.ids.slice().sort((a, b) => R.t.byId[b].v - R.t.byId[a].v);
+// most topics go biggest first; dates go oldest first, which reads like a timeline
+const rightOrder = R => R.ids.slice().sort((a, b) => (R.t.byId[b].v - R.t.byId[a].v) * (R.t.asc ? -1 : 1));
 function scoreOrder(order, R) {
   if (!order) return 0;
   const right = rightOrder(R);
@@ -1342,8 +1343,8 @@ function renderRound() {
   $('#rb-of').textContent = '/' + room.rounds.length;
   const cur = scoreRec(mine(), room.round);
   $('#rb-score').textContent = totalOf(mine()) - (reveal || !cur ? 0 : cur.p || 0);
-  $('#ask-sub').textContent = (t.cat ? t.cat + ' · ' : '') + (reveal ? 'The right order' : 'Sort from highest to lowest');
-  $('#prompt').textContent = t.title;
+  $('#ask-sub').textContent = reveal ? `${t.title}: the right order` : t.title;
+  $('#prompt').textContent = t.ask;
   $('#lbl-hi').innerHTML = `${ARROW_UP}${esc(t.hi)}`;
   $('#lbl-lo').innerHTML = `${ARROW_DN}${esc(t.lo)}`;
 
@@ -1530,9 +1531,9 @@ const demo = (() => {
   const t = TOP.space, ids = ['earth', 'saturn', 'the-moon', 'neptune', 'mars'];
   const el = $('#demo-list');
   $('#demo-hi').innerHTML = `${ARROW_UP}${t.hi}`; $('#demo-lo').innerHTML = `${ARROW_DN}${t.lo}`;
-  $('#demo-cap').textContent = 'Example round: sort by size in space, biggest at the top. The list sorts itself here; in the game you drag it.';
+  $('#demo-cap').textContent = 'Example round: size in space, biggest to smallest. Here the list sorts itself. In the game, you drag the rows.';
   let order, timer = null, on = false;
-  const right = ids.slice().sort((a, b) => t.byId[b].v - t.byId[a].v);
+  const right = rightOrder({t, ids});
   function paint(done) {
     [...el.children].forEach((li, i) => {
       li.querySelector('.pos').textContent = i + 1;
