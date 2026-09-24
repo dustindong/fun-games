@@ -242,6 +242,26 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .rv-list li{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px solid var(--line)}
 .rv-list li:last-child{border-bottom:none}
 .rv-list .off{font:500 12px/1 var(--mono);color:var(--muted);white-space:nowrap}
+.rv-list.standings li{grid-template-columns:1.6em auto minmax(0,1fr) auto auto 2.6em}
+.rv-list .rk{font:800 18px/1 var(--display);color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.rv-list .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rv-list .rd{font:600 12px/1 var(--mono);color:var(--muted);white-space:nowrap;text-align:right}
+.rv-list .rd.hot{color:var(--green)}
+.rv-list .move{font:600 12px/1 var(--mono);white-space:nowrap;text-align:right;color:var(--muted)}
+.rv-list .move.up{color:var(--green)}
+.rv-list .move.down{color:var(--red)}
+.reveal.pop .rv-list .move.up,.reveal.pop .rv-list .move.down{animation:move-in .5s .45s ease both}
+.rv-list li.away{opacity:.55}
+@keyframes move-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+/* perfect round: a green sweep down the rows and a steady glow on the result */
+.rv-main.perfect{border-color:var(--green);box-shadow:0 0 0 1px var(--green),var(--shadow)}
+.rv-main.perfect #rv-verdict{color:var(--green)}
+.reveal.pop .rv-main.perfect .rv-pts{animation:perfect-pop .6s cubic-bezier(.2,1.5,.4,1) both}
+.sorter.perfect .row{animation:perfect-row .7s ease both}
+.sorter.perfect .row:nth-child(2){animation-delay:.08s}.sorter.perfect .row:nth-child(3){animation-delay:.16s}
+.sorter.perfect .row:nth-child(4){animation-delay:.24s}.sorter.perfect .row:nth-child(5){animation-delay:.32s}
+@keyframes perfect-pop{0%{transform:scale(.9);opacity:.4}60%{transform:scale(1.04);opacity:1}100%{transform:none}}
+@keyframes perfect-row{0%{box-shadow:0 0 0 0 var(--green)}40%{box-shadow:0 0 0 3px var(--green)}100%{box-shadow:0 0 0 0 transparent}}
 .rv-list .pts{font:800 20px/1 var(--display);font-variant-numeric:tabular-nums;min-width:3ch;text-align:right}
 .rv-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:4px 4px 2px}
 .muted{color:var(--muted);font-size:13px}
@@ -260,6 +280,13 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .bars{display:flex;gap:2px;align-items:flex-end;height:26px}
 .bars s{display:block;width:6px;height:calc(var(--v) * .24px + 2px);background:currentColor;opacity:.55;border-radius:1px}
 .final-actions{display:flex;gap:10px;flex-wrap:wrap}
+.awards{display:grid;gap:8px}
+.awards ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.awards li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;align-items:center;padding:10px 12px}
+.awards .ic{grid-row:span 2;font:24px/1 var(--emoji)}
+.awards b{font:800 18px/1.05 var(--display);text-transform:uppercase;letter-spacing:.01em}
+.awards span{font-size:13px;color:var(--muted);line-height:1.3}
+.awards span strong{color:var(--ink);font-weight:600}
 
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:calc(100% - 32px);
   background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:8px;font-size:14px;box-shadow:var(--shadow);z-index:10}
@@ -401,14 +428,14 @@ input[type=text]{font-size:16px}
     <div class="rules">
       <div class="rule"><b>1. Read the topic</b><p>Every round has a topic, like country population, movie box office or video game sales. Everyone gets the same five things.</p></div>
       <div class="rule"><b>2. Sort the list</b><p>Drag the rows or use the arrows. Each round tells you what goes on top, like biggest first or oldest first.</p></div>
-      <div class="rule"><b>3. Lock in by 30 s</b><p>Ten rounds per game. When time runs out, whatever order you have counts.</p></div>
+      <div class="rule"><b>3. Lock in by 30 s</b><p>Ten rounds per game. Lock in when you're happy. Pressing Lock in counts even if you didn't move anything.</p></div>
     </div>
 
     <div class="card scoring">
       <h3>100 points<br>per round</h3>
       <div class="scale-row" style="display:grid;gap:8px">
         <div class="pts-key"><span class="k-exact"><b>20</b> right spot</span><span class="k-near"><b>10</b> one spot off</span><span class="k-far"><b>0</b> two or more off</span></div>
-        <p class="note">Each of the five things scores on its own, so a list with two neighbors swapped still earns 80. If you never move anything, the round scores 0.</p>
+        <p class="note">Each of the five things scores on its own, so a list with two neighbors swapped still earns 80. If time runs out before you make a move or lock in, the round scores 0.</p>
       </div>
     </div>
   </section>
@@ -472,13 +499,13 @@ input[type=text]{font-size:16px}
 
     <div class="reveal" id="reveal" hidden>
       <div class="rv-callouts" id="rv-callouts" aria-live="polite"></div>
-      <div class="card rv-main" aria-live="polite">
+      <div class="card rv-main" id="rv-main" aria-live="polite">
         <div class="rv-pts"><b id="rv-pts">+0</b><span id="rv-verdict"></span></div>
         <div class="rv-off" id="rv-off"></div>
         <p class="rv-fact" id="rv-fact"></p>
       </div>
       <div class="card rv-side">
-        <ol class="rv-list" id="rv-list"></ol>
+        <ol class="rv-list standings" id="rv-list" aria-label="Standings"></ol>
         <div class="rv-actions">
           <span class="muted" id="rv-auto"></span>
           <button class="btn primary small" id="btn-next">Next round</button>
@@ -495,6 +522,10 @@ input[type=text]{font-size:16px}
       <p class="sub" id="fn-sub"></p>
     </div>
     <ol class="card board" id="fn-board"></ol>
+    <div class="awards" id="fn-awards" hidden>
+      <span class="eyebrow">Game highlights</span>
+      <ul id="fn-awards-list"></ul>
+    </div>
     <div class="final-actions">
       <button class="btn primary" id="btn-again">Play again</button>
       <span class="muted" id="fn-wait" hidden></span>
@@ -664,7 +695,7 @@ const TOPICS = [
   {id: 'gamescore', title: 'Video game reviews', ask: 'Best Metacritic score to worst', hi: 'Best reviewed', lo: 'Worst reviewed', unit: 'meta', gap: 5, abs: true,
    src: 'Critic score on Metacritic, using the platform the game is best known on. Every game in a round scored at least 5 points apart.',
    items: [['Ocarina of Time',99],['Red Dead Redemption 2',97],['Super Mario Galaxy',97],['Breath of the Wild',97],['Half-Life 2',96],['Baldur’s Gate 3',96],
-     ['Portal 2',95],['God of War',94,'2018'],['Minecraft',93],['Hades',93],['Mario Kart 8 Deluxe',92],['Stardew Valley',89],['Cyberpunk 2077',86],
+     ['Portal 2',95],['The Last of Us',95],['Super Mario Bros. Wonder',92],['Halo Infinite',87],['Pokémon Sword & Shield',80],['God of War',94,'2018'],['Minecraft',93],['Hades',93],['Mario Kart 8 Deluxe',92],['Stardew Valley',89],['Cyberpunk 2077',86],
      ['Hogwarts Legacy',84],['Pokémon Scarlet & Violet',72],['Sonic the Hedgehog',46,'2006'],['The Lord of the Rings: Gollum',34]]},
 
   {id: 'consoles', title: 'Game console sales', ask: 'Most consoles sold to fewest', hi: 'Most sold', lo: 'Fewest sold', unit: 'munits', gap: 1.2, about: true,
@@ -797,8 +828,8 @@ const TOPICS = [
   /* ---- everyday stuff: things you can reason your way through ---- */
   {id: 'stuffweight', title: 'Everyday stuff: weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.6, about: true,
    src: 'Typical weights from manufacturers and official specs (a bowling ball can be at most 16 lb). Every object in a round is at least 1.6× heavier than the next.',
-   items: [['Upright piano',230],['Refrigerator',110],['Washing machine',75],['Microwave',15],['Car tire',11],['Bowling ball',7.26,'the heaviest allowed'],
-     ['Gallon of milk',3.9],['Brick',2.3],['MacBook Air',1.24],['Basketball',0.62],['Soccer ball',0.43],['Can of soda',0.37,'full'],['iPhone',0.17],
+   items: [['Upright piano',230],['Refrigerator',110],['Washing machine',75],['Car battery',18],['Cinder block',16],['Microwave',15],['Car tire',11],['Bowling ball',7.26,'the heaviest allowed'],
+     ['House cat',4.5],['Gallon of milk',3.9],['Newborn baby',3.3,'average'],['Brick',2.3],['Bowling pin',1.53],['MacBook Air',1.24],['Basketball',0.62],['Soccer ball',0.43],['Can of soda',0.37,'full'],['iPhone',0.17],['Baseball',0.145],
      ['Stick of butter',0.113],['Tennis ball',0.058],['Golf ball',0.046],['AA battery',0.023],['Pencil',0.007],['Nickel',0.005],['Sheet of paper',0.0045],
      ['Penny',0.0025],['Paperclip',0.001]]},
 
@@ -809,18 +840,42 @@ const TOPICS = [
      ['Front door',2.03,'tall'],['Bathtub',1.52],['Baseball bat',0.84],['Yardstick',0.914],['Ruler',0.305],['Pencil',0.19],['Dollar bill',0.156],
      ['iPhone',0.147],['Soda can',0.122,'tall'],['Credit card',0.0856],['AA battery',0.05],['Grain of rice',0.007]]},
 
-  {id: 'foodcal', title: 'Food calories', ask: 'Most calories to fewest', hi: 'Most calories', lo: 'Fewest calories', unit: 'kcal', gap: 1.4, about: true,
+  {id: 'stuffheight', title: 'Everyday stuff: height', ask: 'Tallest to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'ftin', gap: 1.25,
+   src: 'Standard or typical US sizes: building codes, official rules and manufacturer specs. Every object in a round is at least 1.25× taller than the next.',
+   items: [['Telephone pole',12,'above ground, typical'],['Double-decker bus',4.38,'London'],['Semi truck',4.11,'the legal limit in most states'],
+     ['Basketball hoop',3.05],['Shipping container',2.59],['Ceiling',2.44,'typical room'],['Golf flagstick',2.13],['Front door',2.03],['Refrigerator',1.75],
+     ['Blue USPS mailbox',1.26],['Shopping cart',1.02,'to the handle'],['Kitchen counter',0.91],['Fire hydrant',0.76],['Traffic cone',0.71,'highway size'],
+     ['Bowling pin',0.38],['Oscar statuette',0.345],['Wine bottle',0.3],['Soda can',0.122],['Coffee mug',0.095]]},
+
+  {id: 'stuffcount', title: 'Everyday stuff: how many', ask: 'Most to fewest', hi: 'Most', lo: 'Fewest', unit: 'count', gap: 1.25,
+   src: 'Fixed counts: calendars, official rules and standard sets.',
+   items: [['Seconds in an hour',3600],['Minutes in a day',1440],['Members of the US House',435],['Days in a leap year',366],['Bones in an adult human',206],
+     ['UN member countries',193],['Hours in a week',168],['Original Pokémon',151],['Keys on a full-size keyboard',104],['Tiles in Scrabble',100],
+     ['Keys on a piano',88],['Squares in a Sudoku',81],['Squares on a chessboard',64],['Stickers on a Rubik’s Cube',54],['Cards in a deck',52,'no jokers'],
+     ['Stars on the US flag',50],['Spaces on a Monopoly board',40],['Adult teeth',32,'with wisdom teeth'],['Dominoes in a set',28,'double-six'],
+     ['Letters in the alphabet',26],['Holes on a golf course',18],['Stripes on the US flag',13],['Players per soccer team',11,'on the field'],
+     ['Bowling pins',10],['Strings on a guitar',6]]},
+
+  {id: 'stuffspeed', title: 'Everyday stuff: speed', ask: 'Fastest to slowest', hi: 'Fastest', lo: 'Slowest', unit: 'mph', gap: 1.4,
+   src: 'Typical or record speeds from NASA, sports records and transit agencies. Every item in a round is at least 1.4× faster than the next.',
+   items: [['Earth around the Sun',67000],['International Space Station',17500],['Speed of sound',767,'at sea level'],['Passenger jet',560,'cruising'],
+     ['Bullet train',200,'Japan’s Shinkansen'],['Fastest tennis serve',163,'record'],['MLB fastball',94,'average'],['Interstate highway',70,'typical limit'],
+     ['Racehorse',40,'at a gallop'],['Usain Bolt',27.8,'at top speed'],['Cyclist',12,'typical commute'],['Jogger',6],['Walking',3],['Escalator',1.1],
+     ['Garden snail',0.03]]},
+
+
+  {id: 'foodcal', title: 'Everyday stuff: calories', ask: 'Most calories to fewest', hi: 'Most calories', lo: 'Fewest calories', unit: 'kcal', gap: 1.4, about: true,
    src: 'USDA nutrition data for a typical serving. Servings vary, so every food in a round has at least 1.4× the calories of the next.',
-   items: [['Slice of cheese pizza',285],['Bagel',270],['Whole avocado',240],['Cup of cooked pasta',220],['Cup of cooked rice',205],['Glazed doughnut',190],
+   items: [['Cinnabon Classic Roll',880],['Big Mac',590],['Slice of pepperoni pizza',300,'large pizza'],['Bagel',270],['Whole avocado',240],['Cup of cooked pasta',220],['Cup of cooked rice',205],['Glazed doughnut',190],
      ['Baked potato',160,'medium'],['Cup of whole milk',150],['Can of Coke',140],['Tablespoon of olive oil',120],['Banana',105],['Tablespoon of butter',100],
      ['Apple',95],['Large egg',72],['Orange',62],['Slice of bacon',43],['Cup of broccoli',31],['Carrot',25],['Celery stalk',6],['Strawberry',4],['Grape',3]]},
 
-  {id: 'fastfood', title: 'Fast-food calories', ask: 'Most calories to fewest', hi: 'Most calories', lo: 'Fewest calories', unit: 'kcal', gap: 1.25, about: true,
-   src: 'Calories from each chain’s US nutrition guide. Recipes change now and then, so every item in a round has at least 1.25× the calories of the next.',
-   items: [['Wendy’s Baconator',950],['Double Quarter Pounder with Cheese',740],['Popeyes Chicken Sandwich',700],['Whopper',670],['In-N-Out Double-Double',610],
+  {id: 'fastfood', title: 'Fast-food calories', ask: 'Most calories to fewest', hi: 'Most calories', lo: 'Fewest calories', unit: 'kcal', gap: 1.2, about: true,
+   src: 'Calories from each chain’s US nutrition guide. Recipes change now and then, so every item in a round has at least 1.2× the calories of the next.',
+   items: [['McDonald’s Big Breakfast with Hotcakes',1340],['Cinnabon Classic Roll',880],['Wendy’s Baconator',950],['Double Quarter Pounder with Cheese',740],['Popeyes Chicken Sandwich',700],['Whopper',670],['In-N-Out Double-Double',610],
      ['Big Mac',590],['Taco Bell Crunchwrap Supreme',530],['Quarter Pounder with Cheese',520],['Chick-fil-A Chicken Sandwich',420],
      ['10 Chicken McNuggets',410],['Filet-O-Fish',390],['KFC Original Recipe breast',390],['Medium McDonald’s fries',320],['Egg McMuffin',310],
-     ['McDonald’s cheeseburger',300],['McDonald’s hamburger',250],['Krispy Kreme Original Glazed',190],['Taco Bell Crunchy Taco',170],['McDonald’s hash brown',140]]},
+     ['McDonald’s cheeseburger',300],['McDonald’s hamburger',250],['Chick-fil-A 8-count nuggets',250],['Subway 6-inch turkey sub',250],['Taco Bell bean burrito',350],['Small McDonald’s fries',230],['McDonald’s apple slices',15],['Krispy Kreme Original Glazed',190],['Taco Bell Crunchy Taco',170],['McDonald’s hash brown',140]]},
 
   {id: 'caffeine', title: 'Caffeine', ask: 'Most caffeine to least', hi: 'Most caffeine', lo: 'Least caffeine', unit: 'mg', gap: 1.35,
    src: 'Caffeine per serving from the makers and the USDA. Every drink in a round has at least 1.35× the caffeine of the next.',
@@ -835,11 +890,11 @@ const TOPICS = [
      ['Habanero',350000],['Thai chili',100000],['Cayenne',50000],['Serrano',23000],['Jalapeño',8000],['Tabasco sauce',5000],['Sriracha',2200],
      ['Poblano',1500],['Frank’s RedHot',450],['Bell pepper',0]]},
 
-  {id: 'dogs', title: 'Dog breeds', ask: 'Heaviest breed to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.5, about: true,
-   src: 'Typical adult weight, from the American Kennel Club breed standards. Every breed in a round is at least 1.5× heavier than the next.',
-   items: [['English Mastiff',80],['Saint Bernard',70],['Great Dane',60],['Newfoundland',60],['Bernese Mountain Dog',45],['German Shepherd',34],
+  {id: 'dogs', title: 'Dog breeds', ask: 'Heaviest breed to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.35, about: true,
+   src: 'Typical adult weight, from the American Kennel Club breed standards. Every breed in a round is at least 1.35× heavier than the next.',
+   items: [['English Mastiff',80],['Saint Bernard',70],['Great Dane',60],['Newfoundland',60],['Bernese Mountain Dog',45],['Rottweiler',48],['Standard Poodle',25],['Boxer',29],['German Shepherd',34],
      ['Labrador Retriever',30],['Golden Retriever',30],['Bulldog',23],['Siberian Husky',22],['Border Collie',17],['Corgi',12],['French Bulldog',11],
-     ['Beagle',10],['Dachshund',9],['Pug',7.5],['Shih Tzu',6],['Yorkshire Terrier',3],['Pomeranian',2.5],['Chihuahua',2]]},
+     ['Beagle',10],['Dachshund',9],['Pug',7.5],['Miniature Schnauzer',7],['Cavalier King Charles Spaniel',7],['Maltese',3],['Shih Tzu',6],['Yorkshire Terrier',3],['Pomeranian',2.5],['Chihuahua',2]]},
 
   {id: 'lifespan', title: 'How long animals live', ask: 'Longest life to shortest', hi: 'Longest life', lo: 'Shortest life', unit: 'yrs', gap: 1.6,
    src: 'Typical lifespan, from each animal’s Wikipedia article. Lifespans vary, so every animal in a round lives at least 1.6× longer than the next.',
@@ -1018,13 +1073,33 @@ const TOPICS = [
    items: [['Magnavox Odyssey',1972],['Atari 2600',1977],['NES',1983,'as the Famicom in Japan'],['Sega Genesis',1988,'as the Mega Drive in Japan'],['Game Boy',1989],
      ['SNES',1990,'Japan'],['PlayStation',1994],['Nintendo 64',1996],['Dreamcast',1998],['PlayStation 2',2000],['Xbox',2001],['Nintendo DS',2004],['Xbox 360',2005],
      ['Wii',2006],['Nintendo 3DS',2011],['PlayStation 4',2013],['Nintendo Switch',2017],['PlayStation 5',2020],['Steam Deck',2022],['Nintendo Switch 2',2025]]},
+
+  {id: 'candy', title: 'Candy & snack calories', ask: 'Most calories to fewest', hi: 'Most calories', lo: 'Fewest calories', unit: 'kcal', gap: 1.35,
+   src: 'From each package’s US nutrition label, for the amount shown. Every snack in a round has at least 1.35× the calories of the next.',
+   items: [['King-size Snickers',440],['Snickers bar',250],['Skittles',250,'2.17 oz bag'],['Twix',250,'both bars'],['M&M’s',240,'1.69 oz bag'],
+     ['Reese’s Peanut Butter Cups',210,'pack of 2'],['Kit Kat',210,'4 fingers'],['Hershey’s milk chocolate bar',210],['Pop-Tart',200,'1 pastry'],
+     ['Lay’s chips',160,'1 oz bag'],['Doritos',150,'1 oz bag'],['Twinkie',135],['Rice Krispies Treat',90],['Fun-size Snickers',80],['Fruit by the Foot',80],
+     ['Oreo',53,'1 cookie'],['Peeps marshmallow chick',28,'1 chick'],['Hershey’s Kiss',22],['Gummy bear',8,'1 bear'],['Candy corn',7,'1 piece'],['Tic Tac',2,'1 mint']]},
+
+  {id: 'disneybox', title: 'Disney & Pixar box office', ask: 'Most money made to least', hi: 'Most money', lo: 'Least money', unit: 'musd', gap: 1.2,
+   src: 'Worldwide gross including re-releases, from Box Office Mojo. Animated films only. Not adjusted for inflation.',
+   items: [['Inside Out 2',1699],['Frozen II',1453],['Frozen',1306],['Incredibles 2',1243],['Toy Story 4',1073],['Toy Story 3',1067],['Moana 2',1059],
+     ['Finding Dory',1029],['Zootopia',1025],['The Lion King',968,'1994'],['Finding Nemo',941],['Inside Out',858],['Coco',814],['Monsters University',743],
+     ['Up',735],['Moana',687],['Big Hero 6',658],['The Incredibles',631],['Ratatouille',624],['Tangled',592],['Monsters, Inc.',579],['WALL-E',521],
+     ['Aladdin',504,'1992'],['Elemental',496],['Cars',462],['Encanto',256],['Lightyear',227],['Onward',142]]},
+
+  {id: 'iphones', title: 'When iPhones came out', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 2, year: true,
+   src: 'Launch year, from Apple’s announcements.',
+   items: [['iPhone',2007,'the original'],['iPhone 3G',2008],['iPhone 3GS',2009],['iPhone 4',2010],['iPhone 4S',2011],['iPhone 5',2012],['iPhone 5s',2013],
+     ['iPhone 6',2014],['iPhone 6s',2015],['iPhone 7',2016],['iPhone X',2017],['iPhone XR',2018],['iPhone 11',2019],['iPhone 12',2020],['iPhone 13',2021],
+     ['iPhone 14',2022],['iPhone 15',2023],['iPhone 16',2024],['iPhone 17',2025]]},
 ];
 
 /* each game mixes about a third of each kind of topic */
 const MIX = {
   know: 'pop area statepop statearea lakes islands rivers founded opened peaks towers falls oceans carbrands uscities worldcities parkarea parkvisits airports stadiums',
-  guess: 'stuffweight stufflen foodcal fastfood caffeine peppers dogs lifespan weight speed dinos trees horsepower zero60 planes ships coasterspeed coasterheight',
-  pop: 'gamesales gameyear gamescore consoles boxoffice movieyear movierating oscars tvrating tvyear tveps streams songyear songlen debut celebage insta youtube chains franchises disney sitcoms pkweight pkheight pkdex albums artists techyear consoleyear',
+  guess: 'stuffweight stufflen stuffheight stuffcount stuffspeed candy foodcal fastfood caffeine peppers dogs lifespan weight speed dinos trees horsepower zero60 planes ships coasterspeed coasterheight',
+  pop: 'gamesales gameyear gamescore consoles boxoffice movieyear movierating oscars tvrating tvyear tveps streams songyear songlen debut celebage insta youtube chains franchises disney sitcoms pkweight pkheight pkdex albums artists techyear consoleyear disneybox iphones',
 };
 
 /* ---------------- rules ---------------- */
@@ -1105,6 +1180,7 @@ function fmtVal(t, v) {
     case 'mpop': return `about ${v >= 1 ? `${num(v)} million` : num(v * 1e6)} people`;
     case 'mvisit': return `about ${v >= 1 ? `${num(v)} million` : num(v * 1e6)} visitors`;
     case 'mpass': return `about ${num(v)} million passengers`;
+    case 'count': return v.toLocaleString('en-US');
     case 'dex': return `#${String(v).padStart(4, '0')}`;
     case 'mfollow': return `about ${num(v)} million followers`;
     case 'msubs': return `about ${num(v)} million subscribers`;
@@ -1160,8 +1236,8 @@ function makeRounds(n) {
     const five = pick5(t);
     if (!five) continue;
     const R = {t, ids: five.map(x => x.id)};
-    // the starting order is the same for everyone and never already close to right
-    for (let k = 0; k < 50; k++) { shuffle(R.ids); if (scoreOrder(R.ids, R) <= 40) break; }
+    // the starting order is the same for everyone; reshuffle only if it would already score 80+
+    for (let k = 0; k < 50; k++) { shuffle(R.ids); if (scoreOrder(R.ids, R) < 80) break; }
     out.push(`${t.id}|${R.ids.join(',')}`);
   }
   return out;
@@ -1175,7 +1251,7 @@ function cleanOrder(o, R) {
 }
 function verdict(p, answered) {
   if (!answered) return 'No answer';
-  if (p === 100) return 'Perfect order';
+  if (p === 100) return 'Perfect order!';
   if (p >= 80) return 'So close';
   if (p >= 60) return 'Solid';
   if (p >= 40) return 'Mixed up';
@@ -1334,6 +1410,9 @@ async function hostHandle(conn, msg) {
     if (conns.get(conn.pid) === conn) conns.delete(conn.pid);
     await db.doc(own).delete();
     try { conn.close(); } catch {}
+  } else if (msg.t === 'away') {
+    // tab closed or reloaded: mark them away now instead of waiting for the connection to time out; they can rejoin
+    hostDrop(conn);
   }
 }
 function hostDrop(conn) {
@@ -1670,6 +1749,15 @@ function startReveal(right) {
   local.revealT = setTimeout(tick, 350);
 }
 
+/* standings after round i: competition ranking (ties share a rank), plus each player's rank after round i-1 */
+function standingsAt(i, list = players) {
+  const total = (p, upto) => { let t = 0; for (let j = 0; j <= upto; j++) t += scoreRec(p, j)?.p || 0; return t; };
+  const rankIn = key => { const m = new Map(); for (const r of rows) m.set(r.p.pid, 1 + rows.filter(q => q[key] > r[key]).length); return m; };
+  const rows = list.map(p => ({p, rec: scoreRec(p, i), round: scoreRec(p, i)?.p || 0, total: total(p, i), before: i > 0 ? total(p, i - 1) : 0}));
+  const now = rankIn('total'), prev = rankIn('before');
+  for (const r of rows) { r.rank = now.get(r.p.pid); r.prev = i > 0 ? prev.get(r.p.pid) : r.rank; }
+  return rows.sort((a, b) => a.rank - b.rank || b.round - a.round || a.p.name.localeCompare(b.p.name));
+}
 const ordinal = n => { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
 /* the headlines after a reveal: who nailed it, and how the standings moved */
 function roundCallouts(i) {
@@ -1679,9 +1767,11 @@ function roundCallouts(i) {
   const names = a => a.length <= 2 ? a.map(p => p.name).join(' and ') : `${a.length} players`;
   const out = [];
   if (list.length <= 1) {
-    const k = exact(list[0] || mine()), p = scoreRec(list[0] || mine(), i)?.p || 0;
-    out.push(k === 5 ? {big: true, text: 'Perfect round!', sub: '5 for 5'}
-      : {text: k >= 3 ? `You nailed ${k}/5` : k ? `${k}/5 in the right spot` : 'Tough one', sub: `+${p}`});
+    const who = list[0] || mine(), k = exact(who), p = scoreRec(who, i)?.p || 0;
+    if (k === 5) {
+      const n = room.rounds.slice(0, i + 1).filter((_, j) => scoreRec(who, j)?.p === 100).length;
+      if (n > 1) out.push({big: true, text: `${n} perfect rounds this game`});
+    } else out.push({text: k >= 3 ? `You nailed ${k}/5` : k ? `${k}/5 in the right spot` : 'Tough one', sub: `+${p}`});
     return out;
   }
   const scored = list.map(p => ({p, k: exact(p)}));
@@ -1690,15 +1780,16 @@ function roundCallouts(i) {
   else if (bestK >= 2) out.push({who: best, text: `${names(best)} nailed ${bestK}/5`, sub: best.length === 1 ? `+${scoreRec(best[0], i)?.p || 0}` : ''});
   else out.push({text: bestK ? 'Tough one. Nobody got more than 1 right' : 'Tough one. Nobody got any right'});
 
-  const total = (p, upto) => { let s = 0; for (let j = 0; j <= upto; j++) s += scoreRec(p, j)?.p || 0; return s; };
-  const after = new Map(list.map(p => [p.pid, total(p, i)])), before = new Map(list.map(p => [p.pid, i ? total(p, i - 1) : 0]));
-  const rank = (m, p) => 1 + list.filter(q => m.get(q.pid) > m.get(p.pid)).length;
-  const leaders = list.filter(p => rank(after, p) === 1), wasLeaders = list.filter(p => rank(before, p) === 1);
+  // rank everyone, including anyone who dropped out, so this matches the standings list
+  const st = standingsAt(i), by = new Map(st.map(r => [r.p.pid, r]));
+  const rank = (when, p) => when === 'after' ? by.get(p.pid).rank : by.get(p.pid).prev;
+  const after = 'after', before = 'before';
+  const leaders = st.filter(r => r.rank === 1).map(r => r.p), wasLeaders = st.filter(r => r.prev === 1).map(r => r.p);
   if (leaders.length === 1) {
     const L = leaders[0];
     if (i === 0) out.push({who: [L], text: `${L.name} takes the early lead`});
     else if (!(wasLeaders.length === 1 && wasLeaders[0] === L)) out.push({big: true, who: [L], text: `${L.name} moved into 1st!`});
-  } else if (i > 0 && leaders.length < list.length) out.push({who: leaders, text: `${names(leaders)} ${leaders.length === 2 ? 'are' : 'all'} tied for 1st`});
+  } else if (i > 0 && leaders.length < st.length) out.push({who: leaders, text: `${names(leaders)} ${leaders.length === 2 ? 'are' : 'all'} tied for 1st`});
   if (list.length >= 3 && i > 0) {
     const jump = list.map(p => ({p, d: rank(before, p) - rank(after, p)})).filter(x => x.d >= 2 && rank(after, x.p) > 1).sort((a, b) => b.d - a.d)[0];
     if (jump) out.push({who: [jump.p], text: `${jump.p.name} jumped to ${ordinal(rank(after, jump.p))}`, sub: `from ${ordinal(rank(before, jump.p))}`});
@@ -1767,19 +1858,27 @@ function renderRound() {
     const calls = roundCallouts(room.round).map(c => `<div class="callout${c.big ? ' big' : ''}">${c.who?.length === 1 ? `<i class="dot" style="background:${esc(c.who[0].color)}"></i>` : ''}<span>${esc(c.text)}</span>${c.sub ? `<small>${esc(c.sub)}</small>` : ''}</div>`).join('');
     // only touch the banner when it changes, so its entrance animation plays once
     if ($('#rv-callouts').dataset.html !== calls) { $('#rv-callouts').dataset.html = calls; $('#rv-callouts').innerHTML = calls; }
+    const perfect = p === 100 && !!mineO;
+    $('#rv-main').classList.toggle('perfect', perfect);
+    sorterEl.classList.toggle('perfect', perfect);
     $('#rv-pts').textContent = '+' + p;
     $('#rv-pts').style.color = p >= 60 ? 'var(--green)' : p > 0 ? 'var(--ink)' : 'var(--red)';
     $('#rv-verdict').textContent = verdict(p, !!mineO);
     const near = mineO ? mineO.filter((id, i) => Math.abs(right.indexOf(id) - i) === 1).length : 0;
-    $('#rv-off').textContent = mineO ? `${rightCount(mineO, R)}${near ? `, ${near} one spot off` : ''}` : "You didn't move anything this round.";
+    $('#rv-off').textContent = perfect ? `${N} / ${N} exactly right` : mineO ? `${rightCount(mineO, R)}${near ? `, ${near} one spot off` : ''}` : 'Time ran out before you made a move or locked in.';
     $('#rv-fact').textContent = t.src;
-    const rows = players.map(pl => ({pl, rec: scoreRec(pl, room.round)}))
-      .sort((a, b) => (b.rec?.p ?? -1) - (a.rec?.p ?? -1));
-    $('#rv-list').innerHTML = rows.map(({pl, rec}) => `
-      <li><i class="dot" style="background:${esc(pl.color)}"></i>
-      <span class="nm">${esc(pl.name)}${pl.pid === me.pid ? ' <span class="tag">you</span>' : ''}</span>
-      <span class="off">${rec ? rightCount(rec.o ? String(rec.o).split(',') : null, R) : 'no answer'}</span>
-      <span class="pts">${rec ? rec.p : 0}</span></li>`).join('');
+    const list = standingsAt(room.round).map(({p: pl, rec, round, total, rank, prev}) => {
+      const d = prev - rank;
+      const mv = room.round === 0 ? '' : d > 0 ? `<span class="move up" title="Up ${d}">▲${d}</span>`
+        : d < 0 ? `<span class="move down" title="Down ${-d}">▼${-d}</span>` : '<span class="move" title="No change">—</span>';
+      return `<li class="${pl.online === false ? 'away' : ''}" title="${esc(rec ? rightCount(rec.o ? String(rec.o).split(',') : null, R) : 'no answer')}">
+      <span class="rk">${rank}</span><i class="dot" style="background:${esc(pl.color)}"></i>
+      <span class="nm">${esc(pl.name)}${pl.pid === me.pid ? ' <span class="tag">you</span>' : ''}${pl.online === false ? ' <span class="tag">away</span>' : ''}</span>
+      <span class="rd${round === 100 ? ' hot' : ''}">${rec ? '+' + round : '—'}</span>
+      <span class="pts">${total}</span>${mv || '<span class="move"></span>'}</li>`;
+    }).join('');
+    // standings only change when a score arrives, so rebuild only then and let the arrows animate once
+    if ($('#rv-list').dataset.html !== list) { $('#rv-list').dataset.html = list; $('#rv-list').innerHTML = list; }
     const last = room.round + 1 >= room.rounds.length;
     $('#btn-next').hidden = !isHost();
     $('#btn-next').textContent = last ? 'See final scores' : 'Next round';
@@ -1787,9 +1886,73 @@ function renderRound() {
     delete sorterEl.dataset.revealed;
     clearTimeout(local.revealT);
     $('#reveal').classList.remove('pop');
-    sorterEl.classList.remove('revealing');
+    $('#rv-main').classList.remove('perfect');
+    sorterEl.classList.remove('revealing', 'perfect');
     for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far', 'pending', 'landed'); li.querySelector('.ans').hidden = true; }
   }
+}
+
+/* a few highlights from the finished game; each award only shows when it says something the standings don't */
+function gameAwards() {
+  const n = room.rounds.length, list = players.filter(p => p.scores?.[room.game]);
+  if (!list.length || !n) return [];
+  const who = ps => ps.length <= 2 ? ps.map(p => `<strong>${esc(p.name)}</strong>`).join(' and ') : `${ps.length} players`;
+  const topicOf = i => roundOf(i).t.title;
+  const solo = list.length === 1, out = [];
+  const pts = (p, i) => scoreRec(p, i)?.p ?? 0;
+
+  // 🎯 most perfect rounds
+  const perfects = list.map(p => ({p, k: room.rounds.filter((_, i) => pts(p, i) === 100).length}));
+  const maxPerfect = Math.max(...perfects.map(x => x.k));
+  if (maxPerfect > 0) {
+    const top = perfects.filter(x => x.k === maxPerfect).map(x => x.p);
+    const times = maxPerfect === 1 ? 'one perfect round' : `${maxPerfect} perfect rounds`;
+    out.push({icon: '🎯', title: solo ? 'Perfect rounds' : 'Most perfect rounds',
+      html: solo ? `${maxPerfect === 1 ? 'One round' : `${maxPerfect} rounds`} with all five in the right spot` : `${who(top)} · ${times}${top.length > 1 ? ' each' : ''}`});
+  }
+
+  // 🔥 best round: only when it isn't already a perfect round (the award above covers that)
+  let best = {v: -1, hits: []};
+  list.forEach(p => room.rounds.forEach((_, i) => {
+    const v = pts(p, i);
+    if (v > best.v) best = {v, hits: [{p, i}]}; else if (v === best.v) best.hits.push({p, i});
+  }));
+  if (best.v > 0 && best.v < 100) {
+    const ps = [...new Set(best.hits.map(h => h.p))];
+    const where = best.hits.length === 1 ? ` on ${esc(topicOf(best.hits[0].i))}` : '';
+    out.push({icon: '🔥', title: 'Best round', html: solo ? `${best.v} points${where}` : `${who(ps)} · ${best.v} points${where}`});
+  }
+  if (solo) return out;
+
+  // 📈 comeback: the biggest climb from the early standings (after round 3) to the final ones
+  if (n >= 5) {
+    const early = new Map(standingsAt(Math.min(2, n - 3), list).map(r => [r.p.pid, r.rank]));
+    const fin = standingsAt(n - 1, list);
+    const climbs = fin.map(r => ({p: r.p, from: early.get(r.p.pid), to: r.rank})).map(c => ({...c, d: c.from - c.to}));
+    const most = Math.max(...climbs.map(c => c.d));
+    if (most >= 1) {
+      const top = climbs.filter(c => c.d === most);
+      const detail = top.length === 1 ? ` · ${ordinal(top[0].from)} after round 3, finished ${ordinal(top[0].to)}` : ` · up ${most} place${most > 1 ? 's' : ''} since round 3`;
+      out.push({icon: '📈', title: 'Comeback kid', html: who(top.map(c => c.p)) + detail});
+    }
+  }
+
+  // 😬 closest round: the smallest gap between the top two scores in a round
+  let close = null;
+  room.rounds.forEach((_, i) => {
+    const got = list.filter(p => scoreRec(p, i)).map(p => ({p, v: pts(p, i)})).sort((a, b) => b.v - a.v);
+    if (got.length < 2 || got[0].v === 0) return;
+    const gap = got[0].v - got[1].v;
+    const c = {i, gap, v: got[0].v, top: got.filter(g => g.v === got[0].v), second: got[1]};
+    if (!close || gap < close.gap || (gap === close.gap && c.v > close.v)) close = c;
+  });
+  if (close && close.gap <= 10) {
+    const html = close.gap === 0
+      ? `${who(close.top.map(g => g.p))} tied at ${close.v} on ${esc(topicOf(close.i))}`
+      : `<strong>${esc(close.top[0].p.name)}</strong> ${close.v}, <strong>${esc(close.second.p.name)}</strong> ${close.second.v} on ${esc(topicOf(close.i))}`;
+    out.push({icon: '😬', title: close.gap === 0 ? 'Dead heat' : 'Closest round', html: `Round ${close.i + 1} · ${html}`});
+  }
+  return out;
 }
 
 function renderFinal() {
@@ -1804,14 +1967,17 @@ function renderFinal() {
     $('#fn-title').textContent = tie ? "It's a tie" : `${rows[0].p.name} wins`;
     $('#fn-sub').textContent = `${rows[0].total} of ${max.toLocaleString()} possible points${tie ? ' at the top' : ''}.`;
   }
-  $('#fn-board').innerHTML = rows.map((r, i) => `
-    <li class="${i === 0 && r.total > 0 ? 'win' : ''}">
-      <span class="rank">${i + 1}</span>
+  $('#fn-board').innerHTML = rows.map(r => ({...r, rank: 1 + rows.filter(q => q.total > r.total).length})).map(r => `
+    <li class="${r.rank === 1 && r.total > 0 ? 'win' : ''}">
+      <span class="rank">${r.rank}</span>
       <i class="dot" style="background:${esc(r.p.color)}"></i>
       <span class="nm">${esc(r.p.name)}${r.p.pid === me.pid ? ' <span class="tag">you</span>' : ''}</span>
       <span class="bars" title="Points per round">${r.per.map(v => `<s style="--v:${v}"></s>`).join('')}</span>
       <span class="total">${r.total}</span>
     </li>`).join('');
+  const awards = gameAwards();
+  $('#fn-awards').hidden = !awards.length;
+  $('#fn-awards-list').innerHTML = awards.map(a => `<li class="card"><span class="ic" aria-hidden="true">${a.icon}</span><b>${esc(a.title)}</b><span>${a.html}</span></li>`).join('');
   $('#btn-again').hidden = !isHost();
   const hostP = players.find(p => p.pid === room.host);
   $('#fn-wait').hidden = isHost();
@@ -2020,6 +2186,11 @@ $('#btn-copy').addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(link); toast('Invite link copied.'); }
   catch { const i = $('#lb-link'); i.focus(); i.select(); toast('Press Ctrl+C (or Cmd+C) to copy the link.'); }
 });
+window.addEventListener('pagehide', () => {
+  if (mode === 'guest' && hostConn?.open) { try { hostConn.send({t: 'away'}); } catch {} }
+});
+// coming back from the back/forward cache: the connection is gone, so reload and rejoin the saved room
+window.addEventListener('pageshow', e => { if (e.persisted && mode === 'guest') location.reload(); });
 window.addEventListener('beforeunload', e => {
   if (mode === 'host' && conns.size) {
     for (const c of conns.values()) { try { c.send({t: 'closed'}); } catch {} }
