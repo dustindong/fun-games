@@ -215,6 +215,23 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 
 .reveal{margin-top:14px;display:grid;grid-template-columns:minmax(220px,1fr) 1.4fr;gap:14px;align-items:start}
 .rv-main{padding:16px 18px;display:grid;gap:8px}
+.reveal.pop > .card{animation:rv-in .35s ease both}
+.reveal.pop > .rv-side{animation-delay:.08s}
+.rv-callouts{grid-column:1/-1;display:grid;gap:6px}
+.rv-callouts:empty{display:none}
+.callout{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);
+  font:800 clamp(22px,4.4vw,30px)/1.05 var(--display);text-transform:uppercase;letter-spacing:.01em;animation:callout-in .45s cubic-bezier(.2,1.4,.4,1) both}
+.callout .dot{flex:none}
+.callout small{font:600 12px/1.2 var(--mono);text-transform:none;letter-spacing:0;color:var(--muted);margin-left:auto;text-align:right}
+.callout.big{background:var(--tape);border-color:var(--tape);color:var(--tape-ink)}
+.callout.big small{color:var(--tape-ink);opacity:.75}
+.callout + .callout{animation-delay:.35s;font-size:clamp(18px,3.4vw,22px)}
+.callout + .callout + .callout{animation-delay:.7s}
+.sorter.revealing .row.pending{opacity:.55}
+.row.landed{animation:land .42s cubic-bezier(.2,1.5,.4,1)}
+@keyframes land{0%{transform:scale(1)}40%{transform:scale(1.035);box-shadow:var(--lift)}100%{transform:scale(1)}}
+@keyframes callout-in{from{opacity:0;transform:translateY(8px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes rv-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .rv-pts{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .rv-pts b{font:900 64px/.9 var(--display);font-variant-numeric:tabular-nums}
 .rv-pts span{font:800 22px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
@@ -454,6 +471,7 @@ input[type=text]{font-size:16px}
     </div>
 
     <div class="reveal" id="reveal" hidden>
+      <div class="rv-callouts" id="rv-callouts" aria-live="polite"></div>
       <div class="card rv-main" aria-live="polite">
         <div class="rv-pts"><b id="rv-pts">+0</b><span id="rv-verdict"></span></div>
         <div class="rv-off" id="rv-off"></div>
@@ -775,10 +793,242 @@ const TOPICS = [
    items: [['McDonald’s',43500],['Starbucks',40500],['Subway',37000],['KFC',31000],['Domino’s',21000],['Pizza Hut',20000],['Burger King',19700],
      ['Dunkin’',13900],['Taco Bell',8700],['Wendy’s',7300],['Tim Hortons',5900],['Popeyes',4800],['Chipotle',3700],['Chick-fil-A',3100],
      ['Panda Express',2500],['Five Guys',1900],['Shake Shack',580],['In-N-Out',420]]},
+
+  /* ---- everyday stuff: things you can reason your way through ---- */
+  {id: 'stuffweight', title: 'Everyday stuff: weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.6, about: true,
+   src: 'Typical weights from manufacturers and official specs (a bowling ball can be at most 16 lb). Every object in a round is at least 1.6× heavier than the next.',
+   items: [['Upright piano',230],['Refrigerator',110],['Washing machine',75],['Microwave',15],['Car tire',11],['Bowling ball',7.26,'the heaviest allowed'],
+     ['Gallon of milk',3.9],['Brick',2.3],['MacBook Air',1.24],['Basketball',0.62],['Soccer ball',0.43],['Can of soda',0.37,'full'],['iPhone',0.17],
+     ['Stick of butter',0.113],['Tennis ball',0.058],['Golf ball',0.046],['AA battery',0.023],['Pencil',0.007],['Nickel',0.005],['Sheet of paper',0.0045],
+     ['Penny',0.0025],['Paperclip',0.001]]},
+
+  {id: 'stufflen', title: 'Everyday stuff: length', ask: 'Longest to shortest', hi: 'Longest', lo: 'Shortest', unit: 'ftin', gap: 1.35,
+   src: 'Standard sizes from official rules and specs. Every object in a round is at least 1.35× longer than the next.',
+   items: [['American football field',109.7,'including end zones'],['Olympic swimming pool',50],['NBA court',28.65],['Tennis court',23.77],
+     ['Semi truck',21,'tractor and trailer'],['Bowling lane',18.29,'foul line to head pin'],['School bus',13.7],['Pickup truck',5.9],['NBA hoop height',3.05],
+     ['Front door',2.03,'tall'],['Bathtub',1.52],['Baseball bat',0.84],['Yardstick',0.914],['Ruler',0.305],['Pencil',0.19],['Dollar bill',0.156],
+     ['iPhone',0.147],['Soda can',0.122,'tall'],['Credit card',0.0856],['AA battery',0.05],['Grain of rice',0.007]]},
+
+  {id: 'foodcal', title: 'Food calories', ask: 'Most calories to fewest', hi: 'Most calories', lo: 'Fewest calories', unit: 'kcal', gap: 1.4, about: true,
+   src: 'USDA nutrition data for a typical serving. Servings vary, so every food in a round has at least 1.4× the calories of the next.',
+   items: [['Slice of cheese pizza',285],['Bagel',270],['Whole avocado',240],['Cup of cooked pasta',220],['Cup of cooked rice',205],['Glazed doughnut',190],
+     ['Baked potato',160,'medium'],['Cup of whole milk',150],['Can of Coke',140],['Tablespoon of olive oil',120],['Banana',105],['Tablespoon of butter',100],
+     ['Apple',95],['Large egg',72],['Orange',62],['Slice of bacon',43],['Cup of broccoli',31],['Carrot',25],['Celery stalk',6],['Strawberry',4],['Grape',3]]},
+
+  {id: 'fastfood', title: 'Fast-food calories', ask: 'Most calories to fewest', hi: 'Most calories', lo: 'Fewest calories', unit: 'kcal', gap: 1.25, about: true,
+   src: 'Calories from each chain’s US nutrition guide. Recipes change now and then, so every item in a round has at least 1.25× the calories of the next.',
+   items: [['Wendy’s Baconator',950],['Double Quarter Pounder with Cheese',740],['Popeyes Chicken Sandwich',700],['Whopper',670],['In-N-Out Double-Double',610],
+     ['Big Mac',590],['Taco Bell Crunchwrap Supreme',530],['Quarter Pounder with Cheese',520],['Chick-fil-A Chicken Sandwich',420],
+     ['10 Chicken McNuggets',410],['Filet-O-Fish',390],['KFC Original Recipe breast',390],['Medium McDonald’s fries',320],['Egg McMuffin',310],
+     ['McDonald’s cheeseburger',300],['McDonald’s hamburger',250],['Krispy Kreme Original Glazed',190],['Taco Bell Crunchy Taco',170],['McDonald’s hash brown',140]]},
+
+  {id: 'caffeine', title: 'Caffeine', ask: 'Most caffeine to least', hi: 'Most caffeine', lo: 'Least caffeine', unit: 'mg', gap: 1.35,
+   src: 'Caffeine per serving from the makers and the USDA. Every drink in a round has at least 1.35× the caffeine of the next.',
+   items: [['Starbucks grande coffee',310,'Pike Place, 16 oz'],['Bang Energy',300,'16 oz can'],['5-hour Energy',200],['Monster Energy',160,'16 oz can'],
+     ['Starbucks grande latte',150],['Cup of coffee',95,'8 oz'],['Red Bull',80,'8.4 oz can'],['Espresso',64,'one shot'],['Mountain Dew',54,'12 oz can'],
+     ['Cup of black tea',47,'8 oz'],['Diet Coke',46,'12 oz can'],['Dr Pepper',41,'12 oz can'],['Coca-Cola',34,'12 oz can'],['Cup of green tea',28,'8 oz'],
+     ['Dark chocolate bar',23,'1 oz'],['Hot chocolate',5,'8 oz'],['Decaf coffee',2,'8 oz']]},
+
+  {id: 'peppers', title: 'Spiciness', ask: 'Hottest to mildest', hi: 'Hottest', lo: 'Mildest', unit: 'shu', gap: 2.5,
+   src: 'Scoville heat units, using the top of each pepper’s usual range. Peppers vary a lot, so every item in a round is at least 2.5× hotter than the next.',
+   items: [['Pure capsaicin',16000000],['Police pepper spray',5300000],['Pepper X',2693000],['Carolina Reaper',1641000,'average'],['Ghost pepper',1000000],
+     ['Habanero',350000],['Thai chili',100000],['Cayenne',50000],['Serrano',23000],['Jalapeño',8000],['Tabasco sauce',5000],['Sriracha',2200],
+     ['Poblano',1500],['Frank’s RedHot',450],['Bell pepper',0]]},
+
+  {id: 'dogs', title: 'Dog breeds', ask: 'Heaviest breed to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.5, about: true,
+   src: 'Typical adult weight, from the American Kennel Club breed standards. Every breed in a round is at least 1.5× heavier than the next.',
+   items: [['English Mastiff',80],['Saint Bernard',70],['Great Dane',60],['Newfoundland',60],['Bernese Mountain Dog',45],['German Shepherd',34],
+     ['Labrador Retriever',30],['Golden Retriever',30],['Bulldog',23],['Siberian Husky',22],['Border Collie',17],['Corgi',12],['French Bulldog',11],
+     ['Beagle',10],['Dachshund',9],['Pug',7.5],['Shih Tzu',6],['Yorkshire Terrier',3],['Pomeranian',2.5],['Chihuahua',2]]},
+
+  {id: 'lifespan', title: 'How long animals live', ask: 'Longest life to shortest', hi: 'Longest life', lo: 'Shortest life', unit: 'yrs', gap: 1.6,
+   src: 'Typical lifespan, from each animal’s Wikipedia article. Lifespans vary, so every animal in a round lives at least 1.6× longer than the next.',
+   items: [['Greenland shark',400],['Bowhead whale',200],['Galápagos tortoise',100],['Human',73,'world average'],['African elephant',65],['Macaw',60],
+     ['Gorilla',40],['Horse',28],['Cat',15],['Dog',12],['Lion',12,'in the wild'],['Goldfish',10],['Rabbit',9],['Guinea pig',6],['Hamster',2.5],
+     ['House mouse',1.5],['Housefly',28 / 365],['Mayfly',1 / 365,'as an adult']]},
+
+  {id: 'dinos', title: 'Dinosaur length', ask: 'Longest dinosaur to shortest', hi: 'Longest', lo: 'Shortest', unit: 'm', gap: 1.4, about: true,
+   src: 'Estimated length from nose to tail, from each dinosaur’s Wikipedia article. Fossil estimates vary, so every dinosaur in a round is at least 1.4× longer than the next.',
+   items: [['Argentinosaurus',35],['Diplodocus',26],['Brachiosaurus',22],['Spinosaurus',15],['Tyrannosaurus rex',12.3],['Iguanodon',10],
+     ['Stegosaurus',9],['Triceratops',9],['Ankylosaurus',7],['Utahraptor',6],['Pachycephalosaurus',4.5],['Deinonychus',3.4],['Velociraptor',1.8],
+     ['Compsognathus',1],['Microraptor',0.8]]},
+
+  {id: 'trees', title: 'Tall trees and plants', ask: 'Tallest to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.3,
+   src: 'Record or typical maximum heights, from Wikipedia and Guinness World Records.',
+   items: [['Hyperion',116,'tallest known tree, a redwood'],['Centurion',100.5,'tallest eucalyptus'],['General Sherman',84,'biggest giant sequoia'],
+     ['Quindío wax palm',60,'tallest palm species'],['Coconut palm',30,'fully grown'],['Baobab',25,'fully grown'],['Rockefeller Center Christmas tree',22.6,'2024'],
+     ['Tallest saguaro cactus',13.8,'ever measured'],['Tallest sunflower',9.17,'world record'],['Corn stalk',2.5,'typical'],['Tulip',0.5,'typical']]},
+
+  {id: 'horsepower', title: 'Horsepower', ask: 'Most horsepower to least', hi: 'Most powerful', lo: 'Least powerful', unit: 'hp', gap: 1.3,
+   src: 'Maker’s rated horsepower for each car’s standard version, from Car and Driver.',
+   items: [['Rimac Nevera',1914],['Bugatti Chiron',1479],['Tesla Model S Plaid',1020],['Ferrari SF90',986],['Dodge Challenger Hellcat',717],
+     ['McLaren F1',618,'1990s'],['Corvette Stingray',490],['Ford Mustang GT',480],['BMW M3',473],['Toyota GR Supra',382],['Honda Civic Type R',315],
+     ['Jeep Wrangler',285],['Toyota Camry',225],['Toyota Prius',196],['Honda Civic',158],['VW Beetle',40,'1960s'],['Ford Model T',20],['Fiat 500',13,'1957']]},
+
+  {id: 'zero60', title: '0 to 60 mph', ask: 'Quickest to slowest', hi: 'Quickest', lo: 'Slowest', asc: true, unit: 'zs', gap: 1.3,
+   src: 'Road-test 0–60 mph times, from Car and Driver and Motor Trend. Every car in a round is at least 1.3× quicker than the next.',
+   items: [['Rimac Nevera',1.85],['Tesla Model S Plaid',2.1],['Bugatti Chiron',2.4],['Porsche 911 Turbo S',2.6],['Corvette Stingray',2.9],
+     ['Toyota GR Supra',3.9],['Ford Mustang GT',4.3],['Honda Civic Type R',5.1],['Tesla Model 3',5.8,'base'],['Toyota Prius',7.2],['Toyota Camry',7.6],
+     ['Honda Civic',8.1],['Toyota Corolla',8.6],['Mitsubishi Mirage',12.8],['VW Beetle',27,'1960s']]},
+
+  {id: 'planes', title: 'Airplane seats', ask: 'Most seats to fewest', hi: 'Most seats', lo: 'Fewest seats', unit: 'seats', gap: 1.25, about: true,
+   src: 'Typical seats as airlines fly them, from Boeing and Airbus. Airlines vary, so every plane in a round has at least 1.25× the seats of the next.',
+   items: [['Airbus A380',525],['Boeing 747',416],['Boeing 777',396],['Airbus A350',315],['Boeing 787',296],['Airbus A330',290],['Boeing 757',200],
+     ['Airbus A320',165],['Boeing 737',162],['Concorde',100],['Embraer E175',78],['ATR 72',70],['Bombardier CRJ200',50],['Cessna 172',4]]},
+
+  {id: 'ships', title: 'Ship length', ask: 'Longest ship to shortest', hi: 'Longest', lo: 'Shortest', unit: 'm', gap: 1.15,
+   src: 'Overall length, from each ship’s Wikipedia page.',
+   items: [['Seawise Giant',458.5,'biggest ship ever built'],['Ever Given',400,'stuck in the Suez Canal'],['Icon of the Seas',365],['Queen Mary 2',345],
+     ['USS Gerald R. Ford',337,'aircraft carrier'],['Queen Mary',311],['Titanic',269],['Bismarck',251],['Lusitania',240],['USS Constitution',93],
+     ['Cutty Sark',85],['HMS Victory',69],['Mayflower',30],['Santa María',18,'Columbus’s ship'],['Kon-Tiki',14,'raft']]},
+
+  {id: 'coasterspeed', title: 'Roller coaster speed', ask: 'Fastest to slowest', hi: 'Fastest', lo: 'Slowest', unit: 'mph', gap: 1.2,
+   src: 'Top speed, from the Roller Coaster DataBase.',
+   items: [['Formula Rossa',149,'Abu Dhabi'],['Kingda Ka',128,'closed in 2024'],['Top Thrill 2',120,'Cedar Point'],['Red Force',112,'Spain'],
+     ['Superman: Escape from Krypton',100],['Fury 325',95],['Millennium Force',93],['Steel Vengeance',74],['Magnum XL-200',72],['VelociCoaster',70],
+     ['The Beast',65,'Kings Island'],['Cyclone',60,'Coney Island'],['Rock ’n’ Roller Coaster',57],['Incredicoaster',55],['Expedition Everest',50],
+     ['Big Thunder Mountain',30]]},
+
+  {id: 'coasterheight', title: 'Roller coaster height', ask: 'Tallest to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'ft', gap: 1.2,
+   src: 'Tallest point of the ride, from the Roller Coaster DataBase.',
+   items: [['Kingda Ka',456,'closed in 2024'],['Top Thrill 2',420,'Cedar Point'],['Superman: Escape from Krypton',415],['Red Force',367,'Spain'],
+     ['Fury 325',325],['Millennium Force',310],['Magnum XL-200',205],['Steel Vengeance',205],['Expedition Everest',199],['VelociCoaster',155],
+     ['The Beast',110,'Kings Island'],['Cyclone',85,'Coney Island'],['Formula Rossa',52,'the world’s fastest']]},
+
+  {id: 'stadiums', title: 'Stadium seats', ask: 'Most seats to fewest', hi: 'Most seats', lo: 'Fewest seats', unit: 'seats', gap: 1.15,
+   src: 'Official seating capacity, from each venue’s Wikipedia page.',
+   items: [['Narendra Modi Stadium',132000,'cricket, India'],['Michigan Stadium',107601],['Ohio Stadium',102780],['Melbourne Cricket Ground',100024],
+     ['Wembley Stadium',90000],['Rose Bowl',89702],['Estadio Azteca',83264],['MetLife Stadium',82500],['Lambeau Field',81441],['Old Trafford',74310],
+     ['SoFi Stadium',70240],['Dodger Stadium',56000],['Yankee Stadium',46537],['Wrigley Field',41649],['Fenway Park',37755],['United Center',20917,'basketball'],
+     ['Madison Square Garden',19812,'basketball'],['Wimbledon Centre Court',14979]]},
+
+  {id: 'oceans', title: 'Ocean depth', ask: 'Deepest to shallowest', hi: 'Deepest', lo: 'Shallowest', unit: 'm', gap: 1.25,
+   src: 'Deepest known point, from Wikipedia.',
+   items: [['Pacific Ocean',10935,'Challenger Deep'],['Atlantic Ocean',8376,'Puerto Rico Trench'],['Caribbean Sea',7686],['Southern Ocean',7432],
+     ['Indian Ocean',7190],['Arctic Ocean',5550],['Mediterranean Sea',5267],['Gulf of Mexico',4384],['Sea of Japan',3742],['Red Sea',3040],
+     ['Black Sea',2212],['Caspian Sea',1025],['North Sea',725],['Baltic Sea',459],['Hudson Bay',270],['Persian Gulf',90]]},
+
+  {id: 'carbrands', title: 'When car brands started', ask: 'Oldest brand to newest', hi: 'Started first', lo: 'Started last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'Founding year of each brand, from Wikipedia.',
+   items: [['Cadillac',1902],['Ford',1903],['Rolls-Royce',1906],['Audi',1909],['Chevrolet',1911],['Aston Martin',1913],['BMW',1916],['Bentley',1919],
+     ['Mercedes-Benz',1926],['Volvo',1927],['Porsche',1931],['Toyota',1937],['Volkswagen',1937],['Ferrari',1947,'first Ferrari car'],['Honda',1948],
+     ['Lamborghini',1963],['Hyundai',1967],['Lexus',1989],['Tesla',2003],['Rivian',2009]]},
+
+  {id: 'uscities', title: 'US city population', ask: 'Most people to fewest', hi: 'Most people', lo: 'Fewest people', unit: 'people', gap: 1.1,
+   src: 'People living inside city limits, 2020 US Census.',
+   items: [['New York',8804190],['Los Angeles',3898747],['Chicago',2746388],['Houston',2304580],['Phoenix',1608139],['Philadelphia',1603797],
+     ['San Antonio',1434625],['San Diego',1386932],['Dallas',1304379],['San Jose',1013240],['Austin',961855],['Jacksonville',949611],['Columbus',905748],
+     ['San Francisco',873965],['Seattle',737015],['Denver',715522],['Washington, DC',689545],['Nashville',689447],['Boston',675647],['Las Vegas',641903],
+     ['Detroit',639111],['Baltimore',585708],['Atlanta',498715],['Miami',442241],['New Orleans',383997],['Honolulu',350964],['Orlando',307573],
+     ['Pittsburgh',302971],['St. Louis',301578],['Anchorage',291247],['Salt Lake City',199723],['Burlington, VT',44743]]},
+
+  {id: 'worldcities', title: 'World city population', ask: 'Most people to fewest', hi: 'Most people', lo: 'Fewest people', unit: 'mpop', gap: 1.3,
+   src: 'UN estimates for each city’s whole urban area. Cities draw their borders differently, so every city in a round has at least 1.3× the people of the next.',
+   items: [['Tokyo',37],['Delhi',33],['Shanghai',29],['São Paulo',22.6],['Mexico City',22],['Cairo',22],['Mumbai',21.3],['New York',18.9],['Lagos',15.9],
+     ['Istanbul',15.8],['Buenos Aires',15.5],['Manila',14.9],['Rio de Janeiro',13.8],['Moscow',12.7],['Los Angeles',12.5],['Paris',11.3],['Bangkok',11],
+     ['London',9.6],['Chicago',9],['Madrid',6.8],['Toronto',6.4],['Sydney',5.1],['Rome',4.3],['Berlin',3.6],['Dubai',3],['Dublin',1.3],['Amsterdam',1.2],
+     ['Reykjavík',0.24]]},
+
+  {id: 'parkarea', title: 'National park size', ask: 'Biggest park to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'sqmi', gap: 1.2,
+   src: 'Area of each US national park, from the National Park Service.',
+   items: [['Wrangell–St. Elias',13175,'Alaska'],['Gates of the Arctic',11756,'Alaska'],['Denali',7408],['Death Valley',5270],['Yellowstone',3471],
+     ['Everglades',2357],['Grand Canyon',1902],['Glacier',1583],['Olympic',1442],['Big Bend',1252],['Yosemite',1169],['Great Smoky Mountains',816],
+     ['Sequoia',631],['Grand Teton',485],['Rocky Mountain',415],['Zion',229],['Arches',120],['Acadia',77],['Bryce Canyon',56],['Hot Springs',8.7],
+     ['Gateway Arch',0.14]]},
+
+  {id: 'parkvisits', title: 'National park visitors', ask: 'Most visitors to fewest', hi: 'Most visitors', lo: 'Fewest visitors', unit: 'mvisit', gap: 1.35,
+   src: 'Visits in 2024, from the National Park Service. Every park in a round has at least 1.35× the visitors of the next.',
+   items: [['Great Smoky Mountains',12.2],['Grand Canyon',4.9],['Zion',4.9],['Yellowstone',4.7],['Rocky Mountain',4.2],['Yosemite',4.1],['Acadia',4],
+     ['Grand Teton',3.6],['Glacier',3.2],['Bryce Canyon',2.5],['Arches',1.5],['Death Valley',1.3],['Everglades',1.1],['Denali',0.5],
+     ['Gates of the Arctic',0.011,'least visited']]},
+
+  {id: 'airports', title: 'Busiest airports', ask: 'Most passengers to fewest', hi: 'Most passengers', lo: 'Fewest passengers', unit: 'mpass', gap: 1.15,
+   src: 'Passengers in 2024, from Airports Council International.',
+   items: [['Atlanta',108],['Dubai',92],['Dallas/Fort Worth',88],['Tokyo Haneda',86],['London Heathrow',84],['Denver',82],['Chicago O’Hare',80],
+     ['Los Angeles',77],['Paris Charles de Gaulle',70],['Singapore Changi',68],['New York JFK',63],['Las Vegas',58],['Miami',56],['Toronto Pearson',47],
+     ['Boston Logan',43],['Nashville',24.6],['Honolulu',20],['Reykjavík Keflavík',8.6]]},
+
+  /* ---- more pop culture ---- */
+  {id: 'franchises', title: 'Movie franchises', ask: 'Most money made to least', hi: 'Most money', lo: 'Least money', unit: 'musd', gap: 1.25, about: true,
+   src: 'Worldwide box office for every movie in the series combined, from The Numbers. Every franchise in a round made at least 1.25× more than the next.',
+   items: [['Marvel Cinematic Universe',31000],['Star Wars',10300],['Harry Potter',9600,'with Fantastic Beasts'],['James Bond',7800],['Fast & Furious',7300],
+     ['Jurassic Park',6900],['Lord of the Rings',5900,'with The Hobbit'],['Despicable Me',5600,'with Minions'],['Transformers',5300],
+     ['Pirates of the Caribbean',4500],['Mission: Impossible',4100],['Shrek',3800,'with Puss in Boots'],['The Hunger Games',3300],['Twilight',3300],
+     ['Toy Story',3200],['Frozen',2750],['Indiana Jones',2400],['Back to the Future',960]]},
+
+  {id: 'disney', title: 'When Disney & Pixar movies came out', ask: 'Oldest movie to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'US release year, from each movie’s Wikipedia page.',
+   items: [['Snow White',1937],['Pinocchio',1940],['Bambi',1942],['Cinderella',1950],['Peter Pan',1953],['Sleeping Beauty',1959],['101 Dalmatians',1961],
+     ['The Jungle Book',1967],['The Little Mermaid',1989],['Beauty and the Beast',1991],['Aladdin',1992],['The Lion King',1994],['Toy Story',1995],
+     ['Mulan',1998],['Monsters, Inc.',2001],['Finding Nemo',2003],['The Incredibles',2004],['Cars',2006],['Ratatouille',2007],['WALL-E',2008],['Up',2009],
+     ['Tangled',2010],['Frozen',2013],['Big Hero 6',2014],['Zootopia',2016],['Coco',2017],['Encanto',2021],['Elemental',2023],['Inside Out 2',2024]]},
+
+  {id: 'sitcoms', title: 'Sitcom episodes', ask: 'Most episodes to fewest', hi: 'Most episodes', lo: 'Fewest episodes', unit: 'eps', gap: 1.2,
+   src: 'Episode count from each show’s Wikipedia page. Every show in a round has at least 1.2× the episodes of the next.',
+   items: [['The Simpsons',790,'still airing'],['Family Guy',425,'still airing'],['The Big Bang Theory',279],['Cheers',275],['Frasier',264,'the original'],
+     ['Two and a Half Men',262],['M*A*S*H',256],['Modern Family',250],['Friends',236],['Everybody Loves Raymond',210],['How I Met Your Mother',208],
+     ['The Office',201,'US'],['That ’70s Show',200],['Full House',192],['Scrubs',182],['Seinfeld',180],['Brooklyn Nine-Nine',153],
+     ['The Fresh Prince of Bel-Air',148],['New Girl',146],['30 Rock',138],['Parks and Recreation',126],['Community',110],['Arrested Development',84],
+     ['Schitt’s Creek',80],['Veep',65],['The Good Place',53],['Ted Lasso',34],['Fawlty Towers',12]]},
+
+  {id: 'pkweight', title: 'Pokémon weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.4,
+   src: 'Official weight from the Pokédex.',
+   items: [['Groudon',950],['Metagross',550],['Snorlax',460],['Steelix',400],['Golem',300],['Gyarados',235],['Lapras',220],['Machamp',130],['Mewtwo',122],
+     ['Charizard',90.5],['Lucario',54],['Gengar',40.5],['Butterfree',32],['Psyduck',19.6],['Magikarp',10],['Squirtle',9],['Charmander',8.5],['Bulbasaur',6.9],
+     ['Pikachu',6],['Jigglypuff',5.5],['Meowth',4.2],['Mew',4],['Pidgey',1.8],['Jirachi',1.1],['Diglett',0.8],['Gastly',0.1]]},
+
+  {id: 'pkheight', title: 'Pokémon height', ask: 'Tallest to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'ftin', gap: 1.3,
+   src: 'Official height from the Pokédex.',
+   items: [['Eternatus',20],['Wailord',14.5],['Steelix',9.2],['Rayquaza',7],['Gyarados',6.5],['Lugia',5.2],['Groudon',3.5],['Lapras',2.5],['Dragonite',2.2],
+     ['Snorlax',2.1],['Mewtwo',2],['Charizard',1.7],['Machamp',1.6],['Gengar',1.5],['Lucario',1.2],['Magikarp',0.9],['Psyduck',0.8],['Bulbasaur',0.7],
+     ['Charmander',0.6],['Squirtle',0.5],['Pikachu',0.4],['Eevee',0.3],['Diglett',0.2],['Joltik',0.1]]},
+
+  {id: 'pkdex', title: 'Pokédex number', ask: 'Lowest number to highest', hi: 'Lowest number', lo: 'Highest number', asc: true, unit: 'dex', gap: 10, abs: true,
+   src: 'National Pokédex number.',
+   items: [['Bulbasaur',1],['Charmander',4],['Squirtle',7],['Caterpie',10],['Pidgey',16],['Pikachu',25],['Jigglypuff',39],['Meowth',52],['Machamp',68],
+     ['Slowpoke',79],['Gengar',94],['Cubone',104],['Magikarp',129],['Eevee',133],['Snorlax',143],['Mewtwo',150],['Mew',151],['Chikorita',152],['Pichu',172],
+     ['Togepi',175],['Lugia',249],['Treecko',252],['Wailord',321],['Rayquaza',384],['Lucario',448],['Snivy',495],['Greninja',658],['Sylveon',700],
+     ['Rowlet',722],['Grookey',810],['Sprigatito',906]]},
+
+  {id: 'albums', title: 'When famous albums came out', ask: 'Oldest album to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'Original release year, from each album’s Wikipedia page.',
+   items: [['Sgt. Pepper’s Lonely Hearts Club Band',1967,'The Beatles'],['Abbey Road',1969,'The Beatles'],['Led Zeppelin IV',1971],
+     ['The Dark Side of the Moon',1973,'Pink Floyd'],['Rumours',1977,'Fleetwood Mac'],['Thriller',1982,'Michael Jackson'],['Purple Rain',1984,'Prince'],
+     ['Appetite for Destruction',1987,'Guns N’ Roses'],['Nevermind',1991,'Nirvana'],['OK Computer',1997,'Radiohead'],
+     ['The Miseducation of Lauryn Hill',1998],['The Marshall Mathers LP',2000,'Eminem'],['American Idiot',2004,'Green Day'],['21',2011,'Adele'],
+     ['1989',2014,'Taylor Swift'],['Lemonade',2016,'Beyoncé'],['When We All Fall Asleep, Where Do We Go?',2019,'Billie Eilish'],['SOUR',2021,'Olivia Rodrigo'],
+     ['Short n’ Sweet',2024,'Sabrina Carpenter']]},
+
+  {id: 'artists', title: 'When artists got started', ask: 'First to start to last', hi: 'Started first', lo: 'Started last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'The year each band formed, or each solo artist put out their first record, from Wikipedia.',
+   items: [['Elvis Presley',1954,'first single'],['The Beatles',1960,'formed'],['The Rolling Stones',1962,'formed'],['Led Zeppelin',1968,'formed'],
+     ['Queen',1970,'formed'],['ABBA',1972,'formed'],['U2',1976,'formed'],['Metallica',1981,'formed'],['Madonna',1982,'first single'],['Guns N’ Roses',1985,'formed'],
+     ['Green Day',1987,'formed'],['Destiny’s Child',1990,'formed'],['Backstreet Boys',1993,'formed'],['Linkin Park',1996,'formed'],['Arctic Monkeys',2002,'formed'],
+     ['Taylor Swift',2006,'first single'],['Lady Gaga',2008,'first single'],['One Direction',2010,'formed'],['BTS',2013,'debut'],['Billie Eilish',2015,'first single'],
+     ['Olivia Rodrigo',2021,'first single']]},
+
+  {id: 'techyear', title: 'When gadgets came out', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 3, year: true,
+   src: 'Launch year, from each product’s Wikipedia page.',
+   items: [['Polaroid camera',1948],['Transistor radio',1954],['Atari 2600',1977],['Sony Walkman',1979],['IBM PC',1981],['Apple Macintosh',1984],
+     ['Game Boy',1989],['Tamagotchi',1996],['Nokia 3310',2000],['iPod',2001],['Wii',2006],['iPhone',2007],['Kindle',2007],['iPad',2010],['Amazon Echo',2014],
+     ['Apple Watch',2015],['AirPods',2016],['Nintendo Switch',2017],['ChatGPT',2022],['Apple Vision Pro',2024]]},
+
+  {id: 'consoleyear', title: 'When game consoles came out', ask: 'Oldest console to newest', hi: 'Came out first', lo: 'Came out last', asc: true, unit: 'year', gap: 2, year: true,
+   src: 'First launch anywhere, from each console’s Wikipedia page.',
+   items: [['Magnavox Odyssey',1972],['Atari 2600',1977],['NES',1983,'as the Famicom in Japan'],['Sega Genesis',1988,'as the Mega Drive in Japan'],['Game Boy',1989],
+     ['SNES',1990,'Japan'],['PlayStation',1994],['Nintendo 64',1996],['Dreamcast',1998],['PlayStation 2',2000],['Xbox',2001],['Nintendo DS',2004],['Xbox 360',2005],
+     ['Wii',2006],['Nintendo 3DS',2011],['PlayStation 4',2013],['Nintendo Switch',2017],['PlayStation 5',2020],['Steam Deck',2022],['Nintendo Switch 2',2025]]},
 ];
 
+/* each game mixes about a third of each kind of topic */
+const MIX = {
+  know: 'pop area statepop statearea lakes islands rivers founded opened peaks towers falls oceans carbrands uscities worldcities parkarea parkvisits airports stadiums',
+  guess: 'stuffweight stufflen foodcal fastfood caffeine peppers dogs lifespan weight speed dinos trees horsepower zero60 planes ships coasterspeed coasterheight',
+  pop: 'gamesales gameyear gamescore consoles boxoffice movieyear movierating oscars tvrating tvyear tveps streams songyear songlen debut celebage insta youtube chains franchises disney sitcoms pkweight pkheight pkdex albums artists techyear consoleyear',
+};
+
 /* ---------------- rules ---------------- */
-const ROUNDS = 10, SECONDS = 30, REVEAL_MS = 11000, N = 5;
+const ROUNDS = 10, SECONDS = 30, REVEAL_MS = 15000, STEP_MS = 650, N = 5;
 const COLORS = ['#E4572E','#3A7FD0','#23905A','#9B5DE5','#D99A00','#D6337F','#12A4B6','#7F8F2A','#C0632B','#5C6BC0'];
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -828,19 +1078,40 @@ function fmtVal(t, v) {
   switch (t.unit) {
     case 'people': return big(v, 'people');
     case 'km2': return big(v / KM2_PER_SQMI, 'sq mi');
-    case 'sqmi': return `${Math.round(v).toLocaleString('en-US')} sq mi`;
+    case 'sqmi': return `${v < 100 ? num(v) : Math.round(v).toLocaleString('en-US')} sq mi`;
     case 'km': return `${num(v * MI_PER_KM)} mi`;
     case 'kg': { const lb = v * 2.20462; return (t.about ? 'about ' : '') + (lb < 1 ? `${num(lb * 16)} oz` : big(lb, 'lb')); }
     case 'kmh': return `${num(v * MI_PER_KM)} mph`;
     case 'm': return `${Math.round(v * 3.28084).toLocaleString('en-US')} ft`;
     case 'year': return v < 1000 ? `AD ${v}` : String(v);
     case 'born': return `born ${v}`;
+    case 'ftin': {
+      const inch = v * 39.3701;
+      if (inch < 12) return `${num(inch)} in`;
+      if (inch >= 1200) return `${Math.round(inch / 12).toLocaleString('en-US')} ft`;
+      let ft = Math.floor(inch / 12), i = Math.round(inch - ft * 12);
+      if (i === 12) { ft++; i = 0; }
+      return i ? `${ft} ft ${i} in` : `${ft} ft`;
+    }
+    case 'ft': return `${Math.round(v).toLocaleString('en-US')} ft`;
+    case 'mph': return `${num(v)} mph`;
+    case 'kcal': return `${t.about ? 'about ' : ''}${v.toLocaleString('en-US')} calories`;
+    case 'mg': return `${v} mg`;
+    case 'shu': return big(v, 'Scoville units');
+    case 'yrs': { const d = v * 365; return 'about ' + (v >= 1 ? `${num(v)} years` : d >= 14 ? `${Math.round(d / 7)} weeks` : `${Math.round(d)} day${Math.round(d) === 1 ? '' : 's'}`); }
+    case 'hp': return `${v.toLocaleString('en-US')} hp`;
+    case 'zs': return `${v} seconds`;
+    case 'seats': return `${t.about ? 'about ' : ''}${v.toLocaleString('en-US')} seats`;
+    case 'mpop': return `about ${v >= 1 ? `${num(v)} million` : num(v * 1e6)} people`;
+    case 'mvisit': return `about ${v >= 1 ? `${num(v)} million` : num(v * 1e6)} visitors`;
+    case 'mpass': return `about ${num(v)} million passengers`;
+    case 'dex': return `#${String(v).padStart(4, '0')}`;
     case 'mfollow': return `about ${num(v)} million followers`;
     case 'msubs': return `about ${num(v)} million subscribers`;
     case 'stores': return `about ${num(v)} locations`;
     case 'mcopies': return `${t.about ? 'about ' : ''}${num(v)} million copies`;
     case 'munits': return `${t.about ? 'about ' : ''}${num(v)} million sold`;
-    case 'musd': return v >= 1000 ? `$${num(v / 1000)} billion` : `$${num(v)} million`;
+    case 'musd': return (t.about ? 'about ' : '') + (v >= 1000 ? `$${num(v / 1000)} billion` : `$${num(v)} million`);
     case 'bstreams': return `about ${v >= 1 ? `${num(v)} billion` : `${num(v * 1000)} million`} streams`;
     case 'meta': return `${v} / 100`;
     case 'imdb': return `${v.toFixed(1)} / 10`;
@@ -875,9 +1146,17 @@ function scoreOrder(order, R) {
   return order.reduce((p, id, i) => { const d = Math.abs(right.indexOf(id) - i); return p + (d === 0 ? 20 : d === 1 ? 10 : 0); }, 0);
 }
 function makeRounds(n) {
-  const out = [];
-  for (const t of shuffle(TOPICS.slice())) {
-    if (out.length >= n) break;
+  const out = [], pools = {};
+  for (const k in MIX) pools[k] = shuffle(MIX[k].split(' ').map(id => TOP[id]));
+  // an even share of each kind, with any leftover rounds going to random kinds
+  const kinds = Object.keys(MIX), plan = [];
+  for (let i = 0; i < n; i++) plan.push(i < n - n % kinds.length ? kinds[i % kinds.length] : null);
+  const extra = shuffle(kinds.slice());
+  for (let i = 0; i < n; i++) if (!plan[i]) plan[i] = extra.pop();
+  shuffle(plan);
+  for (const kind of plan) {
+    const t = pools[kind].pop() || shuffle(TOPICS.filter(x => !out.some(o => o.startsWith(x.id + '|'))))[0];
+    if (!t) break;
     const five = pick5(t);
     if (!five) continue;
     const R = {t, ids: five.map(x => x.id)};
@@ -1246,7 +1525,7 @@ function syncLocal() {
   const key = `${room.game}|${room.round}`;
   if (local.key === key) return;
   const R = roundOf(room.round), rec = scoreRec(mine(), room.round);
-  local = {key, start: performance.now(), order: R.ids.slice(), touched: false, locked: !!rec, submitted: !!rec, revealAt: 0};
+  local = {key, start: performance.now(), order: R.ids.slice(), touched: false, locked: !!rec, submitted: !!rec, revealAt: 0, landed: new Set(), revealDone: false};
   if (rec?.o) { local.order = String(rec.o).split(','); local.touched = true; }
   buildRows(R);
 }
@@ -1362,6 +1641,71 @@ function moveItem(id, delta, keepFocus) {
   if (keepFocus) sorterEl.querySelector(`[data-id="${id}"]`)?.focus({preventScroll: true});
 }
 
+/* the reveal: rows slide into the right order one at a time, last place first, so 1st lands last */
+function startReveal(right) {
+  clearTimeout(local.revealT);
+  local.landed = new Set(); local.revealDone = false;
+  if (REDUCED) {
+    local.order = right.slice(); placeRows(right, true);
+    right.forEach(id => local.landed.add(id)); local.revealDone = true;
+    return;
+  }
+  const key = local.key;
+  let k = right.length - 1;
+  const tick = () => {
+    if (local.key !== key || room?.phase !== 'reveal') return;
+    if (k < 0) { local.revealDone = true; renderRound(); return; }
+    const id = right[k];
+    local.order.splice(local.order.indexOf(id), 1);
+    local.order.splice(k, 0, id);
+    placeRows(local.order);
+    local.landed.add(id);
+    const li = [...sorterEl.children].find(x => x.dataset.id === id);
+    // pulse once the slide has finished, so the two transforms don't fight
+    setTimeout(() => { li.classList.remove('landed'); void li.offsetWidth; li.classList.add('landed'); }, 170);
+    k--;
+    renderRound();
+    local.revealT = setTimeout(tick, k < 0 ? 550 : STEP_MS);
+  };
+  local.revealT = setTimeout(tick, 350);
+}
+
+const ordinal = n => { const s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
+/* the headlines after a reveal: who nailed it, and how the standings moved */
+function roundCallouts(i) {
+  const R = roundOf(i), right = rightOrder(R);
+  const list = players.filter(p => p.online !== false || scoreRec(p, i));
+  const exact = p => { const r = scoreRec(p, i); return r?.o ? String(r.o).split(',').filter((id, j) => right[j] === id).length : 0; };
+  const names = a => a.length <= 2 ? a.map(p => p.name).join(' and ') : `${a.length} players`;
+  const out = [];
+  if (list.length <= 1) {
+    const k = exact(list[0] || mine()), p = scoreRec(list[0] || mine(), i)?.p || 0;
+    out.push(k === 5 ? {big: true, text: 'Perfect round!', sub: '5 for 5'}
+      : {text: k >= 3 ? `You nailed ${k}/5` : k ? `${k}/5 in the right spot` : 'Tough one', sub: `+${p}`});
+    return out;
+  }
+  const scored = list.map(p => ({p, k: exact(p)}));
+  const bestK = Math.max(...scored.map(x => x.k)), best = scored.filter(x => x.k === bestK).map(x => x.p);
+  if (bestK === 5) out.push({big: true, who: best, text: `${names(best)} nailed it! 5/5`});
+  else if (bestK >= 2) out.push({who: best, text: `${names(best)} nailed ${bestK}/5`, sub: best.length === 1 ? `+${scoreRec(best[0], i)?.p || 0}` : ''});
+  else out.push({text: bestK ? 'Tough one. Nobody got more than 1 right' : 'Tough one. Nobody got any right'});
+
+  const total = (p, upto) => { let s = 0; for (let j = 0; j <= upto; j++) s += scoreRec(p, j)?.p || 0; return s; };
+  const after = new Map(list.map(p => [p.pid, total(p, i)])), before = new Map(list.map(p => [p.pid, i ? total(p, i - 1) : 0]));
+  const rank = (m, p) => 1 + list.filter(q => m.get(q.pid) > m.get(p.pid)).length;
+  const leaders = list.filter(p => rank(after, p) === 1), wasLeaders = list.filter(p => rank(before, p) === 1);
+  if (leaders.length === 1) {
+    const L = leaders[0];
+    if (i === 0) out.push({who: [L], text: `${L.name} takes the early lead`});
+    else if (!(wasLeaders.length === 1 && wasLeaders[0] === L)) out.push({big: true, who: [L], text: `${L.name} moved into 1st!`});
+  } else if (i > 0 && leaders.length < list.length) out.push({who: leaders, text: `${names(leaders)} ${leaders.length === 2 ? 'are' : 'all'} tied for 1st`});
+  if (list.length >= 3 && i > 0) {
+    const jump = list.map(p => ({p, d: rank(before, p) - rank(after, p)})).filter(x => x.d >= 2 && rank(after, x.p) > 1).sort((a, b) => b.d - a.d)[0];
+    if (jump) out.push({who: [jump.p], text: `${jump.p.name} jumped to ${ordinal(rank(after, jump.p))}`, sub: `from ${ordinal(rank(before, jump.p))}`});
+  }
+  return out.slice(0, 3);
+}
+
 function renderRound() {
   if (!room || screen !== 'round') return;
   const R = roundOf(room.round), t = R.t;
@@ -1376,7 +1720,7 @@ function renderRound() {
   $('#lbl-lo').innerHTML = `${ARROW_DN}${esc(t.lo)}`;
 
   $('#play-ui').hidden = reveal;
-  $('#reveal').hidden = !reveal;
+  $('#reveal').hidden = !reveal || !local.revealDone;
   sorterEl.classList.toggle('still', reveal || local.locked);
   $('#btn-lock').disabled = local.locked;
   $('#btn-lock').textContent = local.locked ? 'Locked' : 'Lock in';
@@ -1396,25 +1740,33 @@ function renderRound() {
 
   if (reveal) {
     const rec = scoreRec(mine(), room.round);
-    const mineO = rec ? (rec.o ? (Array.isArray(rec.o) ? rec.o : rec.o.split(',')) : null) : (local.touched ? local.order : null);
+    const mineO = rec ? (rec.o ? (Array.isArray(rec.o) ? rec.o : rec.o.split(',')) : null) : (local.touched ? local.mineAtReveal || local.order : null);
     const p = rec ? rec.p : scoreOrder(mineO, R);
     const right = rightOrder(R);
-    if (!sorterEl.dataset.revealed || sorterEl.dataset.revealed !== local.key) {
+    if (sorterEl.dataset.revealed !== local.key) {
       sorterEl.dataset.revealed = local.key;
-      local.order = right.slice();
-      placeRows(right);
+      local.mineAtReveal = local.order.slice(); // the reveal reorders local.order, so keep what the player had
+      startReveal(right);
     }
+    sorterEl.classList.toggle('revealing', !local.revealDone);
     [...sorterEl.children].forEach((li, i) => {
-      const id = li.dataset.id, it = t.byId[id];
+      const id = li.dataset.id, it = t.byId[id], done = local.landed.has(id);
       const at = mineO ? mineO.indexOf(id) : -1, d = at < 0 ? -1 : Math.abs(at - i);
       li.classList.remove('exact', 'near', 'far');
+      li.classList.toggle('pending', !done);
+      const ans = li.querySelector('.ans'); ans.hidden = !done;
+      if (!done) return;
       if (d >= 0) li.classList.add(d === 0 ? 'exact' : d === 1 ? 'near' : 'far');
-      const ans = li.querySelector('.ans'); ans.hidden = false;
       li.querySelector('.val').textContent = fmtVal(t, it.v);
       const you = li.querySelector('.you');
       you.hidden = d < 0;
       if (d >= 0) you.textContent = `you: ${at + 1} · +${d === 0 ? 20 : d === 1 ? 10 : 0}`;
     });
+    if (!local.revealDone) return;
+    $('#reveal').classList.add('pop');
+    const calls = roundCallouts(room.round).map(c => `<div class="callout${c.big ? ' big' : ''}">${c.who?.length === 1 ? `<i class="dot" style="background:${esc(c.who[0].color)}"></i>` : ''}<span>${esc(c.text)}</span>${c.sub ? `<small>${esc(c.sub)}</small>` : ''}</div>`).join('');
+    // only touch the banner when it changes, so its entrance animation plays once
+    if ($('#rv-callouts').dataset.html !== calls) { $('#rv-callouts').dataset.html = calls; $('#rv-callouts').innerHTML = calls; }
     $('#rv-pts').textContent = '+' + p;
     $('#rv-pts').style.color = p >= 60 ? 'var(--green)' : p > 0 ? 'var(--ink)' : 'var(--red)';
     $('#rv-verdict').textContent = verdict(p, !!mineO);
@@ -1433,7 +1785,10 @@ function renderRound() {
     $('#btn-next').textContent = last ? 'See final scores' : 'Next round';
   } else {
     delete sorterEl.dataset.revealed;
-    for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far'); li.querySelector('.ans').hidden = true; }
+    clearTimeout(local.revealT);
+    $('#reveal').classList.remove('pop');
+    sorterEl.classList.remove('revealing');
+    for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far', 'pending', 'landed'); li.querySelector('.ans').hidden = true; }
   }
 }
 
