@@ -7,13 +7,13 @@
 (globalThis.OrderUpData = globalThis.OrderUpData || []).push({
   id: 'stuff', label: 'Everyday stuff',
   comparisons: [
-    {key: 'kg', title: 'Everyday stuff: weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.6, about: true,
+    {key: 'kg', type: 'measure', title: 'Everyday stuff: weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.6, about: true,
      src: 'Typical weights from manufacturers and official specs (a bowling ball can be at most 16 lb). Every object in a round is at least 1.6× heavier than the next.'},
-    {key: 'h', title: 'Everyday stuff: height', ask: 'Tallest to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'ftin', gap: 1.25,
+    {key: 'h', type: 'measure', weight: 0.8, title: 'Everyday stuff: height', ask: 'Tallest to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'ftin', gap: 1.25,
      src: 'Standard or typical US sizes: building codes, official rules and manufacturer specs. Every object in a round is at least 1.25× taller than the next.'},
-    {key: 'len', title: 'Everyday stuff: length', ask: 'Longest to shortest', hi: 'Longest', lo: 'Shortest', unit: 'ftin', gap: 1.35,
+    {key: 'len', type: 'measure', weight: 0.5, title: 'Everyday stuff: length', ask: 'Longest to shortest', hi: 'Longest', lo: 'Shortest', unit: 'ftin', gap: 1.35,
      src: 'Standard sizes from official rules and specs. Every object in a round is at least 1.35× longer than the next.'},
-    {key: 'ml', title: 'Everyday stuff: volume', ask: 'Holds the most to the least', hi: 'Holds the most', lo: 'Holds the least', unit: 'ml', gap: 1.5,
+    {key: 'ml', type: 'measure', weight: 0.5, title: 'Everyday stuff: volume', ask: 'Holds the most to the least', hi: 'Holds the most', lo: 'Holds the least', unit: 'ml', gap: 1.5,
      src: 'How much each one holds, from US customary measures and standard container sizes. Every item in a round holds at least 1.5× more than the next.'},
   ],
   items: [

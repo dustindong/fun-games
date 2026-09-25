@@ -2,10 +2,10 @@
 (globalThis.OrderUpData = globalThis.OrderUpData || []).push({
   id: "states", label: "US states",
   comparisons: [
-    {"key": "pop", "title": "US state population", "ask": "Most people to fewest", "hi": "Most people", "lo": "Fewest people", "unit": "people", "gap": 1.06, "src": "2020 US Census."},
-    {"key": "area", "title": "US state total area", "ask": "Biggest state to smallest, water included", "hi": "Biggest", "lo": "Smallest", "unit": "sqmi", "gap": 1.06, "src": "Total area: land plus inland, coastal and Great Lakes water, from the US Census Bureau. Water is why states like Michigan and Hawaii rank higher than their land alone would."},
-    {"key":"year","title":"When states joined the Union","ask":"First to join to last","hi":"Joined first","lo":"Joined last","asc":true,"unit":"year","gap":4,"year":true,"src":"Year each state joined the Union (for the original 13, the year it ratified the Constitution), from the National Archives."},
-    {"key":"high","title":"US state high points","ask":"Highest summit to lowest","hi":"Highest","lo":"Lowest","unit":"ft","gap":1.12,"src":"Height of each state’s highest point, from the US Geological Survey. The summit is named under each state."},
+    {"key": "pop", type: 'measure', weight: 0.8, "title": "US state population", "ask": "Most people to fewest", "hi": "Most people", "lo": "Fewest people", "unit": "people", "gap": 1.06, "src": "2020 US Census."},
+    {"key": "area", type: 'measure', weight: 0.5, "title": "US state total area", "ask": "Biggest state to smallest, water included", "hi": "Biggest", "lo": "Smallest", "unit": "sqmi", "gap": 1.06, "src": "Total area: land plus inland, coastal and Great Lakes water, from the US Census Bureau. Water is why states like Michigan and Hawaii rank higher than their land alone would."},
+    {"key":"year", type: 'chronology', weight: 0.6,"title":"When states joined the Union","ask":"First to join to last","hi":"Joined first","lo":"Joined last","asc":true,"unit":"year","gap":4,"year":true,"src":"Year each state joined the Union (for the original 13, the year it ratified the Constitution), from the National Archives."},
+    {"key":"high", type: 'measure', weight: 0.4,"title":"US state high points","ask":"Highest summit to lowest","hi":"Highest","lo":"Lowest","unit":"ft","gap":1.12,"src":"Height of each state’s highest point, from the US Geological Survey. The summit is named under each state."},
   ],
   items: [
     {name: "California", notes: {high: "Mount Whitney"}, pop: 39538223, area: 163695, year: 1850, high: 14505},
