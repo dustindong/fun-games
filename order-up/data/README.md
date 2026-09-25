@@ -36,7 +36,7 @@ rounds, so a new dataset usually needs no code changes.
 - `fam`: 5 extremely recognizable … 1 obscure. Rounds aim for 2+ familiar items and at most 1 hard one.
 - Only add a value you can defend. Leaving an attribute out is always better than guessing it.
 
-**Registering a new dataset:** add a `<script src="data/NAME.js">` tag in `../index.html`, put the id in
-one category's `sets` and one `MIX` kind in `engine.js`. The tests check both.
+**Registering a new dataset:** add a `<script src="data/NAME.js">` tag in `../index.html` and put the id in
+one category's `sets` in `engine.js`.
 
 See THE QUALITY RULE at the top of `engine.js` for what makes a good round.
