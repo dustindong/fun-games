@@ -359,7 +359,7 @@ function addSet(ds) {
   if (SETS[ds.id]) throw new Error(`duplicate dataset ${ds.id}`);
   SETS[ds.id] = ds;
   ds.views = [];
-  const items = ds.items.map(it => ({...it, id: it.id || slug(it.name)}));
+  const items = ds.items.map(it => ({...it, id: slug(it.id || it.name)}));
   const seen = new Set();
   for (const it of items) { if (seen.has(it.id)) throw new Error(`duplicate item ${ds.id}/${it.id}`); seen.add(it.id); }
   const hasFam = items.some(it => it.fam != null);
@@ -461,7 +461,8 @@ function fmtVal(t, v) {
     case 'mvisit': return `about ${v >= 1 ? `${num(v)} million` : num(v * 1e6)} visitors`;
     case 'mpass': return `about ${num(v)} million passengers`;
     case 'count': return v.toLocaleString('en-US');
-    case 'streams': return `${num(v / 1e9)} billion streams`;
+    case 'streams': return v >= 1e9 ? `${num(v / 1e9)} billion streams` : v >= 1e6 ? `${num(v / 1e6)} million streams` : `${num(v)} streams`;
+    case 'rank': return `#${v}`;
     case 'min': return v >= 60 ? `${Math.floor(v / 60)} h ${v % 60} min` : `${v} min`;
     case 'lb': return `${t.about ? 'about ' : ''}${Math.round(v).toLocaleString('en-US')} lb`;
     case 'in': return `${t.about ? 'about ' : ''}${num(v)} in`;
