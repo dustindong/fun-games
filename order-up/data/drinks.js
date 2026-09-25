@@ -1,0 +1,41 @@
+/* Drinks: one record per drink and serving (in the note), reused for caffeine, calories and sugar.
+   From the makers' nutrition labels, Starbucks' nutrition guide and USDA FoodData Central.
+   - fam: how familiar the drink is (5 = everyone knows it). */
+(globalThis.OrderUpData = globalThis.OrderUpData || []).push({
+  id: 'drinks', label: 'Drinks',
+  comparisons: [
+    {key: 'mg', title: 'Caffeine', ask: 'Most caffeine to least', hi: 'Most caffeine', lo: 'Least caffeine', unit: 'mg', gap: 1.35,
+     src: 'Caffeine for the serving shown, from the makers and the USDA. Every drink in a round has at least 1.35× the caffeine of the next.'},
+    {key: 'cal', title: 'Drink calories', ask: 'Most calories to fewest', hi: 'Most calories', lo: 'Fewest calories', unit: 'kcal', gap: 1.35,
+     src: 'Calories for the serving shown, from the makers’ nutrition labels and the USDA. Every drink in a round has at least 1.35× the calories of the next.'},
+    {key: 'sugar', title: 'Sugar in drinks', ask: 'Most sugar to least', hi: 'Most sugar', lo: 'Least sugar', unit: 'g', gap: 1.35,
+     src: 'Grams of sugar for the serving shown, from the makers’ nutrition labels and the USDA. Every drink in a round has at least 1.35× the sugar of the next.'},
+  ],
+  items: [
+    {name: 'Coca-Cola', note: '12 oz can', fam: 5, mg: 34, cal: 140, sugar: 39},
+    {name: 'Diet Coke', note: '12 oz can', fam: 5, mg: 46, cal: 0, sugar: 0},
+    {name: 'Pepsi', note: '12 oz can', fam: 5, mg: 38, cal: 150, sugar: 41},
+    {name: 'Dr Pepper', note: '12 oz can', fam: 5, mg: 41, cal: 150, sugar: 40},
+    {name: 'Mountain Dew', note: '12 oz can', fam: 5, mg: 54, cal: 170, sugar: 46},
+    {name: 'Sprite', note: '12 oz can', fam: 5, mg: 0, cal: 140, sugar: 38},
+    {name: 'Red Bull', note: '8.4 oz can', fam: 5, mg: 80, cal: 110, sugar: 27},
+    {name: 'Monster Energy', note: '16 oz can', fam: 5, mg: 160, cal: 210, sugar: 54},
+    {name: 'Bang Energy', note: '16 oz can', fam: 4, mg: 300, cal: 0, sugar: 0},
+    {name: 'Celsius', note: '12 oz can', fam: 4, mg: 200, cal: 10, sugar: 0},
+    {name: '5-hour Energy', fam: 4, mg: 200, cal: 4, sugar: 0},
+    {name: 'Starbucks coffee', note: 'grande Pike Place, 16 oz', fam: 5, mg: 310, cal: 5, sugar: 0},
+    {name: 'Starbucks latte', note: 'grande, 2% milk', fam: 5, mg: 150, cal: 190, sugar: 17},
+    {name: 'Starbucks Caramel Frappuccino', note: 'grande, with whip', fam: 5, mg: 90, cal: 380, sugar: 54},
+    {name: 'Starbucks Pumpkin Spice Latte', note: 'grande', fam: 5, mg: 150, cal: 390, sugar: 50},
+    {name: 'Cup of coffee', note: '8 oz', fam: 5, mg: 95, cal: 2, sugar: 0},
+    {name: 'Espresso', note: 'one shot', fam: 5, mg: 64, cal: 1, sugar: 0},
+    {name: 'Decaf coffee', note: '8 oz', fam: 5, mg: 2},
+    {name: 'Black tea', note: '8 oz', fam: 5, mg: 47, cal: 2, sugar: 0},
+    {name: 'Green tea', note: '8 oz', fam: 5, mg: 28, cal: 2, sugar: 0},
+    {name: 'Hot chocolate', note: '8 oz', fam: 5, mg: 5},
+    {name: 'Orange juice', note: '8 oz', fam: 5, mg: 0, cal: 110, sugar: 21},
+    {name: 'Apple juice', note: '8 oz', fam: 5, mg: 0, cal: 114, sugar: 24},
+    {name: 'Whole milk', note: '8 oz', fam: 5, mg: 0, cal: 150, sugar: 12},
+    {name: 'Gatorade', note: '20 oz bottle', fam: 5, mg: 0, cal: 140, sugar: 34},
+  ],
+});
