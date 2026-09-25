@@ -574,17 +574,22 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-25b"></script>
-<script src="data/songs.js?v=2026-09-25b"></script>
-<script src="data/movies.js?v=2026-09-25b"></script>
-<script src="data/games.js?v=2026-09-25b"></script>
-<script src="data/animals.js?v=2026-09-25b"></script>
-<script src="data/dogs.js?v=2026-09-25b"></script>
-<script src="data/cars.js?v=2026-09-25b"></script>
-<script src="data/food.js?v=2026-09-25b"></script>
-<script src="data/drinks.js?v=2026-09-25b"></script>
-<script src="data/stuff.js?v=2026-09-25b"></script>
-<script src="engine.js?v=2026-09-25b"></script>
+<script src="data/states.js?v=2026-09-26a"></script>
+<script src="data/songs.js?v=2026-09-26a"></script>
+<script src="data/movies.js?v=2026-09-26a"></script>
+<script src="data/games.js?v=2026-09-26a"></script>
+<script src="data/pokemon.js?v=2026-09-26a"></script>
+<script src="data/tech.js?v=2026-09-26a"></script>
+<script src="data/nostalgia.js?v=2026-09-26a"></script>
+<script src="data/people.js?v=2026-09-26a"></script>
+<script src="data/animals.js?v=2026-09-26a"></script>
+<script src="data/dogs.js?v=2026-09-26a"></script>
+<script src="data/cars.js?v=2026-09-26a"></script>
+<script src="data/food.js?v=2026-09-26a"></script>
+<script src="data/drinks.js?v=2026-09-26a"></script>
+<script src="data/stuff.js?v=2026-09-26a"></script>
+<script src="data/sequences.js?v=2026-09-26a"></script>
+<script src="engine.js?v=2026-09-26a"></script>
 <script>
 (() => {
 'use strict';
@@ -1290,7 +1295,7 @@ function renderRound() {
       const ans = li.querySelector('.ans'); ans.hidden = !done;
       if (!done) return;
       if (d >= 0) li.classList.add(d === 0 ? 'exact' : d === 1 ? 'near' : 'far');
-      li.querySelector('.val').textContent = fmtVal(t, it.v);
+      li.querySelector('.val').textContent = it.label || fmtVal(t, it.v);
       const you = li.querySelector('.you');
       you.hidden = d < 0;
       if (d >= 0) you.textContent = `you: ${at + 1} · +${d === 0 ? 20 : d === 1 ? 10 : 0}`;

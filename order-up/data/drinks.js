@@ -4,11 +4,11 @@
 (globalThis.OrderUpData = globalThis.OrderUpData || []).push({
   id: 'drinks', label: 'Drinks',
   comparisons: [
-    {key: 'mg', title: 'Caffeine', ask: 'Most caffeine to least', hi: 'Most caffeine', lo: 'Least caffeine', unit: 'mg', gap: 1.35,
+    {key: 'mg', type: 'nutrition', title: 'Caffeine', ask: 'Most caffeine to least', hi: 'Most caffeine', lo: 'Least caffeine', unit: 'mg', gap: 1.35,
      src: 'Caffeine for the serving shown, from the makers and the USDA. Every drink in a round has at least 1.35× the caffeine of the next.'},
-    {key: 'cal', title: 'Drink calories', ask: 'Most calories to fewest', hi: 'Most calories', lo: 'Fewest calories', unit: 'kcal', gap: 1.35,
+    {key: 'cal', type: 'nutrition', weight: 0.6, title: 'Drink calories', ask: 'Most calories to fewest', hi: 'Most calories', lo: 'Fewest calories', unit: 'kcal', gap: 1.35,
      src: 'Calories for the serving shown, from the makers’ nutrition labels and the USDA. Every drink in a round has at least 1.35× the calories of the next.'},
-    {key: 'sugar', title: 'Sugar in drinks', ask: 'Most sugar to least', hi: 'Most sugar', lo: 'Least sugar', unit: 'g', gap: 1.35,
+    {key: 'sugar', type: 'nutrition', weight: 0.5, title: 'Sugar in drinks', ask: 'Most sugar to least', hi: 'Most sugar', lo: 'Least sugar', unit: 'g', gap: 1.35,
      src: 'Grams of sugar for the serving shown, from the makers’ nutrition labels and the USDA. Every drink in a round has at least 1.35× the sugar of the next.'},
   ],
   items: [

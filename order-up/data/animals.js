@@ -7,11 +7,11 @@
 (globalThis.OrderUpData = globalThis.OrderUpData || []).push({
   id: 'animals', label: 'Animals',
   comparisons: [
-    {key: 'kg', title: 'Animal weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.8, about: true,
+    {key: 'kg', type: 'measure', title: 'Animal weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.8, about: true,
      src: 'Typical adult weight, from each animal’s Wikipedia article. Weights vary a lot, so every animal in a round is at least 1.8× heavier than the next.'},
-    {key: 'kmh', title: 'Animal top speed', ask: 'Fastest to slowest', hi: 'Fastest', lo: 'Slowest', unit: 'kmh', gap: 1.3,
+    {key: 'kmh', type: 'measure', weight: 0.9, title: 'Animal top speed', ask: 'Fastest to slowest', hi: 'Fastest', lo: 'Slowest', unit: 'kmh', gap: 1.3,
      src: 'Top recorded speed, from Wikipedia’s list of the fastest animals and each animal’s article. Every animal in a round is at least 1.3× faster than the next.'},
-    {key: 'life', title: 'How long animals live', ask: 'Longest life to shortest', hi: 'Longest life', lo: 'Shortest life', unit: 'yrs', gap: 1.6,
+    {key: 'life', type: 'age', weight: 0.8, title: 'How long animals live', ask: 'Longest life to shortest', hi: 'Longest life', lo: 'Shortest life', unit: 'yrs', gap: 1.6,
      src: 'Typical lifespan, from each animal’s Wikipedia article. Lifespans vary, so every animal in a round lives at least 1.6× longer than the next.'},
   ],
   items: [

@@ -6,11 +6,11 @@
 (globalThis.OrderUpData = globalThis.OrderUpData || []).push({
   id: 'cars', label: 'Cars',
   comparisons: [
-    {key: 'hp', title: 'Horsepower', ask: 'Most horsepower to least', hi: 'Most powerful', lo: 'Least powerful', unit: 'hp', gap: 1.25,
+    {key: 'hp', type: 'measure', title: 'Horsepower', ask: 'Most horsepower to least', hi: 'Most powerful', lo: 'Least powerful', unit: 'hp', gap: 1.25,
      src: 'Maker’s rated horsepower for the version shown. Every car in a round has at least 1.25× the power of the next.'},
-    {key: 'zs', title: '0 to 60 mph', ask: 'Quickest to slowest', hi: 'Quickest', lo: 'Slowest', dir: 'asc', unit: 'zs', gap: 1.2,
+    {key: 'zs', type: 'measure', weight: 0.8, title: '0 to 60 mph', ask: 'Quickest to slowest', hi: 'Quickest', lo: 'Slowest', dir: 'asc', unit: 'zs', gap: 1.2,
      src: 'Road-test 0–60 mph times, from Car and Driver and Motor Trend. Lower is quicker. Every car in a round is at least 1.2× quicker than the next.'},
-    {key: 'lb', title: 'Car weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'lb', gap: 1.15,
+    {key: 'lb', type: 'measure', weight: 0.4, title: 'Car weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'lb', gap: 1.15,
      src: 'Curb weight from the maker’s specs for the version shown. Every car in a round is at least 1.15× heavier than the next.'},
   ],
   items: [
