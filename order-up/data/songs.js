@@ -3,8 +3,9 @@
    Built from rolling_stone_500_spotify_2026-09-25.xlsx:
    - rank: position on the list (1 = greatest). year: release year.
    - streams: all-time Spotify plays of one recording (separate versions are not added together), only where
-     the sheet has a count from within 30 days of Sep 25, 2026 (466 songs). Older, version-uncertain and
-     unverified counts (34 songs) are left out, so those songs sit out stream rounds.
+     the sheet has a count from within 30 days of Sep 25, 2026 (466 songs), plus 7 counts supplied
+     separately for songs the sheet marked unverified. Older, version-uncertain and still-unverified counts
+     (27 songs) are left out, so those songs sit out stream rounds.
    - fam: how familiar the song is, from its streams: 1B+ = 5, 300M+ = 4, 80M+ = 3, 20M+ = 2, less = 1,
      no count = 2. It keeps rounds from being five deep cuts at once.
    Item ids include the artist, because some titles appear twice (two "Gloria"s, two "Crazy"s…). */
@@ -95,7 +96,7 @@
     {name: "Hallelujah", note: "Leonard Cohen", fam: 3, rank: 74, year: 1984, streams: 166687000},
     {name: "Common People", note: "Pulp", fam: 3, rank: 75, year: 1996, streams: 281221000},
     {name: "I Walk the Line", note: "Johnny Cash", fam: 3, rank: 76, year: 1956, streams: 238471000},
-    {name: "Roadrunner", note: "The Modern Lovers", fam: 2, rank: 77, year: 1976},
+    {name: "Roadrunner", note: "The Modern Lovers", fam: 2, rank: 77, year: 1976, streams: 43086950},
     {name: "Reach Out (I’ll Be There)", note: "The Four Tops", fam: 3, rank: 78, year: 1967, streams: 197231000},
     {name: "Back to Black", note: "Amy Winehouse", fam: 5, rank: 79, year: 2006, streams: 1731661000},
     {name: "What’d I Say", note: "Ray Charles", fam: 3, rank: 80, year: 1957, streams: 101339000},
@@ -165,7 +166,7 @@
     {name: "Jumpin’ Jack Flash", note: "The Rolling Stones", fam: 3, rank: 144, year: 1968, streams: 215487000},
     {name: "Ms. Jackson", note: "Outkast", fam: 5, rank: 145, year: 2000, streams: 1672233000},
     {name: "Fire and Rain", note: "James Taylor", fam: 4, rank: 146, year: 1970, streams: 461264000},
-    {name: "Blueberry Hill", note: "Fats Domino", fam: 2, rank: 147, year: 1956},
+    {name: "Blueberry Hill", note: "Fats Domino", fam: 3, rank: 147, year: 1956, streams: 118738641},
     {name: "Kashmir", note: "Led Zeppelin", fam: 4, rank: 148, year: 1975, streams: 400298000},
     {name: "Rocket Man", note: "Elton John", fam: 5, rank: 149, year: 1972, streams: 1588460000},
     {name: "Basket Case", note: "Green Day", fam: 5, rank: 150, year: 1994, streams: 1646761000},
@@ -191,7 +192,7 @@
     {name: "In the Still of the Night", note: "The Five Satins", fam: 2, rank: 170, year: 1956},
     {name: "What a Wonderful World", note: "Louis Armstrong", fam: 4, rank: 171, year: 1967, streams: 846142000},
     {name: "Mississippi Goddam", note: "Nina Simone", fam: 1, rank: 172, year: 1964, streams: 5571000},
-    {name: "Marquee Moon", note: "Television", fam: 2, rank: 173, year: 1977},
+    {name: "Marquee Moon", note: "Television", fam: 2, rank: 173, year: 1977, streams: 55088880},
     {name: "Radio Free Europe", note: "R.E.M.", fam: 2, rank: 174, year: 1983, streams: 26628000},
     {name: "I Only Have Eyes for You", note: "The Flamingos", fam: 3, rank: 175, year: 1959, streams: 213448000},
     {name: "You Really Got Me", note: "The Kinks", fam: 4, rank: 176, year: 1964, streams: 460501000},
@@ -209,7 +210,7 @@
     {name: "Little Wing", note: "The Jimi Hendrix Experience", fam: 4, rank: 188, year: 1967, streams: 357758000},
     {name: "Space Oddity", note: "David Bowie", fam: 4, rank: 189, year: 1969, streams: 516960000},
     {name: "Fuck tha Police", note: "N.W.A", fam: 4, rank: 190, year: 1988, streams: 445913000},
-    {name: "Ode to Billie Joe", note: "Bobbie Gentry", fam: 2, rank: 191, year: 1967},
+    {name: "Ode to Billie Joe", note: "Bobbie Gentry", fam: 2, rank: 191, year: 1967, streams: 36432371},
     {name: "Mind Playing Tricks on Me", note: "Geto Boys", fam: 3, rank: 192, year: 1991, streams: 193899000},
     {name: "Wild Horses", note: "The Rolling Stones", fam: 4, rank: 193, year: 1971, streams: 425034000},
     {name: "Rid of Me", note: "PJ Harvey", fam: 1, rank: 194, year: 1993, streams: 16734000},
@@ -247,7 +248,7 @@
     {name: "There Is a Light That Never Goes Out", note: "The Smiths", fam: 5, rank: 226, year: 1986, streams: 1193666000},
     {name: "Fortunate Son", note: "Creedence Clearwater Revival", fam: 5, rank: 227, year: 1969, streams: 1997934000},
     {name: "Single Ladies (Put a Ring On It)", note: "Beyoncé", fam: 4, rank: 228, year: 2008, streams: 900248000},
-    {name: "This Land Is Your Land", note: "Woody Guthrie", fam: 2, rank: 229, year: 1951},
+    {name: "This Land Is Your Land", note: "Woody Guthrie", fam: 2, rank: 229, year: 1951, streams: 26450913},
     {name: "Mr. Tambourine Man", note: "The Byrds", fam: 3, rank: 230, year: 1965, streams: 137393000},
     {name: "I Wanna Dance With Somebody (Who Loves Me)", note: "Whitney Houston", fam: 5, rank: 231, year: 1987, streams: 1774835000},
     {name: "My Generation", note: "The Who", fam: 3, rank: 232, year: 1965, streams: 284390000},
@@ -257,7 +258,7 @@
     {name: "Lean on Me", note: "Bill Withers", fam: 4, rank: 236, year: 1972, streams: 457750000},
     {name: "Your Cheatin’ Heart", note: "Hank Williams", fam: 2, rank: 237, year: 1953, streams: 35439000},
     {name: "Are You That Somebody?", note: "Aaliyah", fam: 3, rank: 238, year: 1998, streams: 273985000},
-    {name: "September Gurls", note: "Big Star", fam: 2, rank: 239, year: 1974},
+    {name: "September Gurls", note: "Big Star", fam: 1, rank: 239, year: 1974, streams: 11540017},
     {name: "I Want It That Way", note: "Backstreet Boys", fam: 5, rank: 240, year: 1999, streams: 2185531000},
     {name: "The Humpty Dance", note: "Digital Underground", fam: 2, rank: 241, year: 1990},
     {name: "Great Balls of Fire", note: "Jerry Lee Lewis", fam: 4, rank: 242, year: 1957, streams: 308157000},
@@ -284,7 +285,7 @@
     {name: "Coat of Many Colors", note: "Dolly Parton", fam: 3, rank: 263, year: 1971, streams: 80752000},
     {name: "Let’s Get It On", note: "Marvin Gaye", fam: 4, rank: 264, year: 1973, streams: 401019000},
     {name: "Left of the Dial", note: "The Replacements", fam: 1, rank: 265, year: 1985, streams: 6471000},
-    {name: "King Tubby Meets the Rockers Uptown", note: "Augustus Pablo", fam: 2, rank: 266, year: 1974},
+    {name: "King Tubby Meets the Rockers Uptown", note: "Augustus Pablo", fam: 2, rank: 266, year: 1974, streams: 21761431},
     {name: "Kill Bill", note: "SZA", fam: 5, rank: 267, year: 2022, streams: 2899640000},
     {name: "Shout (Parts 1 and 2)", note: "The Isley Brothers", fam: 3, rank: 268, year: 1959, streams: 139221000},
     {name: "Unchained Melody", note: "The Righteous Brothers", fam: 4, rank: 269, year: 1965, streams: 840449000},
