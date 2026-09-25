@@ -79,11 +79,15 @@ const CATEGORIES = [
   {id: 'stuff', name: 'Everyday Stuff', sets: 'stuff'},
 ];
 const CAT = {};
-for (const c of CATEGORIES) {
+// a dataset file that didn't load (a network hiccup, a stale cache) is skipped instead of breaking the game;
+// a category with nothing left in it is dropped
+for (const c of CATEGORIES.slice()) {
+  c.list = c.sets.split(' ').filter(id => SETS[id] || (console.warn(`Order Up: dataset "${id}" did not load`), false)).map(id => SETS[id]);
+  if (!c.list.length) { CATEGORIES.splice(CATEGORIES.indexOf(c), 1); continue; }
   CAT[c.id] = c;
-  c.list = c.sets.split(' ').map(id => { if (!SETS[id]) throw new Error(`unknown dataset ${id} in ${c.id}`); return SETS[id]; });
   for (const ds of c.list) { ds.cat = c; for (const v of ds.views) v.cat = c; }
 }
+for (const [id, ds] of Object.entries(SETS)) if (!ds.cat) { console.warn(`Order Up: dataset "${id}" is not in any category`); delete SETS[id]; for (const v of ds.views) delete VIEWS[v.id]; }
 // null means every category; otherwise a list of category ids (possibly empty while someone is choosing)
 const cleanCats = v => Array.isArray(v) ? CATEGORIES.map(c => c.id).filter(id => v.includes(id)) : null;
 const catsLabel = cats => !cats ? 'All topics' : cats.length ? cats.map(id => CAT[id].name).join(' · ') : 'None yet';

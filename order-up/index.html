@@ -573,23 +573,30 @@ input[type=text]{font-size:16px}
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
-<script src="data/states.js"></script>
-<script src="data/songs.js"></script>
-<script src="data/movies.js"></script>
-<script src="data/games.js"></script>
-<script src="data/animals.js"></script>
-<script src="data/dogs.js"></script>
-<script src="data/cars.js"></script>
-<script src="data/food.js"></script>
-<script src="data/drinks.js"></script>
-<script src="data/stuff.js"></script>
-<script src="engine.js"></script>
+<!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
+<script src="data/states.js?v=2026-09-25b"></script>
+<script src="data/songs.js?v=2026-09-25b"></script>
+<script src="data/movies.js?v=2026-09-25b"></script>
+<script src="data/games.js?v=2026-09-25b"></script>
+<script src="data/animals.js?v=2026-09-25b"></script>
+<script src="data/dogs.js?v=2026-09-25b"></script>
+<script src="data/cars.js?v=2026-09-25b"></script>
+<script src="data/food.js?v=2026-09-25b"></script>
+<script src="data/drinks.js?v=2026-09-25b"></script>
+<script src="data/stuff.js?v=2026-09-25b"></script>
+<script src="engine.js?v=2026-09-25b"></script>
 <script>
 (() => {
 'use strict';
 
 /* ---------------- content ----------------
    Topics, datasets and round generation live in engine.js (with the data in data/*.js); see the notes there. */
+if (!window.OrderUp || !window.OrderUp.CATEGORIES.length) {
+  // the question data didn't load: say so instead of leaving a dead page
+  document.querySelector('#home-err').textContent = 'Couldn’t load the questions. Refresh the page to try again.';
+  document.querySelector('#home-err').hidden = false;
+  throw new Error('Order Up: engine.js or its data did not load');
+}
 const {N, BASE_MAX, PERFECT_BONUS, ROUND_MAX, TOP, CATEGORIES, CAT, cleanCats, catsLabel,
   fmtVal, rightOrder, scoreOrder, isPerfect, makeRounds, newHistory} = window.OrderUp;
 // rounds this page has already played, so Play Again and rematches avoid repeats and vary the comparisons
