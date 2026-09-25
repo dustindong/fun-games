@@ -579,7 +579,18 @@ input[type=text]{font-size:16px}
 
 /* ---------------- topics: every value checked Sept 2026 (sources in each topic's `src`) ----------------
    items: [name, value, note?] in the topic's base unit. Rounds use 5 items whose values are far enough apart
-   (`gap`: a ratio, or a plain difference for `year` and `abs` topics) that small source differences can never flip the order. */
+   (`gap`: a ratio, or a plain difference for `year` and `abs` topics) that small source differences can never flip the order.
+
+   THE QUALITY RULE for adding topics and items: a good round gives a casual player something to reason with:
+   what things look like, how big they feel, when they happened, how popular they are, where they are, or plain
+   common knowledge. The target feeling is "I'm not sure, but I can make an educated guess", never "there's no way
+   I could know this" (five unfamiliar names) and never "this is completely obvious".
+   Tools for that:
+   - `famous`: '|'-separated names of items nearly everyone knows (anchors). `hard`: names only a few will know.
+     Everything else counts as moderately familiar. When a topic lists them, a round aims for about
+     2 famous, 2 moderate and 1 hard: at least 2 and at most 4 famous, and at most 1 hard.
+   - `mixed: false` keeps a topic out of the default All Topics game. It can still come up when a player
+     picks its category. Use it for topics that are mostly trivia recall (waterfalls, lakes). */
 const FLAGS = {China:'🇨🇳', India:'🇮🇳', 'United States':'🇺🇸', Indonesia:'🇮🇩', Pakistan:'🇵🇰', Nigeria:'🇳🇬', Brazil:'🇧🇷', Bangladesh:'🇧🇩',
   Russia:'🇷🇺', Mexico:'🇲🇽', Ethiopia:'🇪🇹', Japan:'🇯🇵', Philippines:'🇵🇭', Egypt:'🇪🇬', 'DR Congo':'🇨🇩', Vietnam:'🇻🇳', Iran:'🇮🇷',
   Turkey:'🇹🇷', Germany:'🇩🇪', Thailand:'🇹🇭', 'United Kingdom':'🇬🇧', France:'🇫🇷', 'South Africa':'🇿🇦', Italy:'🇮🇹', Kenya:'🇰🇪',
@@ -622,18 +633,18 @@ const TOPICS = [
      ['Rhode Island',1097379],['Montana',1084225],['Delaware',989948],['South Dakota',886667],['North Dakota',779094],['Alaska',733391],
      ['Vermont',643077],['Wyoming',576851]]},
 
-  {id: 'statearea', title: 'US state size', ask: 'Biggest state to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'sqmi', gap: 1.06,
-   src: 'Total area including water, US Census Bureau.',
+  {id: 'statearea', title: 'US state total area', ask: 'Biggest state to smallest, water included', hi: 'Biggest', lo: 'Smallest', unit: 'sqmi', gap: 1.06,
+   src: 'Total area: land plus inland, coastal and Great Lakes water, from the US Census Bureau. Water is why states like Michigan and Hawaii rank higher than their land alone would.',
    items: [['Alaska',665384],['Texas',268596],['California',163695],['Montana',147040],['New Mexico',121590],['Arizona',113990],['Nevada',110572],
      ['Colorado',104094],['Oregon',98379],['Wyoming',97813],['Michigan',96714,'lots of Great Lakes water'],['Minnesota',86936],['Utah',84897],
      ['Idaho',83569],['Kansas',82278],['Nebraska',77348],['South Dakota',77116],['Washington',71298],['North Dakota',70698],['Oklahoma',69899],
-     ['Missouri',69707],['Florida',65758],['Wisconsin',65496],['Georgia',59425],['Illinois',57914],['Iowa',56273],['New York',54555],
+     ['Missouri',69707],['Florida',65758,'lots of coastal water'],['Wisconsin',65496,'includes Great Lakes water'],['Georgia',59425],['Illinois',57914],['Iowa',56273],['New York',54555],
      ['North Carolina',53819],['Arkansas',53179],['Alabama',52420],['Louisiana',52378],['Mississippi',48432],['Pennsylvania',46054],['Ohio',44826],
      ['Virginia',42775],['Tennessee',42144],['Kentucky',40408],['Indiana',36420],['Maine',35380],['South Carolina',32020],['West Virginia',24230],
-     ['Maryland',12406],['Hawaii',10932],['Massachusetts',10554],['Vermont',9616],['New Hampshire',9349],['New Jersey',8723],['Connecticut',5543],
+     ['Maryland',12406],['Hawaii',10932,'about 40% water'],['Massachusetts',10554],['Vermont',9616],['New Hampshire',9349],['New Jersey',8723],['Connecticut',5543],
      ['Delaware',2489],['Rhode Island',1545]]},
 
-  {id: 'lakes', title: 'Lake size', ask: 'Biggest lake to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08,
+  {id: 'lakes', title: 'Lake size', ask: 'Biggest lake to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08, mixed: false,
    src: 'Surface area, from Wikipedia’s list of lakes by area.',
    items: [['Caspian Sea',389000,'counted as a lake'],['Lake Superior',82100],['Lake Victoria',59940],['Lake Huron',59570],['Lake Michigan',57800],
      ['Lake Tanganyika',32900],['Lake Baikal',31722],['Great Bear Lake',31153],['Lake Malawi',29600],['Great Slave Lake',27200],['Lake Erie',25667],
@@ -643,20 +654,24 @@ const TOPICS = [
 
   {id: 'islands', title: 'Island size', ask: 'Biggest island to smallest', hi: 'Biggest', lo: 'Smallest', unit: 'km2', gap: 1.08,
    src: 'Area of the island itself, from Wikipedia’s list of islands by area.',
-   items: [['Greenland',2108459],['New Guinea',773751],['Borneo',723154],['Madagascar',592521],['Baffin Island',507205],['Sumatra',428134],
-     ['Honshu',228296,'Japan’s main island'],['Victoria Island',219191,'Canada'],['Great Britain',218635],['Ellesmere Island',197790],['Sulawesi',169981],
-     ['South Island',150683,'New Zealand'],['Java',127467],['North Island',114573,'New Zealand'],['Newfoundland',108878],['Cuba',105468,'main island'],
-     ['Luzon',104835],['Iceland',100261],['Mindanao',94469],['Ireland',83721],['Hokkaido',77659],['Hispaniola',74366],['Sakhalin',74237],
-     ['Sri Lanka',65916],['Tasmania',64333],['Kyushu',36838],['Vancouver Island',31815],['Sicily',25498],['Sardinia',23827],['Jamaica',11037],
-     ['Hawaiʻi (Big Island)',10493],['Cyprus',9284],['Puerto Rico',8759],['Corsica',8730],['Crete',8296],['Mallorca',3630],['Long Island',3505],
-     ['Tenerife',2047],['Maui',1893],['Oʻahu',1560],['Isle of Man',574],['Martha’s Vineyard',250],['Manhattan',59]]},
+   famous: 'Greenland|Madagascar|Great Britain|Cuba|Iceland|Ireland|Sri Lanka|Taiwan|Sicily|Jamaica|Puerto Rico|Bali|Oʻahu|Manhattan|Alcatraz',
+   hard: 'Baffin Island|Sumatra|Luzon|Tenerife',
+   items: [['Greenland',2108459],['New Guinea',773751],['Borneo',723154],['Madagascar',592521],['Baffin Island',507205,'Canada'],['Sumatra',428134,'Indonesia'],
+     ['Honshu',228296,'Japan’s main island'],['Great Britain',218635],['South Island',150683,'New Zealand'],['Java',127467,'Indonesia'],
+     ['North Island',114573,'New Zealand'],['Newfoundland',108878],['Cuba',105468,'main island'],['Luzon',104835,'Philippines'],['Iceland',100261],
+     ['Ireland',83721],['Hispaniola',74366,'Haiti and the Dominican Republic'],['Sri Lanka',65916],['Tasmania',64333],['Taiwan',35808],
+     ['Vancouver Island',31815],['Sicily',25498],['Sardinia',23827],['Jamaica',11037],['Hawaiʻi (Big Island)',10493],['Cyprus',9284],['Puerto Rico',8759],
+     ['Corsica',8730],['Crete',8296],['Bali',5780],['Mallorca',3630],['Long Island',3505],['Tenerife',2047],['Maui',1893],['Oʻahu',1560],['Staten Island',151],
+     ['Nantucket',124],['Hong Kong Island',79],['Santorini',76],['Manhattan',59],['Bora Bora',30.6],['Capri',10.4],['Alcatraz',0.09]]},
 
   {id: 'rivers', title: 'River length', ask: 'Longest river to shortest', hi: 'Longest', lo: 'Shortest', unit: 'km', gap: 1.12,
    src: 'Wikipedia’s list of river systems by length. River lengths vary between sources, so every river in a round is at least 12% longer than the next.',
-   items: [['Nile',6650],['Yangtze',6300],['Mississippi–Missouri',6275,'as one river system'],['Yellow River',5464],['Ob–Irtysh',5410,'as one river system'],
-     ['Congo',4700],['Lena',4400],['Mackenzie',4241],['Niger',4200],['Volga',3645],['Yukon',3185],['Rio Grande',3057],['Danube',2850],
-     ['Colorado River',2330],['Dnieper',2287],['Orinoco',2140],['Columbia River',2000],['Rhine',1230],['Loire',1006],['Seine',777],
-     ['Hudson River',507],['Thames',346]]},
+   famous: 'Nile|Amazon|Mississippi–Missouri|Yangtze|Danube|Colorado River|Rio Grande|Ganges|Seine|Thames|Hudson River',
+   hard: 'Niger|Volga|Yukon|Loire|Potomac',
+   items: [['Nile',6650],['Amazon',6400],['Yangtze',6300],['Mississippi–Missouri',6275,'as one river system'],['Yellow River',5464,'China'],
+     ['Congo',4700],['Mekong',4350],['Niger',4200],['Volga',3645],['Yukon',3185],['Indus',3180],['Rio Grande',3057],['Danube',2850],['Ganges',2525],
+     ['Colorado River',2330],['Columbia River',2000],['Rhine',1230],['Loire',1006],['Seine',777],['Potomac',652],['Hudson River',507],['Tiber',406,'Rome'],
+     ['Thames',346],['Jordan River',251]]},
 
   {id: 'weight', title: 'Animal weight', ask: 'Heaviest to lightest', hi: 'Heaviest', lo: 'Lightest', unit: 'kg', gap: 1.8, about: true,
    src: 'Typical adult weight, from each animal’s Wikipedia article. Weights vary a lot, so every animal in a round is at least 1.8× heavier than the next.',
@@ -691,11 +706,14 @@ const TOPICS = [
 
   {id: 'peaks', title: 'Mountain height', ask: 'Tallest mountain to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.05,
    src: 'Height above sea level, from Wikipedia.',
-   items: [['Mount Everest',8849],['K2',8611],['Kangchenjunga',8586],['Lhotse',8516],['Makalu',8485],['Aconcagua',6961],['Chimborazo',6263],
-     ['Denali',6190],['Kilimanjaro',5895],['Cotopaxi',5897],['Mount Elbrus',5642],['Mount Kenya',5199],['Mount Ararat',5137],['Mount Vinson',4892],
-     ['Mont Blanc',4806],['Matterhorn',4478],['Mount Whitney',4421],['Mount Rainier',4392],['Mauna Kea',4207],['Mount Kinabalu',4095],['Eiger',3967],
-     ['Mount Fuji',3776],['Aoraki / Mount Cook',3724],['Mount Teide',3715],['Mount Hood',3429],['Zugspitze',2962],['Mount Olympus',2918,'Greece'],
-     ['Mount Kosciuszko',2228],['Mount Mitchell',2037],['Mount Washington',1917],['Ben Nevis',1345],['Snowdon',1085],['Scafell Pike',978]]},
+   famous: 'Mount Everest|K2|Kilimanjaro|Denali|Mont Blanc|Matterhorn|Mount Whitney|Mount Rainier|Mount Fuji|Mount St. Helens|Mount Olympus|Mount Vesuvius',
+   hard: 'Kangchenjunga|Aconcagua|Zugspitze|Mount Kosciuszko',
+   items: [['Mount Everest',8849],['K2',8611],['Kangchenjunga',8586,'third tallest'],['Aconcagua',6961,'tallest in the Americas'],['Denali',6190,'Alaska'],
+     ['Kilimanjaro',5895],['Mount Elbrus',5642,'tallest in Europe'],['Mount Ararat',5137],['Mont Blanc',4806],['Matterhorn',4478],['Mount Whitney',4421],
+     ['Mount Rainier',4392],['Pikes Peak',4302],['Mauna Kea',4207,'Hawaii'],['Eiger',3967],['Mount Fuji',3776],['Mount Hood',3429],['Mount Etna',3357],
+     ['Zugspitze',2962,'tallest in Germany'],['Mount Olympus',2918,'Greece'],['Half Dome',2695,'Yosemite'],['Mount St. Helens',2549],['Mount Sinai',2285],
+     ['Mount Kosciuszko',2228,'tallest in Australia'],['Mount Washington',1917,'New Hampshire'],['Ben Nevis',1345,'tallest in Britain'],
+     ['Mount Vesuvius',1281],['Snowdon',1085,'Wales']]},
 
   {id: 'towers', title: 'Building height', ask: 'Tallest to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.05,
    src: 'Height to the tip, from Wikipedia and the Council on Tall Buildings.',
@@ -706,7 +724,7 @@ const TOPICS = [
      ['Bank of China Tower',367.4],['The Strat',350.2],['Tokyo Tower',333],['Eiffel Tower',330],['Chrysler Building',319],['The Shard',309.6],
      ['Transamerica Pyramid',260],['Woolworth Building',241],['Space Needle',184],['The Gherkin',180],['Washington Monument',169],['Big Ben',96]]},
 
-  {id: 'falls', title: 'Waterfall height', ask: 'Tallest waterfall to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.08,
+  {id: 'falls', title: 'Waterfall height', ask: 'Tallest waterfall to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'm', gap: 1.08, mixed: false,
    src: 'Total drop, from Wikipedia.',
    items: [['Tugela Falls',983],['Angel Falls',979],['Vinnufossen',845],['Gocta Falls',771],['Yosemite Falls',739],['Sutherland Falls',580],
      ['Jog Falls',253],['Kaieteur Falls',226],['Multnomah Falls',189],['Bridalveil Fall',188],['Victoria Falls',108],['Iguazu Falls',82,'tallest drop'],
@@ -1216,6 +1234,11 @@ for (const t of TOPICS) {
     t.byId[it.id] = it;
     return it;
   });
+  // recognizability tiers (see THE QUALITY RULE): 0 famous, 1 moderate, 2 hard
+  if (t.famous) {
+    const f = new Set(t.famous.split('|')), h = new Set((t.hard || '').split('|'));
+    for (const it of t.list) it.tier = f.has(it.name) ? 0 : h.has(it.name) ? 2 : 1;
+  }
   TOP[t.id] = t;
 }
 const CAT = {};
@@ -1292,17 +1315,25 @@ function fmtVal(t, v) {
 
 /* ---------------- rounds and scoring ---------------- */
 const far = (t, a, b) => t.year || t.abs ? Math.abs(a.v - b.v) >= t.gap : Math.max(a.v, b.v) / Math.min(a.v, b.v) >= t.gap;
+// for topics with recognizability tiers: at least 2 and at most 4 famous anchors, and at most 1 hard item
+const goodMix = (t, got) => {
+  if (!t.famous) return true;
+  const famous = got.filter(i => i.tier === 0).length, hard = got.filter(i => i.tier === 2).length;
+  return famous >= 2 && famous <= 4 && hard <= 1;
+};
 function pick5(t) {
   const pool = t.list.slice().sort((a, b) => b.v - a.v);
-  // draw from a window of neighbors most of the time so rounds aren't all giant-vs-tiny
-  for (let tries = 0; tries < 80; tries++) {
-    const w = tries < 60 ? Math.min(pool.length, Math.max(10, Math.ceil(pool.length * 0.55))) : pool.length;
+  // draw from a window of neighbors most of the time so rounds aren't all giant-vs-tiny;
+  // prefer a good mix of familiar and harder items, and only give that up if nothing fits
+  for (let tries = 0; tries < 240; tries++) {
+    const w = tries < 120 ? Math.min(pool.length, Math.max(10, Math.ceil(pool.length * 0.55))) : pool.length;
     const s = Math.floor(Math.random() * (pool.length - w + 1));
     const got = [];
     for (const it of shuffle(pool.slice(s, s + w))) {
       if (got.every(g => far(t, g, it))) got.push(it);
-      if (got.length === N) return got;
+      if (got.length === N) break;
     }
+    if (got.length === N && (tries >= 200 || goodMix(t, got))) return got;
   }
   return null;
 }
@@ -1321,10 +1352,10 @@ function makeRounds(n, cats) {
   if (!cats) {
     // all topics: an even share of knowledge, estimation and pop culture, leftover rounds to random kinds
     const pools = {};
-    for (const k in MIX) pools[k] = shuffle(MIX[k].split(' ').map(id => TOP[id]));
+    for (const k in MIX) pools[k] = shuffle(MIX[k].split(' ').map(id => TOP[id]).filter(t => t.mixed !== false));
     const kinds = Object.keys(MIX), extra = shuffle(kinds.slice());
     const plannedKinds = Array.from({length: n}, (_, i) => i < n - n % kinds.length ? kinds[i % kinds.length] : extra.pop());
-    for (const kind of shuffle(plannedKinds)) plan.push(pools[kind].pop() || pick(TOPICS));
+    for (const kind of shuffle(plannedKinds)) plan.push(pools[kind].pop() || pick(TOPICS.filter(t => t.mixed !== false)));
   } else {
     // chosen categories: shuffled passes through the categories so each gets a fair share,
     // and within a category, every topic comes up once before any repeats
