@@ -408,7 +408,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
     </div>
 
     <div class="rules">
-      <div class="rule"><b>1. Size up the reference</b><p>The thing on the left is shown at its real size: a person, a school bus, the Moon. Rounds compare height, length, wingspan or width.</p></div>
+      <div class="rule"><b>1. Size up the reference</b><p>The thing on the left is shown at its real height: a person, a door, the Statue of Liberty. Every round asks one question: how tall is the other one?</p></div>
       <div class="rule"><b>2. Resize the right one</b><p>Drag the picture or the slider until it looks right. Use ×10 and ÷10 for big jumps. Lock in within 20 seconds.</p></div>
       <div class="rule"><b>3. Watch it grow</b><p>Your guess stays as a ghost while the real size grows into place, next to everyone else's guesses. Ten rounds, with a surprise or two.</p></div>
     </div>
@@ -616,7 +616,7 @@ const RAW = [
 const cap0 = s => s.charAt(0).toUpperCase() + s.slice(1);
 const OBJ = RAW.map(([id, e, a, s, note, label]) => {
   const noun = a.replace(/^(an?|the) /, '');
-  return {id, e, a, s, note, noun, label: label || cap0(noun)};
+  return {id, e, a, name: label || cap0(noun), height: s, unit: 'm', note, noun, label: label || cap0(noun)};
 });
 const BY = Object.fromEntries(OBJ.map(o => [o.id, o]));
 
@@ -1109,7 +1109,7 @@ const RAW2 = [
 ];
 for (const [id, e, a, s, note, label] of RAW2) {
   const noun = a.replace(/^(an?|the) /, '');
-  const o = {id, e, a, s, note, noun, label: label || cap0(noun)};
+  const o = {id, e, a, name: label || cap0(noun), height: s, unit: 'm', note, noun, label: label || cap0(noun)};
   OBJ.push(o); BY[id] = o;
 }
 
@@ -1809,7 +1809,7 @@ const RAW3 = [
 ];
 for (const [id, e, a, s, note, label] of RAW3) {
   const noun = a.replace(/^(an?|the) /, '');
-  const o = {id, e, a, s, note, noun, label: label || cap0(noun)};
+  const o = {id, e, a, name: label || cap0(noun), height: s, unit: 'm', note, noun, label: label || cap0(noun)};
   OBJ.push(o); BY[id] = o;
 }
 
@@ -2325,7 +2325,7 @@ const RAW4 = [
 ];
 for (const [id, e, a, s, note, label] of RAW4) {
   const noun = a.replace(/^(an?|the) /, '');
-  const o = {id, e, a, s, note, noun, label: label || cap0(noun)};
+  const o = {id, e, a, name: label || cap0(noun), height: s, unit: 'm', note, noun, label: label || cap0(noun)};
   OBJ.push(o); BY[id] = o;
 }
 
@@ -2887,70 +2887,32 @@ Object.assign(ART, {
   makalu: mountainArt({aspect: 1.6, rock: '#50555E', rock2: 'rgba(15,18,25,.3)', ridge: [[0.06, 0.85], [0.26, 0.5], [0.4, 0.15], [0.5, 0], [0.56, 0.08], [0.62, 0.12], [0.74, 0.4], [0.94, 0.85]], snow: 0.55}),
 });
 
-/* ---------------- round 5: other dimensions, and the curated comparisons the game is built from ----------------
-   Every object so far is measured by height. These add length, wingspan, width and diameter, each drawn side-on (or
-   face-on for discs) so the measured span is the drawing's width (length, wingspan, width) or height (height, diameter).
-   Row: [id, emoji (null = drawn art), phrase, size in meters, how it's measured, short label, dimension, art to reuse] */
+/* ---------------- round 5: more things that stand tall, and the curated comparisons the game is built from ----------------
+   The whole game compares HEIGHT: how tall something stands, ground to top, in its natural upright pose.
+   Every object is {id, name, height, unit: 'm'} (plus its picture and a note on how it's measured); heights are
+   stored in meters and shown in feet and inches. Row: [id, emoji (null = drawn art), phrase, height in meters, how it's measured, name] */
 const RAW5 = [
-  ['polarbear',null,'a polar bear',2.6,'an adult male standing on its hind legs','Polar bear','height'],
-  ['gorilla','🦍','a silverback gorilla',1.7,'standing upright','Gorilla','height'],
-  ['kangaroo','🦘','a red kangaroo',1.8,'a big male standing tall','Kangaroo','height'],
-  ['fridge',null,'a refrigerator',1.78,'a standard 70-inch fridge','Refrigerator','height'],
-  ['hoop',null,'a basketball hoop',3.96,'to the top of the backboard; the rim is at 10 ft','Basketball hoop','height'],
-  ['house','🏠','a house',6,'a one-story house, ground to roof peak','House','height'],
-  ['gameboy',null,'an original Game Boy',0.148,'1989 model','Game Boy','height'],
-  ['ipod',null,'an iPod classic',0.104,'','iPod classic','height'],
-  ['bus_l','🚌','a city bus',12,'a standard 40-foot bus','City bus','length'],
-  ['car_l','🚗','a car',4.5,'a midsize sedan','Car','length'],
-  ['pickup_l','🛻','a pickup truck',5.9,'a full-size crew cab','Pickup truck','length'],
-  ['semi_l','🚛','a semi truck',21,'tractor and 53-foot trailer','Semi truck','length'],
-  ['couch','🛋️','a couch',2.1,'a three-seat sofa','Couch','length'],
-  ['whale_l','🐋','a blue whale',25,'a typical adult; the record is about 30 m','Blue whale','length'],
-  ['shark','🦈','a great white shark',4.6,'a large adult','Great white shark','length'],
-  ['croc','🐊','a saltwater crocodile',5,'a big male','Saltwater crocodile','length'],
-  ['elephant_l','🐘','an African elephant',6.5,'trunk to tail','Elephant','length'],
-  ['trex_l','🦖','a T. rex',12.3,'nose to tail, the Sue skeleton','T. rex','length'],
-  ['raptor_l','🦖','a Velociraptor',2,'nose to tail','Velociraptor','length'],
-  ['brachio_l','🦕','a Brachiosaurus',20,'nose to tail','Brachiosaurus','length'],
-  ['titanic_l',null,'the Titanic',269,'bow to stern','Titanic','length','titanic'],
-  ['a380_l',null,'an Airbus A380',72.7,'nose to tail','Airbus A380','length','a380'],
-  ['cruise','🛳️','Icon of the Seas',365,'the largest cruise ship, bow to stern','Icon of the Seas','length'],
-  ['field',null,'an American football field',109.7,'end zone to end zone','Football field','length'],
-  ['eagle','🦅','a bald eagle',2,'wingtip to wingtip','Bald eagle','wingspan'],
-  ['fruitbat','🦇','a flying fox bat',1.5,'the biggest bats, wingtip to wingtip','Flying fox','wingspan'],
-  ['dove','🕊️','a dove',0.55,'a rock dove (pigeon), wingtip to wingtip','Dove','wingspan'],
-  ['laptop','💻','a 13-inch laptop',0.31,'','Laptop','width'],
-  ['keyboard','⌨️','a full-size keyboard',0.44,'with a number pad','Keyboard','width'],
-  ['cd_d','💿','a CD',0.12,'','CD','diameter'],
-  ['plate',null,'a dinner plate',0.27,'','Dinner plate','diameter'],
-  ['vinyl',null,'a vinyl record',0.3,'a 12-inch LP','Vinyl record','diameter'],
-  ['pizza',null,'a large pizza',0.356,'a 14-inch pie','Large pizza','diameter'],
-  ['wheel',null,'a steering wheel',0.38,'a typical car wheel','Steering wheel','diameter'],
-  ['moon','🌕','the Moon',3474.8e3,'','Moon','diameter'],
-  ['pluto',null,'Pluto',2376.6e3,'','Pluto','diameter'],
-  ['mars',null,'Mars',6779e3,'','Mars','diameter'],
-  ['earth','🌍','Earth',12742e3,'','Earth','diameter'],
-  ['neptune',null,'Neptune',49244e3,'','Neptune','diameter'],
-  ['jupiter',null,'Jupiter',139820e3,'','Jupiter','diameter'],
-  ['sun',null,'the Sun',1392700e3,'','Sun','diameter'],
+  ['polarbear',null,'a polar bear',2.6,'an adult male standing on its hind legs','Polar bear'],
+  ['gorilla','🦍','a silverback gorilla',1.7,'standing upright','Gorilla'],
+  ['kangaroo','🦘','a red kangaroo',1.8,'a big male standing tall','Kangaroo'],
+  ['trex','🦖','a T. rex',4,'to the top of its head, as the Sue skeleton stands','T. rex'],
+  ['fridge',null,'a refrigerator',1.78,'a standard 70-inch fridge','Refrigerator'],
+  ['hoop',null,'a basketball hoop',3.96,'to the top of the backboard; the rim is at 10 ft','Basketball hoop'],
+  ['house','🏠','a house',6,'a one-story house, ground to roof peak','House'],
+  ['gameboy',null,'an original Game Boy',0.148,'1989 model, standing up','Game Boy'],
+  ['ipod',null,'an iPod classic',0.104,'standing up','iPod classic'],
 ];
-// how each dimension is measured on screen: 'h' = the drawing's height, 'w' = its width
-const DIMS = {
-  height: {ax: 'h', word: 'tall', noun: 'height', ask: 'how tall is', tag: 'HEIGHT'},
-  length: {ax: 'w', word: 'long', noun: 'length', ask: 'how long is', tag: 'LENGTH'},
-  wingspan: {ax: 'w', word: 'wingspan', noun: 'wingspan', ask: "what's the wingspan of", tag: 'WINGSPAN'},
-  width: {ax: 'w', word: 'wide', noun: 'width', ask: 'how wide is', tag: 'WIDTH'},
-  diameter: {ax: 'h', word: 'across', noun: 'diameter', ask: 'how wide is', tag: 'DIAMETER'},
-};
-for (const o of OBJ) { o.dim = 'height'; o.ax = 'h'; }
-for (const [id, e, a, s, note, label, dim, art] of RAW5) {
+for (const [id, e, a, h, note, name] of RAW5) {
   const noun = a.replace(/^(an?|the) /, '');
-  const o = {id, e, a, s, note, noun, label: label || cap0(noun), dim, ax: DIMS[dim].ax, art};
+  const o = {id, e, a, name: name || cap0(noun), height: h, unit: 'm', note, noun, label: name || cap0(noun)};
   OBJ.push(o); BY[id] = o;
 }
+// objects whose "height" only exists lying down, on edge or stood on end: never used in a round
+const NOT_UPRIGHT = new Set(['titanic', 'a380', 'b747', 'b737', 'an225', 'cessna', 'f35', 'b2', 'sr71', 'chinook', 'blimp', 'hindenburg',
+  'wrightflyer', 'orbiter', 'quarter', 'dime', 'nickel', 'creditcard', 'cd', 'paper', 'pencil', 'crayon', 'card', 'puck', 'stickynote',
+  'ruler', 'bat', 'racket', 'container', 'cube', 'clockface']);
 const artOf = o => ART[o.art || o.id];
 
-function sphereArt(fill, deco) { return ballArt(fill, deco); }
 Object.assign(ART, {
   polarbear: {aspect: 0.56, shade: null, draw(c, w, h) {
     const fur = '#F3EFE4', dark = '#D9D2C2', line = 'rgba(40,50,60,.35)';
@@ -2995,48 +2957,14 @@ Object.assign(ART, {
     R(c, w, h, 0.1, 0.07, 0.9, 0.44, '#3B5B7E');
     E(c, w, h, 0.5, 0.72, 0.32, 0.19, '#E1E4E8', 'rgba(40,50,60,.25)'); E(c, w, h, 0.5, 0.72, 0.12, 0.07, '#F4F5F6', 'rgba(40,50,60,.25)');
   }},
-  field: {aspect: 9, shade: null, draw(c, w, h) {
-    fillP(c, w, h, [[0.02, 0.62], [0.98, 0.62], [1, 1], [0, 1]], '#58A651', 'rgba(30,60,30,.5)');
-    fillP(c, w, h, [[0.02, 0.62], [0.1, 0.62], [0.092, 1], [0, 1]], '#2F6FB5');                   // end zones
-    fillP(c, w, h, [[0.9, 0.62], [0.98, 0.62], [1, 1], [0.908, 1]], '#C0392B');
-    for (let i = 0; i <= 10; i++) { const u = 0.1 + i * 0.08; L(c, w, h, [[u, 0.62], [0.092 + i * 0.0816, 1]], 'rgba(255,255,255,.85)', Math.max(1, h * 0.02)); }
-    for (const x of [0.025, 0.975]) {                                                        // goalposts
-      L(c, w, h, [[x, 0.66], [x, 0.3]], '#F2C80F', Math.max(1.5, w * 0.004));
-      L(c, w, h, [[x - 0.02, 0.3], [x + 0.02, 0.3]], '#F2C80F', Math.max(1.5, w * 0.004));
-      L(c, w, h, [[x - 0.02, 0.3], [x - 0.02, 0]], '#F2C80F', Math.max(1.5, w * 0.004));
-      L(c, w, h, [[x + 0.02, 0.3], [x + 0.02, 0]], '#F2C80F', Math.max(1.5, w * 0.004));
-    }
-  }},
-  plate: ballArt('#FBFCFD', (c, w, h) => { E(c, w, h, 0.5, 0.5, 0.36, 0.36, '#F1F3F5', 'rgba(40,50,60,.15)'); }),
-  vinyl: ballArt('#1D1F23', (c, w, h) => { for (const r of [0.42, 0.34, 0.26]) E(c, w, h, 0.5, 0.5, r, r, 'rgba(0,0,0,0)', 'rgba(255,255,255,.12)'); E(c, w, h, 0.5, 0.5, 0.16, 0.16, '#D9483B'); E(c, w, h, 0.5, 0.5, 0.02, 0.02, '#111'); }),
-  pizza: ballArt('#D99A4E', (c, w, h) => {
-    E(c, w, h, 0.5, 0.5, 0.44, 0.44, '#F4C542');
-    for (const [u, v] of [[0.35, 0.3], [0.62, 0.28], [0.72, 0.52], [0.52, 0.5], [0.3, 0.58], [0.45, 0.74], [0.68, 0.72]]) E(c, w, h, u, v, 0.07, 0.07, '#B8322A');
-    L(c, w, h, [[0.5, 0.06], [0.5, 0.94]], 'rgba(120,70,20,.35)', 1); L(c, w, h, [[0.06, 0.5], [0.94, 0.5]], 'rgba(120,70,20,.35)', 1);
-  }),
-  wheel: {aspect: 1, shade: null, draw(c, w, h) {
-    c.save(); c.beginPath(); c.ellipse(0.5 * w, 0.5 * h, 0.47 * w, 0.47 * h, 0, 0, Math.PI * 2);
-    c.strokeStyle = '#2C3036'; c.lineWidth = w * 0.06; c.stroke(); c.restore();
-    L(c, w, h, [[0.08, 0.5], [0.92, 0.5]], '#3A3F46', w * 0.07); L(c, w, h, [[0.5, 0.5], [0.5, 0.93]], '#3A3F46', w * 0.07);
-    E(c, w, h, 0.5, 0.52, 0.14, 0.12, '#4A5058');
-  }},
-  pluto: ballArt('#D8C3A5', (c, w, h) => { E(c, w, h, 0.62, 0.62, 0.22, 0.2, '#F1E6D2'); E(c, w, h, 0.28, 0.4, 0.14, 0.1, '#A68A6A'); }),
-  mars: ballArt('#C4552E', (c, w, h) => { E(c, w, h, 0.35, 0.4, 0.16, 0.08, '#9C3E20'); E(c, w, h, 0.65, 0.62, 0.12, 0.06, '#A6452A'); E(c, w, h, 0.5, 0.06, 0.16, 0.05, '#F2E9E1'); }),
-  neptune: ballArt('#3F6FD8', (c, w, h) => { E(c, w, h, 0.5, 0.35, 0.46, 0.06, 'rgba(255,255,255,.18)'); E(c, w, h, 0.6, 0.6, 0.1, 0.06, '#27479B'); }),
-  jupiter: ballArt('#D9B98F', (c, w, h) => {
-    c.save(); c.beginPath(); c.ellipse(0.5 * w, 0.5 * h, 0.5 * w, 0.5 * h, 0, 0, Math.PI * 2); c.clip();
-    for (const [v, t, col] of [[0.18, 0.06, '#B98A5E'], [0.34, 0.07, '#A8744A'], [0.52, 0.05, '#EEDCC2'], [0.66, 0.08, '#B07E55'], [0.82, 0.05, '#C99E73']]) R(c, w, h, 0, v, 1, v + t, col);
-    E(c, w, h, 0.66, 0.7, 0.1, 0.05, '#C0503A'); c.restore();
-  }),
-  sun: ballArt('#FFC530', (c, w, h) => { E(c, w, h, 0.45, 0.42, 0.34, 0.34, '#FFD85A'); E(c, w, h, 0.62, 0.64, 0.05, 0.04, '#E89A20'); E(c, w, h, 0.3, 0.6, 0.03, 0.025, '#E89A20'); }),
 });
 
 /* ---------------- curated comparisons ----------------
-   Pairs are chosen by hand, not by ratio: both things should be familiar and the size should be guessable.
-   Row: [reference (left), resized (right), theme, level 1 easy .. 3 harder, tags]
+   Pairs are chosen by hand, not by ratio: both things should be familiar, both should stand upright, and the height
+   should be guessable. Row: [reference (left), resized (right), theme, level 1 easy .. 3 harder, tags]
    tags: star = memorable enough for the last round; giant / tiny / close = special rounds (see PAIR_RULES). */
-const THEMES = {animals: 'Animals', ocean: 'Ocean', dinos: 'Dinosaurs', everyday: 'Everyday stuff', tech: 'Tech', landmarks: 'Landmarks',
-  mega: 'Mega stuff', space: 'Space', people: 'People', sports: 'Sports'};
+const THEMES = {animals: 'Animals', dinos: 'Dinosaurs', everyday: 'Everyday stuff', tech: 'Tech', landmarks: 'Landmarks',
+  rockets: 'Rockets', people: 'People', sports: 'Sports'};
 const PAIRS_RAW = [
   // animals
   ['person','giraffe','animals',1,'star'], ['person','polarbear','animals',1,'star'], ['hoop','giraffe','animals',2,''],
@@ -3047,62 +2975,51 @@ const PAIRS_RAW = [
   ['elephant','giraffe','animals',2,'star'], ['elephant','mammoth','animals',0,'close'], ['hippo','rhino','animals',3,''],
   ['tiger','person','animals',2,''], ['chihuahua','cat','animals',0,'close'], ['polarbear','giraffe','animals',2,''],
   ['gorilla','polarbear','animals',2,''], ['flamingo','person','animals',3,''], ['fridge','polarbear','animals',2,'star'],
-  ['couch','eagle','animals',0,'close'], ['dove','eagle','animals',2,''], ['fruitbat','eagle','animals',3,''],
-  ['eagle','car_l','animals',2,''], ['person','bison','animals',0,'close'], ['bike','kangaroo','animals',3,''],
-  // ocean
-  ['bus_l','whale_l','ocean',1,'star'], ['car_l','shark','ocean',0,'close'], ['car_l','croc','ocean',0,'close'],
-  ['shark','whale_l','ocean',0,'giant'], ['pickup_l','shark','ocean',2,''], ['semi_l','whale_l','ocean',0,'close'],
-  ['couch','shark','ocean',2,''], ['car_l','whale_l','ocean',0,'giant'], ['couch','croc','ocean',2,''],
-  ['elephant_l','whale_l','ocean',2,'star'], ['shark','bus_l','ocean',2,''],
+  ['person','bison','animals',0,'close'], ['bike','kangaroo','animals',3,''], ['door','polarbear','animals',2,''],
+  ['kangaroo','giraffe','animals',2,''], ['penguin','polarbear','animals',2,''], ['ostrich','giraffe','animals',2,''],
+  ['flamingo','giraffe','animals',3,''],
   // dinosaurs
-  ['bus_l','trex_l','dinos',0,'close'], ['elephant_l','trex_l','dinos',1,'star'], ['bus_l','brachio_l','dinos',2,''],
-  ['couch','raptor_l','dinos',0,'close'], ['car_l','trex_l','dinos',1,'star'], ['raptor_l','car_l','dinos',2,''],
-  ['trex_l','brachio_l','dinos',2,''], ['person','brachio','dinos',0,'giant'], ['elephant','brachio','dinos',2,''],
-  ['giraffe','brachio','dinos',1,'star'], ['croc','trex_l','dinos',2,''],
+  ['person','trex','dinos',1,'star'], ['elephant','trex','dinos',0,'close'], ['giraffe','trex','dinos',2,''],
+  ['trex','brachio','dinos',2,''], ['house','brachio','dinos',3,''], ['mammoth','trex','dinos',3,''],
+  ['hoop','trex','dinos',0,'close'], ['bus','trex','dinos',0,'close'], ['person','brachio','dinos',0,'giant'],
+  ['elephant','brachio','dinos',2,''], ['giraffe','brachio','dinos',1,'star'],
   // everyday
   ['person','door','everyday',0,'close'], ['door','fridge','everyday',0,'close'], ['person','hoop','everyday',1,'star'],
   ['person','car','everyday',0,'close'], ['person','bike','everyday',1,''], ['door','xmastree','everyday',0,'close'],
   ['person','pickup','everyday',0,'close'], ['chair','person','everyday',1,''], ['toilet','fridge','everyday',2,''],
-  ['pizza','wheel','everyday',0,'close'], ['plate','pizza','everyday',2,''], ['couch','car_l','everyday',2,''],
   ['person','house','everyday',2,''], ['door','house','everyday',2,''], ['hoop','house','everyday',3,''],
-  ['bus','house','everyday',3,''], ['cd_d','plate','everyday',2,''], ['cd_d','vinyl','everyday',2,''],
-  ['cd_d','pizza','everyday',2,''],
+  ['bus','house','everyday',3,''], ['chair','door','everyday',2,''], ['toilet','person','everyday',1,''],
+  ['bike','door','everyday',2,''], ['xmastree','house','everyday',3,''],
   // tech
-  ['phone','gameboy','tech',0,'close'], ['ipod','phone','tech',2,''], ['keyboard','laptop','tech',2,''],
-  ['gameboy','ipod','tech',3,''], ['sodacan','phone','tech',0,'close'], ['phone','paper','tech',2,''],
-  ['creditcard','phone','tech',2,''], ['creditcard','gameboy','tech',2,''],
+  ['phone','gameboy','tech',0,'close'], ['ipod','phone','tech',2,''], ['gameboy','ipod','tech',3,''], ['sodacan','phone','tech',0,'close'],
   // landmarks
-  ['liberty','shuttle','landmarks',0,'close'], ['liberty','bigben','landmarks',1,'star'], ['bigben','eiffel','landmarks',2,''],
-  ['liberty','eiffel','landmarks',0,'giant'], ['eiffel','empire','landmarks',2,''], ['empire','burj','landmarks',2,'star'],
-  ['pyramid','eiffel','landmarks',2,'star'], ['colosseum','liberty','landmarks',0,'close'], ['taj','bigben','landmarks',3,''],
-  ['washington','pyramid','landmarks',0,'close'], ['spaceneedle','eiffel','landmarks',2,''], ['pisa','bigben','landmarks',2,''],
-  ['christ','liberty','landmarks',0,'close'], ['londoneye','pyramid','landmarks',0,'close'], ['arch','washington','landmarks',0,'close'],
-  ['sphinx','pyramid','landmarks',0,'giant'], ['empire','cntower','landmarks',0,'close'], ['house','hollywood','landmarks',3,''],
-  ['giraffe','stonehenge','landmarks',3,''], ['bigben','saturnv','landmarks',0,'close'], ['liberty','saturnv','landmarks',2,'star'],
+  ['liberty','bigben','landmarks',1,'star'], ['bigben','eiffel','landmarks',2,''], ['liberty','eiffel','landmarks',0,'giant'],
+  ['eiffel','empire','landmarks',2,''], ['empire','burj','landmarks',2,'star'], ['pyramid','eiffel','landmarks',2,'star'],
+  ['colosseum','liberty','landmarks',0,'close'], ['taj','bigben','landmarks',3,''], ['washington','pyramid','landmarks',0,'close'],
+  ['spaceneedle','eiffel','landmarks',2,''], ['pisa','bigben','landmarks',2,''], ['christ','liberty','landmarks',0,'close'],
+  ['londoneye','pyramid','landmarks',0,'close'], ['arch','washington','landmarks',0,'close'], ['sphinx','pyramid','landmarks',0,'giant'],
+  ['empire','cntower','landmarks',0,'close'], ['house','hollywood','landmarks',3,''], ['giraffe','stonehenge','landmarks',3,''],
   ['eiffel','burj','landmarks',2,''], ['burj','everest','landmarks',0,'giant'], ['fuji','everest','landmarks',3,''],
-  ['burj','fuji','landmarks',0,'giant'], ['liberty','titanic','landmarks',0,'close'], ['liberty','hyperion','landmarks',2,''],
-  ['person','liberty','landmarks',0,'giant'], ['house','liberty','landmarks',0,'giant'], ['bigben','pyramid','landmarks',2,''],
-  // mega stuff
-  ['field','titanic_l','mega',1,'star'], ['titanic_l','cruise','mega',2,''], ['a380_l','field','mega',2,''],
-  ['a380_l','titanic_l','mega',2,'star'], ['whale_l','a380_l','mega',2,'star'], ['field','cruise','mega',2,'star'],
-  ['bus_l','a380_l','mega',0,'giant'], ['semi_l','a380_l','mega',2,''], ['whale_l','titanic_l','mega',0,'giant'],
-  // space
-  ['moon','earth','space',1,'star'], ['mars','earth','space',2,'star'], ['moon','mars','space',2,''], ['pluto','moon','space',2,''],
-  ['earth','neptune','space',3,''], ['earth','jupiter','space',0,'giant'], ['jupiter','sun','space',0,'giant'],
+  ['burj','fuji','landmarks',0,'giant'], ['liberty','hyperion','landmarks',2,''], ['person','liberty','landmarks',0,'giant'],
+  ['house','liberty','landmarks',0,'giant'], ['bigben','pyramid','landmarks',2,''], ['giraffe','liberty','landmarks',0,'giant'],
+  ['house','bigben','landmarks',0,'giant'], ['elephant','liberty','landmarks',0,'giant'], ['giraffe','bigben','landmarks',0,'giant'],
+  // rockets, standing on the launch pad
+  ['liberty','shuttle','rockets',0,'close'], ['bigben','saturnv','rockets',0,'close'], ['liberty','saturnv','rockets',2,'star'],
+  ['shuttle','saturnv','rockets',2,'star'], ['falcon9','saturnv','rockets',3,''], ['liberty','falcon9','rockets',2,''],
+  ['bigben','sls','rockets',0,'close'], ['house','shuttle','rockets',0,'giant'],
   // people
   ['person','shaq','people',2,'star'], ['biles','shaq','people',1,'star'], ['door','wemby','people',0,'close'],
   ['person','wadlow','people',2,''], ['dangi','person','people',3,''], ['messi','lebron','people',0,'close'],
   ['bogues','yao','people',2,''], ['curry','wemby','people',0,'close'], ['biles','giraffe','people',2,''],
   ['shaq','hoop','people',1,'star'], ['bogues','door','people',2,''],
-  // tiny things
+  // sports and small things
   ['golfball','tennisball','sports',0,'tiny'], ['baseball','softball','sports',0,'tiny'], ['golfball','baseball','sports',0,'tiny'],
-  ['tennisball','basketball','sports',0,'tiny'], ['marble','golfball','sports',0,'tiny'], ['die','quarter','everyday',0,'tiny'],
-  ['dime','quarter','everyday',0,'tiny'], ['egg','phone','everyday',0,'tiny'], ['battery','phone','tech',0,'tiny'],
-  ['crayon','pencil','everyday',0,'tiny'], ['mug','sodacan','everyday',0,'tiny'], ['creditcard','paperback','everyday',0,'tiny'],
+  ['tennisball','basketball','sports',0,'tiny'], ['marble','golfball','sports',0,'tiny'], ['egg','phone','everyday',0,'tiny'],
+  ['battery','phone','tech',0,'tiny'], ['mug','sodacan','everyday',0,'tiny'],
   ['soccer','bucket','sports',2,''], ['baseball','basketball','sports',1,''], ['basketball','bucket','sports',2,''],
   ['basketball','trophy','sports',2,''], ['person','goal','sports',1,''], ['goal','hoop','sports',2,''],
 ];
-// what each kind of round allows (ratio = the bigger size over the smaller one)
+// what each kind of round allows (ratio = the taller height over the shorter one)
 const PAIR_RULES = {
   normal: {min: 1.25, max: 4, label: ''},
   close: {min: 1, max: 1.25, label: 'Close call'},
@@ -3115,13 +3032,15 @@ const PAIRS = PAIRS_RAW.map(([ref, tgt, theme, lvl, tags]) => ({key: `${ref}|${t
 function auditPair(p) {
   const a = BY[p.ref], b = BY[p.tgt], issues = [];
   if (!a || !b) return ['missing object'];
-  if (!artOf(a) && !a.e) issues.push(`${a.id} has no picture`);
-  if (!artOf(b) && !b.e) issues.push(`${b.id} has no picture`);
-  if (a.ax !== b.ax) issues.push('measured along different axes');
-  const q = Math.max(a.s, b.s) / Math.min(a.s, b.s), rule = PAIR_RULES[p.kind];
-  p.ratio = b.s / a.s;
+  for (const o of [a, b]) {
+    if (!artOf(o) && !o.e) issues.push(`${o.id} has no picture`);
+    if (!(o.height > 0) || o.unit !== 'm') issues.push(`${o.id} has no height`);
+    if (NOT_UPRIGHT.has(o.id)) issues.push(`${o.id} doesn't stand upright`);
+  }
+  const q = Math.max(a.height, b.height) / Math.min(a.height, b.height), rule = PAIR_RULES[p.kind];
+  p.ratio = b.height / a.height;
   if (q < rule.min - 1e-9 || q > rule.max + 1e-9) issues.push(`${q.toFixed(2)}x is outside ${rule.min}-${rule.max}x for ${p.kind} rounds`);
-  if (rule.maxSize && Math.max(a.s, b.s) > rule.maxSize) issues.push('too big for tiny mode');
+  if (rule.maxSize && Math.max(a.height, b.height) > rule.maxSize) issues.push('too big for tiny mode');
   if (!THEMES[p.theme]) issues.push('unknown theme');
   return issues;
 }
@@ -3129,7 +3048,7 @@ const PAIR_ISSUES = PAIRS.map(p => ({p, issues: auditPair(p)})).filter(x => x.is
 const POOL = PAIRS.filter(p => !auditPair(p).length);
 const PBY = Object.fromEntries(PAIRS.map(p => [p.key, p]));
 // objects that make good anchors can show up twice in a game; everything else once
-const ANCHORS = new Set(['person', 'door', 'car', 'car_l', 'bus_l', 'couch', 'house', 'liberty', 'phone', 'hoop', 'eiffel', 'giraffe']);
+const ANCHORS = new Set(['person', 'door', 'car', 'bus', 'house', 'liberty', 'phone', 'hoop', 'eiffel', 'giraffe', 'elephant', 'bigben']);
 
 /* ---------------- rules ---------------- */
 const ROUNDS = 10, SECONDS = 20, REVEAL_MS = 12500;
@@ -3190,8 +3109,8 @@ function fmtLen(m) {
   return `${(mi < 100 ? +mi.toFixed(1) : Math.round(mi)).toLocaleString('en-US')} mi`;
 }
 // "9 ft 6 in tall", "82 ft long", "7,918 mi across"
-const dimOf = o => DIMS[o.dim || 'height'];
-const fmtSize = (o, m) => o.dim === 'wingspan' ? `${fmtLen(m)} wingspan` : `${fmtLen(m)} ${dimOf(o).word}`;
+// "9 ft 6 in tall"
+const fmtHeight = o => `${fmtLen(o.height)} tall`;
 const LS = {
   get(k) { try { return localStorage.getItem('sizeup.' + k); } catch { return null; } },
   set(k, v) { try { v == null ? localStorage.removeItem('sizeup.' + k) : localStorage.setItem('sizeup.' + k, v); } catch {} },
@@ -3284,27 +3203,17 @@ function drawEmoji(c, o, m, axisPx, left, ground, alpha) {
   c.fillText(o.e, left - m.ox * fs, ground - m.h * fs - m.oy * fs);
   c.restore();
 }
-// a measuring line along the object's measured side: vertical beside it for heights, horizontal above it for lengths
-function measureLine(c, ax, x0, w, h, ground, side, color, dashed, off = 0, lw = 1.5) {
+// a height line beside an object: from the ground to its top
+function measureLine(c, x0, w, h, ground, side, color, dashed, off = 0, lw = 1.5) {
+  const x = side === 'left' ? x0 - 10 - off : x0 + w + 10 + off;
   c.save();
   c.strokeStyle = color; c.lineWidth = lw; c.setLineDash(dashed ? [5, 4] : []); c.lineCap = 'round';
   c.beginPath();
-  let end;
-  if (ax === 'h') {
-    const x = side === 'left' ? x0 - 10 - off : x0 + w + 10 + off;
-    c.moveTo(x, ground); c.lineTo(x, ground - h);
-    c.moveTo(x - 5, ground - h); c.lineTo(x + 5, ground - h);
-    c.moveTo(x - 5, ground); c.lineTo(x + 5, ground);
-    end = {x, y: ground - h};
-  } else {
-    const y = ground - h - 10 - off;
-    c.moveTo(x0, y); c.lineTo(x0 + w, y);
-    c.moveTo(x0, y - 5); c.lineTo(x0, y + 5);
-    c.moveTo(x0 + w, y - 5); c.lineTo(x0 + w, y + 5);
-    end = {x: x0 + w, y};
-  }
+  c.moveTo(x, ground); c.lineTo(x, ground - h);
+  c.moveTo(x - 5, ground - h); c.lineTo(x + 5, ground - h);
+  c.moveTo(x - 5, ground); c.lineTo(x + 5, ground);
   c.stroke(); c.restore();
-  return end;
+  return {x, y: ground - h};
 }
 // a small colored pill with text, e.g. a player's name at the end of their guess line
 function pill(c, x, y, text, bg, fg, align = 'left') {
@@ -3341,7 +3250,7 @@ function label(c, x, y, align, lines, maxW) {
   c.restore();
 }
 // an object's drawn shape in units of its measured size (so measured side = 1)
-function shapeOf(o) { const m = meas(o), a = o.ax === 'w' ? m.w : m.h; return {m, w: m.w / a, h: m.h / a}; }
+function shapeOf(o) { const m = meas(o); return {m, w: m.w / m.h, h: 1}; }
 /* s: {ref, tgt, g (target size drawn, as a multiple of the reference), fit (largest target size to make room for),
        ghosts [{g, color, text, mine, alpha}], refLines, tgtLines, tgtColor, tagR, handle, actual (label on the true size)} */
 function drawStage(cv, s) {
@@ -3364,8 +3273,8 @@ function drawStage(cv, s) {
   for (let x = 0.5, i = 0; x < W; x += 8, i++) { c.moveTo(x, ground); c.lineTo(x, ground + (i % 5 ? 3 : 6)); }
   c.stroke();
 
-  const ax = s.tgt.ax || 'h', ghosts = s.ghosts || [];
-  const pad = 30, top = ax === 'w' ? 104 : 70, gap = Math.min(48, W * 0.08), extraR = ax === 'h' ? 16 + ghosts.length * 7 : 0;
+  const ghosts = s.ghosts || [];
+  const pad = 30, top = 70, gap = Math.min(48, W * 0.08), extraR = 16 + ghosts.length * 7;
   const R0 = shapeOf(s.ref), T0 = shapeOf(s.tgt);
   // 1 unit = the reference's measured size; drawings keep their own proportions
   const k = Math.min((W - 2 * pad - gap - extraR) / (R0.w + T0.w * s.fit), (ground - top) / Math.max(R0.h, T0.h * s.fit));
@@ -3384,7 +3293,7 @@ function drawStage(cv, s) {
 
   // reference
   drawEmoji(c, s.ref, R0.m, k * R0.h, x0, ground, 1);
-  measureLine(c, ax, x0, lw, k * R0.h, ground, 'left', T.ink, false);
+  measureLine(c, x0, lw, k * R0.h, ground, 'left', T.ink, false);
   // guesses: my ghost as a see-through silhouette, everyone's as a dashed line with a name tag
   const tagged = [];
   ghosts.forEach((gh, i) => {
@@ -3392,14 +3301,14 @@ function drawStage(cv, s) {
     const gg = Math.min(gh.g, s.fit * 1.06);
     if (gh.mine && gh.g <= s.fit * 1.02) drawGhost(c, s.tgt, T0, k * gg, x1, ground, gh.color, 0.26 * gh.alpha);
     c.save(); c.globalAlpha = gh.alpha;
-    const end = measureLine(c, ax, x1, T0.w * k * gg, T0.h * k * gg, ground, 'right', gh.color, true, ax === 'h' ? 14 + i * 7 : 16 + i * 7);
+    const end = measureLine(c, x1, T0.w * k * gg, T0.h * k * gg, ground, 'right', gh.color, true, 14 + i * 7);
     c.restore();
     if (gh.text) tagged.push({end, gh});
   });
   // the object being resized (during the reveal: growing or shrinking to its true size)
   drawEmoji(c, s.tgt, T0.m, k * s.g * T0.h, x1, ground, 1);
   const tc = T[s.tgtColor || 'measure'];
-  const tEnd = measureLine(c, ax, x1, T0.w * k * s.g, T0.h * k * s.g, ground, 'right', tc, false, 0, s.actual ? 2.5 : 1.5);
+  const tEnd = measureLine(c, x1, T0.w * k * s.g, T0.h * k * s.g, ground, 'right', tc, false, 0, s.actual ? 2.5 : 1.5);
   if (s.handle) {
     // a grab handle on the corner that grows, so it reads as something to pull
     const hx = x1 + T0.w * k * s.g, hy = ground - T0.h * k * s.g;
@@ -3412,7 +3321,7 @@ function drawStage(cv, s) {
   }
   // tags last so they sit on top; each one is nudged down until it's clear of the ones already placed
   const tags = [];
-  if (s.actual) tags.push({x: tEnd.x, y: Math.max(ax === 'h' ? tEnd.y - 14 : tEnd.y - 16, 72), text: s.actual, bg: T.green, alpha: 1, align: ax === 'h' && tEnd.x < W - 130 ? 'left' : 'right'});
+  if (s.actual) tags.push({x: tEnd.x, y: Math.max(tEnd.y - 14, 72), text: s.actual, bg: T.green, alpha: 1, align: tEnd.x < W - 130 ? 'left' : 'right'});
   for (const {end, gh} of tagged.sort((a, b) => a.end.y - b.end.y)) tags.push({x: end.x, y: Math.max(end.y, 72), text: gh.text, bg: gh.color, alpha: gh.alpha, align: 'left'});
   c.save(); c.font = '700 11px "Instrument Sans", system-ui, sans-serif';
   const placed = [];
@@ -3449,14 +3358,14 @@ function drawStage(cv, s) {
     const hz = Math.min(bh - 42, (bw - 34) * sh.h / sh.w), z = hz / (zoom.unit * sh.h), left = bx + (bw - sh.w * zoom.unit * z) / 2;
     if (isRef) {
       drawEmoji(c, o, sh.m, k * z * sh.h, left, gy, 1);
-      measureLine(c, ax, left, sh.w * k * z, sh.h * k * z, gy, 'left', T.ink, false);
+      measureLine(c, left, sh.w * k * z, sh.h * k * z, gy, 'left', T.ink, false);
     } else {
       for (const gh of ghosts) if (gh.mine && gh.alpha > 0) {
         drawGhost(c, o, sh, k * gh.g * z, left, gy, gh.color, 0.26 * gh.alpha);
-        measureLine(c, ax, left, sh.w * k * gh.g * z, sh.h * k * gh.g * z, gy, 'right', gh.color, true, 6);
+        measureLine(c, left, sh.w * k * gh.g * z, sh.h * k * gh.g * z, gy, 'right', gh.color, true, 6);
       }
       drawEmoji(c, o, sh.m, k * s.g * z * sh.h, left, gy, 1);
-      measureLine(c, ax, left, sh.w * k * s.g * z, sh.h * k * s.g * z, gy, 'right', tc, false);
+      measureLine(c, left, sh.w * k * s.g * z, sh.h * k * s.g * z, gy, 'right', tc, false);
     }
     c.font = '500 10px "IBM Plex Mono", ui-monospace, monospace'; c.fillStyle = T.muted; c.textBaseline = 'top';
     c.fillText(`zoom ×${fmtNum(z)}`, bx + 8, by + 7);
@@ -3671,7 +3580,7 @@ async function hostHandle(conn, msg) {
     if (!rec || !pl || scoreRec(pl, room.round)) return;
     const g = rec.g == null || !Number.isFinite(+rec.g) ? null : clampG(+rec.g);
     const [ref, tgt] = pairOf(room.round);
-    await db.doc(own).update({scores: {[room.game]: {['r' + room.round]: {g, p: scoreFor(g, tgt.s / ref.s)}}}});
+    await db.doc(own).update({scores: {[room.game]: {['r' + room.round]: {g, p: scoreFor(g, tgt.height / ref.height)}}}});
   } else if (msg.t === 'bye') {
     if (conns.get(conn.pid) === conn) conns.delete(conn.pid);
     await db.doc(own).delete();
@@ -3874,7 +3783,7 @@ async function submit() {
   const key = local.key, round = room.round, game = room.game;
   const [ref, tgt] = pairOf(round);
   const g = local.touched ? +local.g.toFixed(4) : null;
-  const p = scoreFor(g, tgt.s / ref.s);
+  const p = scoreFor(g, tgt.height / ref.height);
   local.locked = local.submitted = true;
   if (g != null) lockFx();
   renderRound();
@@ -3903,7 +3812,7 @@ function sync() {
       if (!local.revealAt) {
         local.revealAt = performance.now();
         const [ref, tgt] = pairOf(room.round);
-        local.anim = {t0: performance.now(), from: local.touched ? local.g : 1, to: tgt.s / ref.s};
+        local.anim = {t0: performance.now(), from: local.touched ? local.g : 1, to: tgt.height / ref.height};
         local.shown = REDUCED;
       }
     }
@@ -3950,8 +3859,8 @@ function guessMarks(r) {
 }
 function stageState() {
   const [ref, tgt] = pairOf(room.round);
-  const r = tgt.s / ref.s;
-  const refLines = [[fmtSize(ref, ref.s), 'muted']];
+  const r = tgt.height / ref.height;
+  const refLines = [[fmtHeight(ref), 'muted']];
   if (room.phase === 'reveal') {
     const a = local.anim || {from: 1}, t = revealT(), from = a.from;
     const g = t < RV.grow0 ? from : t < RV.grow1 ? logLerp(from, r, ease((t - RV.grow0) / (RV.grow1 - RV.grow0))) : r;
@@ -3963,31 +3872,31 @@ function stageState() {
     const alpha = Math.max(0, Math.min(1, (t - RV.ghost) / 300));
     const ghosts = marks.map(m => ({...m, alpha}));
     const mineG = local.touched ? local.g : null;
-    const tgtLines = done ? [[fmtSize(tgt, tgt.s), 'green']] : [['? ' + dimOf(tgt).word, 'measure']];
-    if (mineG != null) tgtLines.push([`you: ${fmtLen(mineG * ref.s)}`, 'red']);
+    const tgtLines = done ? [[fmtHeight(tgt), 'green']] : [['? tall', 'measure']];
+    if (mineG != null) tgtLines.push([`you: ${fmtLen(mineG * ref.height)}`, 'red']);
     return {ref, tgt, g, fit, ghosts, refLines, tgtLines, tgtColor: done ? 'green' : 'measure', tagR: done ? 'ACTUAL SIZE' : 'REVEALING…',
-      actual: done ? `Actual: ${fmtLen(tgt.s)}` : null};
+      actual: done ? `Actual: ${fmtLen(tgt.height)}` : null};
   }
-  return {ref, tgt, g: local.g, fit: local.g, ghosts: [], refLines, tgtLines: [['? ' + dimOf(tgt).word, 'measure']], tgtColor: 'measure',
+  return {ref, tgt, g: local.g, fit: local.g, ghosts: [], refLines, tgtLines: [['? tall', 'measure']], tgtColor: 'measure',
     handle: !local.locked};
 }
 
 function renderRound() {
   if (!room || screen !== 'round') return;
   const [ref, tgt] = pairOf(room.round);
-  const r = tgt.s / ref.s;
+  const r = tgt.height / ref.height;
   const reveal = room.phase === 'reveal';
   $('#rb-num').textContent = room.round + 1;
   $('#rb-of').textContent = '/' + room.rounds.length;
   const cur = scoreRec(mine(), room.round);
   // this round's points join the total only once the reveal has shown them
   $('#rb-score').textContent = totalOf(mine()) - (cur && (!reveal || !local.shown) ? cur.p || 0 : 0);
-  const info = pairInfo(room.round), flag = flagOf(room.round), D = dimOf(tgt);
-  $('#ask-sub').textContent = `${info ? THEMES[info.theme] : 'Size'} · ${D.tag}`;
+  const info = pairInfo(room.round), flag = flagOf(room.round);
+  $('#ask-sub').textContent = info ? THEMES[info.theme] : '';
   // giant and tiny rounds are announced up front; a close call is only revealed afterwards
   const badge = flag === 'giant' ? 'Giant mode' : flag === 'tiny' ? 'Tiny mode' : flag === 'final' ? 'Final round' : flag === 'close' && reveal ? 'Close call' : '';
   $('#ask-badge').hidden = !badge; $('#ask-badge').textContent = badge; $('#ask-badge').dataset.kind = flag;
-  $('#prompt').innerHTML = `Next to <em>${esc(ref.a.split(',')[0])}</em>, ${D.ask} <em>${esc(tgt.a.split(',')[0])}</em>?`;
+  $('#prompt').innerHTML = `Next to <em>${esc(ref.a.split(',')[0])}</em>, how tall is <em>${esc(tgt.a.split(',')[0])}</em>?`;
 
   $('#play-ui').hidden = reveal;
   $('#reveal').hidden = !reveal;
@@ -4000,7 +3909,7 @@ function renderRound() {
   }
   for (const id of ['#size', '#btn-minus', '#btn-plus', '#btn-div10', '#btn-mul10', '#btn-lock']) $(id).disabled = local.locked;
   $('#btn-lock').textContent = local.locked ? 'Locked' : 'Lock in';
-  $('#readout').innerHTML = `${fmtX(local.g)}<small>the ${dimOf(ref).noun} of ${esc(ref.a)}</small>`;
+  $('#readout').innerHTML = `${fmtX(local.g)}<small>the height of ${esc(ref.a)}</small>`;
   $('#lock-stamp').hidden = !(local.locked && !reveal && local.touched);
   $('#hint').hidden = local.locked;
 
@@ -4022,16 +3931,16 @@ function renderRound() {
     $('#reveal').classList.toggle('pending', !local.shown);
     const cell = (k, x, m, cls) => `<div class="${cls}"><span class="eyebrow">${k}</span><b>${x}</b><small>${m}</small></div>`;
     $('#rv-cmp').innerHTML = g == null
-      ? `${cell('You guessed', '—', 'no resize', 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtX(r), fmtSize(tgt, tgt.s), 'rv-act')}`
-      : `${cell('You guessed', fmtX(g), fmtLen(g * ref.s), 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtX(r), fmtSize(tgt, tgt.s), 'rv-act')}`;
+      ? `${cell('You guessed', '—', 'no resize', 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtX(r), fmtHeight(tgt), 'rv-act')}`
+      : `${cell('You guessed', fmtX(g), fmtLen(g * ref.height), 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtX(r), fmtHeight(tgt), 'rv-act')}`;
     $('#rv-pct').textContent = g == null ? 'No answer' : pctOff(g, r) === 0 ? 'Spot on' : `${pctOff(g, r).toLocaleString('en-US')}% off`;
     $('#rv-verdict').textContent = g == null ? '' : verdict(p, g);
     $('#rv-pts').textContent = '+' + p;
     $('.rv-main').dataset.band = g == null ? 'none' : p >= 80 ? 'great' : p >= 60 ? 'close' : 'off';
     $('#rv-special').hidden = flag !== 'close' && flag !== 'giant' && flag !== 'tiny';
     $('#rv-special').textContent = flag === 'close' ? `Close call: they're only ${Math.round(Math.abs(r - 1) * 100)}% apart.`
-      : flag === 'giant' ? `Giant mode: ${fmtX(r)} the ${dimOf(ref).noun} of ${ref.a}.` : flag === 'tiny' ? 'Tiny mode: small things, small differences.' : '';
-    $('#rv-fact').innerHTML = `<strong>${esc(tgt.label)}</strong>: ${fmtSize(tgt, tgt.s)}${tgt.note ? ` (${esc(tgt.note)})` : ''}. <strong>${esc(ref.label)}</strong>: ${fmtSize(ref, ref.s)}${ref.note ? ` (${esc(ref.note)})` : ''}.`;
+      : flag === 'giant' ? `Giant mode: ${fmtX(r)} the height of ${ref.a}.` : flag === 'tiny' ? 'Tiny mode: small things, small differences.' : '';
+    $('#rv-fact').innerHTML = `<strong>${esc(tgt.label)}</strong>: ${fmtHeight(tgt)}${tgt.note ? ` (${esc(tgt.note)})` : ''}. <strong>${esc(ref.label)}</strong>: ${fmtHeight(ref)}${ref.note ? ` (${esc(ref.note)})` : ''}.`;
     const rows = players.map(pl => ({pl, rec: scoreRec(pl, room.round)}))
       .sort((a, b) => (b.rec?.p ?? -1) - (a.rec?.p ?? -1) || Math.abs(Math.log((a.rec?.g || 1e-9) / r)) - Math.abs(Math.log((b.rec?.g || 1e-9) / r)));
     $('#rv-list').innerHTML = rows.map(({pl, rec}) => `
@@ -4076,10 +3985,10 @@ function renderFinal() {
 /* ---------------- demo on home ---------------- */
 const DEMO = {ref: BY.person, tgt: BY.polarbear};
 function drawDemo(now) {
-  const r = DEMO.tgt.s / DEMO.ref.s;
+  const r = DEMO.tgt.height / DEMO.ref.height;
   const g = REDUCED ? r * 0.75 : Math.exp(Math.log(r) + Math.sin(now / 1400) * 0.45);
   drawStage($('#demo'), {ref: DEMO.ref, tgt: DEMO.tgt, g, fit: g, ghosts: [], handle: true,
-    refLines: [[fmtSize(DEMO.ref, DEMO.ref.s), 'muted']], tgtLines: [[`${fmtX(g)} the person`, 'measure']], tgtColor: 'measure'});
+    refLines: [[fmtHeight(DEMO.ref), 'muted']], tgtLines: [[`${fmtX(g)} the person`, 'measure']], tgtColor: 'measure'});
 }
 
 function redrawAll() {
@@ -4280,7 +4189,7 @@ function simulate(games, session) {
     if (rs.length < ROUNDS) st.short++;
     const uses = {}, tg = new Set(); let prevT = null, nSp = 0;
     rs.forEach((r, i) => {
-      const [a, b, flag] = r.split('|'), p = PBY[`${a}|${b}`], q = Math.max(BY[a].s, BY[b].s) / Math.min(BY[a].s, BY[b].s);
+      const [a, b, flag] = r.split('|'), p = PBY[`${a}|${b}`], q = Math.max(BY[a].height, BY[b].height) / Math.min(BY[a].height, BY[b].height);
       st.rounds++;
       st.pair[p.key] = (st.pair[p.key] || 0) + 1; st.theme[p.theme] = (st.theme[p.theme] || 0) + 1; st.kind[p.kind] = (st.kind[p.kind] || 0) + 1;
       const bk = (p.kind === 'normal' ? 'normal ' : 'special ') + bucket(q); st.ratio[bk] = (st.ratio[bk] || 0) + 1;
@@ -4327,15 +4236,15 @@ function mountDebug() {
   });
   const cv = $('#dbg-stage');
   const preview = key => {
-    const [a, b] = key.split('|'), ref = BY[a], tgt = BY[b], r = tgt.s / ref.s, guess = r * Math.exp((Math.random() - 0.5) * 0.8);
+    const [a, b] = key.split('|'), ref = BY[a], tgt = BY[b], r = tgt.height / ref.height, guess = r * Math.exp((Math.random() - 0.5) * 0.8);
     cv.style.display = 'block';
-    drawStage(cv, {ref, tgt, g: r, fit: Math.max(r, guess), refLines: [[fmtSize(ref, ref.s), 'muted']], tgtLines: [[fmtSize(tgt, tgt.s), 'green']], tgtColor: 'green',
-      ghosts: [{g: guess, color: '#E4572E', text: `a guess, ${pctOff(guess, r)}% off`, mine: true, alpha: 1}], actual: `Actual: ${fmtLen(tgt.s)}`, tagR: 'ACTUAL SIZE'});
+    drawStage(cv, {ref, tgt, g: r, fit: Math.max(r, guess), refLines: [[fmtHeight(ref), 'muted']], tgtLines: [[fmtHeight(tgt), 'green']], tgtColor: 'green',
+      ghosts: [{g: guess, color: '#E4572E', text: `a guess, ${pctOff(guess, r)}% off`, mine: true, alpha: 1}], actual: `Actual: ${fmtLen(tgt.height)}`, tagR: 'ACTUAL SIZE'});
   };
   $('#dbg-prev').addEventListener('click', () => {
     const rs = makeRounds(ROUNDS, []);
     $('#dbg-prev-out').innerHTML = `<ol class="dbg-list">${rs.map(r => { const [a, b, f] = r.split('|'), p = PBY[`${a}|${b}`];
-      return `<li><button class="btn link" data-k="${a}|${b}">${esc(BY[a].label)} → ${esc(BY[b].label)}</button> <small>${THEMES[p.theme]} · ${dimOf(BY[b]).tag} · ${fmtX(p.ratio)} · level ${p.lvl || '–'}${f ? ` · <b>${f}</b>` : ''}</small></li>`; }).join('')}</ol>`;
+      return `<li><button class="btn link" data-k="${a}|${b}">${esc(BY[a].label)} → ${esc(BY[b].label)}</button> <small>${THEMES[p.theme]} · ${fmtX(p.ratio)} · level ${p.lvl || '–'}${f ? ` · <b>${f}</b>` : ''}</small></li>`; }).join('')}</ol>`;
     preview(rs[0].split('|').slice(0, 2).join('|'));
   });
   $('#dbg-prev-out').addEventListener('click', e => { const k = e.target.closest('[data-k]')?.dataset.k; if (k) preview(k); });
