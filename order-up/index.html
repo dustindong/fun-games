@@ -288,7 +288,9 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .sorter.still .moves,.sorter.still .grip{display:none}
 /* reveal state of the list */
 .ans{display:flex;align-items:center;gap:8px;justify-content:flex-end;text-align:right}
-.ans.blank,.picks.blank,.ptstamp.blank,.you.blank{visibility:hidden}
+.ans.blank,.picks.blank,.ptstamp.blank,.you.blank,.was.blank{visibility:hidden}
+/* once a card lands it takes its real number; this says where you had it */
+.row .lbl small.was{font:600 11px/1.2 var(--mono);letter-spacing:.02em;margin-top:2px}
 /* the result word stays small; the points are the payoff, stamped on like ink */
 .row .you{font:700 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:4px 6px}
 .ptstamp{display:inline-block;min-width:2.6em;text-align:center;font:900 24px/1 var(--display);letter-spacing:.02em;padding:4px 7px 2px;
@@ -765,24 +767,24 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-30d"></script>
-<script src="data/countries.js?v=2026-09-30d"></script>
-<script src="data/songs.js?v=2026-09-30d"></script>
-<script src="data/movies.js?v=2026-09-30d"></script>
-<script src="data/tv.js?v=2026-09-30d"></script>
-<script src="data/games.js?v=2026-09-30d"></script>
-<script src="data/pokemon.js?v=2026-09-30d"></script>
-<script src="data/tech.js?v=2026-09-30d"></script>
-<script src="data/nostalgia.js?v=2026-09-30d"></script>
-<script src="data/people.js?v=2026-09-30d"></script>
-<script src="data/animals.js?v=2026-09-30d"></script>
-<script src="data/dogs.js?v=2026-09-30d"></script>
-<script src="data/cars.js?v=2026-09-30d"></script>
-<script src="data/food.js?v=2026-09-30d"></script>
-<script src="data/drinks.js?v=2026-09-30d"></script>
-<script src="data/stuff.js?v=2026-09-30d"></script>
-<script src="data/sequences.js?v=2026-09-30d"></script>
-<script src="engine.js?v=2026-09-30d"></script>
+<script src="data/states.js?v=2026-09-30e"></script>
+<script src="data/countries.js?v=2026-09-30e"></script>
+<script src="data/songs.js?v=2026-09-30e"></script>
+<script src="data/movies.js?v=2026-09-30e"></script>
+<script src="data/tv.js?v=2026-09-30e"></script>
+<script src="data/games.js?v=2026-09-30e"></script>
+<script src="data/pokemon.js?v=2026-09-30e"></script>
+<script src="data/tech.js?v=2026-09-30e"></script>
+<script src="data/nostalgia.js?v=2026-09-30e"></script>
+<script src="data/people.js?v=2026-09-30e"></script>
+<script src="data/animals.js?v=2026-09-30e"></script>
+<script src="data/dogs.js?v=2026-09-30e"></script>
+<script src="data/cars.js?v=2026-09-30e"></script>
+<script src="data/food.js?v=2026-09-30e"></script>
+<script src="data/drinks.js?v=2026-09-30e"></script>
+<script src="data/stuff.js?v=2026-09-30e"></script>
+<script src="data/sequences.js?v=2026-09-30e"></script>
+<script src="engine.js?v=2026-09-30e"></script>
 <script>
 (() => {
 'use strict';
@@ -1344,7 +1346,7 @@ const GRIP = '<svg width="10" height="16" viewBox="0 0 10 16" aria-hidden="true"
 
 function rowHTML(it) {
   return `<span class="pos"></span><span class="emo">${it.emo}</span>
-    <span class="lbl"><b>${esc(it.name)}</b>${it.note ? `<small>${esc(it.note)}</small>` : ''}<span class="picks" hidden></span></span>
+    <span class="lbl"><b>${esc(it.name)}</b>${it.note ? `<small>${esc(it.note)}</small>` : ''}<small class="was" hidden></small><span class="picks" hidden></span></span>
     <span class="moves"><button class="mv" data-mv="-1" aria-label="Move ${esc(it.name)} up">${ARROW_UP}</button><button class="mv" data-mv="1" aria-label="Move ${esc(it.name)} down">${ARROW_DN}</button><span class="grip">${GRIP}</span></span>
     <span class="ans" hidden><span class="val"></span><span class="you"></span><b class="ptstamp blank" aria-hidden="true"></b></span>`;
 }
@@ -1377,9 +1379,11 @@ function flipTo(list, order, skipAnim) {
 function placeRows(order, skipAnim) { flipTo(sorterEl, order, skipAnim); paintRows(); }
 function paintRows() {
   const rows = [...sorterEl.children];
+  // during the reveal a card keeps the number you gave it until it lands, then takes its real spot
   const placed = room?.phase === 'reveal' && local.mineAtReveal;
   rows.forEach((li, i) => {
-    li.querySelector('.pos').textContent = placed ? placed.indexOf(li.dataset.id) + 1 : i + 1;
+    const landed = local.revealDone || local.landed?.has(li.dataset.id);
+    li.querySelector('.pos').textContent = placed && !landed ? placed.indexOf(li.dataset.id) + 1 : i + 1;
     const [up, dn] = li.querySelectorAll('.mv');
     up.disabled = i === 0 || local.locked; dn.disabled = i === rows.length - 1 || local.locked;
   });
@@ -1666,6 +1670,10 @@ function renderRound() {
       li.classList.toggle('lit', lit);
       const ans = li.querySelector('.ans'); ans.hidden = false;
       ans.classList.toggle('blank', !done && !lit);
+      const was = li.querySelector('.was');
+      was.hidden = at < 0; was.textContent = at < 0 ? '' : `You placed this #${at + 1}`;
+      was.classList.toggle('blank', !done);
+      li.querySelector('.pos').textContent = done ? i + 1 : at >= 0 ? at + 1 : i + 1;
       const picks = li.querySelector('.picks');
       picks.hidden = take.rows.length < 2;
       picks.classList.toggle('blank', !done);
@@ -1681,7 +1689,8 @@ function renderRound() {
         li.querySelector('.val').textContent = '\u00a0';
         const you = li.querySelector('.you');
         you.hidden = false; you.textContent = '\u00a0'; you.classList.add('blank');
-        li.querySelector('.ptstamp').classList.add('blank');
+        // hidden, but with text so the stamp holds its full size and the card doesn't grow when it lands
+        const st = li.querySelector('.ptstamp'); st.textContent = '+20'; st.classList.add('blank');
         if (!lit) return;
         const to = right.indexOf(id), dd = at < 0 ? -1 : Math.abs(at - to);
         if (dd >= 0) li.classList.add(dd === 0 ? 'exact' : dd === 1 ? 'near' : 'far');
@@ -1970,7 +1979,9 @@ const demo = (() => {
     const right = checked ? rightOrder({t, ids: order}) : null;
     [...el.children].forEach((li, i) => {
       const id = li.dataset.id;
-      li.querySelector('.pos').textContent = checked ? +li.dataset.was + 1 : i + 1;
+      li.querySelector('.pos').textContent = i + 1;
+      const was = li.querySelector('.was');
+      was.hidden = !checked; was.textContent = checked ? `You placed this #${+li.dataset.was + 1}` : '';
       const [up, dn] = li.querySelectorAll('.mv');
       up.disabled = i === 0 || checked; dn.disabled = i === order.length - 1 || checked;
       li.classList.remove('exact', 'near', 'far');
