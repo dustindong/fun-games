@@ -257,7 +257,7 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .end svg{flex:none}
 .sorter{list-style:none;margin:0;padding:0;display:grid;gap:8px;position:relative}
 /* the cards: chunky printed game pieces with a hard edge, a big rank tab, and a lift when grabbed */
-.row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;min-height:60px;padding:6px 8px 6px 16px;
+.row{display:grid;grid-template-columns:44px auto minmax(0,1fr) auto;align-items:center;gap:10px;min-height:60px;padding:6px 8px 6px 0;
   background:var(--surface);border:1.5px solid var(--edge);border-radius:10px;box-shadow:0 3px 0 var(--edge);
   user-select:none;-webkit-user-select:none;touch-action:none;cursor:grab;position:relative;z-index:1;
   transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .15s ease,border-color .15s}
@@ -275,9 +275,7 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
   border-right:1.5px dashed var(--line)}
 .emo{font:22px/1 var(--emoji);width:28px;text-align:center}
 .sorter:not(.flags) .emo{display:none}
-.sorter:not(.flags) .row{grid-template-columns:minmax(0,1fr) auto}
-/* no 1-5 numbers on the cards: the list's order speaks for itself */
-.row .pos{display:none}
+.sorter:not(.flags) .row{grid-template-columns:44px minmax(0,1fr) auto}
 .row .lbl{display:grid;gap:1px;min-width:0}
 .row .lbl b{font-weight:700;font-size:17px;line-height:1.2;overflow-wrap:anywhere}
 .row .lbl small{font-size:12px;color:var(--muted);line-height:1.2}
@@ -290,7 +288,7 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .sorter.still .moves,.sorter.still .grip{display:none}
 /* reveal state of the list */
 .ans{display:flex;align-items:center;gap:8px;justify-content:flex-end;text-align:right}
-.ans.blank,.picks.blank,.ptstamp.blank{visibility:hidden}
+.ans.blank,.picks.blank,.ptstamp.blank,.you.blank{visibility:hidden}
 /* the result word stays small; the points are the payoff, stamped on like ink */
 .row .you{font:700 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:4px 6px}
 .ptstamp{display:inline-block;min-width:2.6em;text-align:center;font:900 24px/1 var(--display);letter-spacing:.02em;padding:4px 7px 2px;
@@ -514,9 +512,9 @@ input[type=text]{font-size:16px}
   .prompt{font-size:clamp(22px,6.4vw,30px);line-height:1.02}
   .board-wrap{padding:8px;gap:5px}
   .sorter{gap:5px}
-  .row{min-height:56px;gap:8px;padding:5px 6px 5px 14px;grid-template-columns:auto minmax(0,1fr) auto}
+  .row{min-height:56px;gap:8px;padding:5px 6px 5px 0;grid-template-columns:36px auto minmax(0,1fr) auto}
   .pos{font-size:26px}
-  .sorter:not(.flags) .row{grid-template-columns:minmax(0,1fr) auto}
+  .sorter:not(.flags) .row{grid-template-columns:36px minmax(0,1fr) auto}
   .row .lbl b{font-size:16px}
   .mv{width:40px;height:40px}
   .grip{display:none}
@@ -533,10 +531,10 @@ input[type=text]{font-size:16px}
     box-shadow:0 -10px 24px -16px rgba(0,0,0,.35)}
   .rv-actions .btn.small{padding:12px 18px;font-size:15px}
   .ans{flex-direction:column;align-items:flex-end;gap:4px}
-  .sorter.answers .row{grid-template-columns:minmax(0,1fr);row-gap:4px}
+  .sorter.answers .row{grid-template-columns:36px minmax(0,1fr);row-gap:4px}
   /* fixed two lines (value, then result) so a card's height never changes during the reveal */
   /* fixed layout (value on top, result word and stamp below) so a card's height never changes during the reveal */
-  .sorter.answers .ans{grid-column:1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 8px;padding-bottom:2px}
+  .sorter.answers .ans{grid-column:2;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 8px;padding-bottom:2px}
   .sorter.answers .ans .val{grid-column:1/-1;justify-self:start;min-height:1.2em}
   .sorter.answers .ans .ptstamp{grid-column:3}
   .ans .val{font-size:12px}
@@ -767,23 +765,23 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-29b"></script>
-<script src="data/songs.js?v=2026-09-29b"></script>
-<script src="data/movies.js?v=2026-09-29b"></script>
-<script src="data/tv.js?v=2026-09-29b"></script>
-<script src="data/games.js?v=2026-09-29b"></script>
-<script src="data/pokemon.js?v=2026-09-29b"></script>
-<script src="data/tech.js?v=2026-09-29b"></script>
-<script src="data/nostalgia.js?v=2026-09-29b"></script>
-<script src="data/people.js?v=2026-09-29b"></script>
-<script src="data/animals.js?v=2026-09-29b"></script>
-<script src="data/dogs.js?v=2026-09-29b"></script>
-<script src="data/cars.js?v=2026-09-29b"></script>
-<script src="data/food.js?v=2026-09-29b"></script>
-<script src="data/drinks.js?v=2026-09-29b"></script>
-<script src="data/stuff.js?v=2026-09-29b"></script>
-<script src="data/sequences.js?v=2026-09-29b"></script>
-<script src="engine.js?v=2026-09-29b"></script>
+<script src="data/states.js?v=2026-09-29c"></script>
+<script src="data/songs.js?v=2026-09-29c"></script>
+<script src="data/movies.js?v=2026-09-29c"></script>
+<script src="data/tv.js?v=2026-09-29c"></script>
+<script src="data/games.js?v=2026-09-29c"></script>
+<script src="data/pokemon.js?v=2026-09-29c"></script>
+<script src="data/tech.js?v=2026-09-29c"></script>
+<script src="data/nostalgia.js?v=2026-09-29c"></script>
+<script src="data/people.js?v=2026-09-29c"></script>
+<script src="data/animals.js?v=2026-09-29c"></script>
+<script src="data/dogs.js?v=2026-09-29c"></script>
+<script src="data/cars.js?v=2026-09-29c"></script>
+<script src="data/food.js?v=2026-09-29c"></script>
+<script src="data/drinks.js?v=2026-09-29c"></script>
+<script src="data/stuff.js?v=2026-09-29c"></script>
+<script src="data/sequences.js?v=2026-09-29c"></script>
+<script src="engine.js?v=2026-09-29c"></script>
 <script>
 (() => {
 'use strict';
@@ -1378,8 +1376,9 @@ function flipTo(list, order, skipAnim) {
 function placeRows(order, skipAnim) { flipTo(sorterEl, order, skipAnim); paintRows(); }
 function paintRows() {
   const rows = [...sorterEl.children];
+  const placed = room?.phase === 'reveal' && local.mineAtReveal;
   rows.forEach((li, i) => {
-    li.querySelector('.pos').textContent = i + 1;
+    li.querySelector('.pos').textContent = placed ? placed.indexOf(li.dataset.id) + 1 : i + 1;
     const [up, dn] = li.querySelectorAll('.mv');
     up.disabled = i === 0 || local.locked; dn.disabled = i === rows.length - 1 || local.locked;
   });
@@ -1680,7 +1679,7 @@ function renderRound() {
         // the answer being revealed: lit up where it sits, colored by how far off you were, with where it's going
         li.querySelector('.val').textContent = '\u00a0';
         const you = li.querySelector('.you');
-        you.hidden = false; you.textContent = '\u00a0';
+        you.hidden = false; you.textContent = '\u00a0'; you.classList.add('blank');
         li.querySelector('.ptstamp').classList.add('blank');
         if (!lit) return;
         const to = right.indexOf(id), dd = at < 0 ? -1 : Math.abs(at - to);
@@ -1690,7 +1689,7 @@ function renderRound() {
       if (d >= 0) li.classList.add(d === 0 ? 'exact' : d === 1 ? 'near' : 'far');
       li.querySelector('.val').textContent = it.label || fmtVal(t, it.v);
       const you = li.querySelector('.you'), stamp = li.querySelector('.ptstamp');
-      you.hidden = d < 0;
+      you.hidden = d < 0; you.classList.remove('blank');
       if (d >= 0) you.textContent = d === 0 ? 'Correct' : d === 1 ? 'Close' : 'Off';
       // the points: stamped on a beat after the result (straight away when the reveal is already over)
       stamp.textContent = d >= 0 ? '+' + (d === 0 ? 20 : d === 1 ? 10 : 0) : '';
@@ -1970,7 +1969,7 @@ const demo = (() => {
     const right = checked ? rightOrder({t, ids: order}) : null;
     [...el.children].forEach((li, i) => {
       const id = li.dataset.id;
-      li.querySelector('.pos').textContent = i + 1;
+      li.querySelector('.pos').textContent = checked ? +li.dataset.was + 1 : i + 1;
       const [up, dn] = li.querySelectorAll('.mv');
       up.disabled = i === 0 || checked; dn.disabled = i === order.length - 1 || checked;
       li.classList.remove('exact', 'near', 'far');
