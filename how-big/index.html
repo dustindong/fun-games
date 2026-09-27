@@ -129,9 +129,10 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .scoring{margin-top:22px;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;padding:16px 18px}
 .scoring h3{font:800 22px/1 var(--display);text-transform:uppercase}
 .scale-row{display:grid;gap:6px}
-.scale-bar{height:12px;border-radius:2px;background:linear-gradient(90deg,var(--line),var(--tape) 42%,var(--green) 50%,var(--tape) 58%,var(--line))}
-.scale-lbl{display:flex;justify-content:space-between;font:500 11px/1.2 var(--mono);color:var(--muted);gap:6px}
-.scale-lbl b{color:var(--ink)}
+.bands{display:flex;flex-wrap:wrap;gap:6px}
+.bands span{font:600 12px/1 var(--mono);padding:7px 9px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2)}
+.bands b{font:800 17px/1 var(--display);margin-right:4px}
+.bands .b1 b,.bands .b2 b{color:var(--green)}.bands .b3 b{color:var(--measure)}.bands .b4 b,.bands .b5 b{color:var(--muted)}
 
 /* ---------- lobby ---------- */
 .lobby{display:grid;gap:18px}
@@ -194,10 +195,49 @@ input[type=range]:disabled{opacity:.5;cursor:not-allowed}
 
 .reveal{margin-top:14px;display:grid;grid-template-columns:minmax(220px,1fr) 1.4fr;gap:14px;align-items:start}
 .rv-main{padding:16px 18px;display:grid;gap:8px}
-.rv-pts{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.rv-pts b{font:900 64px/.9 var(--display);font-variant-numeric:tabular-nums}
-.rv-pts span{font:800 22px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
-.rv-off{font:600 13px/1.2 var(--mono);color:var(--muted)}
+/* reveal panel: the guess next to the truth first, then how far off, then the points */
+.rv-cmp{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.rv-cmp div{display:grid;gap:2px}
+.rv-cmp b{font:900 40px/.95 var(--display);font-variant-numeric:tabular-nums}
+.rv-cmp small{font:500 12px/1.2 var(--mono);color:var(--muted)}
+.rv-you b{color:var(--red)}.rv-act b{color:var(--green)}
+.rv-arrow{font:800 26px/1 var(--display);color:var(--muted)}
+.rv-score{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px}
+.rv-pct{font:900 34px/1 var(--display);text-transform:uppercase}
+.rv-band{font:700 12px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:5px 7px;border-radius:4px;border:1px solid currentColor}
+.rv-score .rv-pts{margin-left:auto;font:900 44px/.9 var(--display);font-variant-numeric:tabular-nums}
+.rv-main[data-band=great] .rv-band,.rv-main[data-band=great] .rv-pts{color:var(--green)}
+.rv-main[data-band=close] .rv-band{color:var(--measure)}
+.rv-main[data-band=off] .rv-band,.rv-main[data-band=none] .rv-pts{color:var(--red)}
+.rv-special{font:700 13px/1.3 var(--body);color:var(--ink);background:var(--surface-2);border-radius:6px;padding:8px 10px}
+.reveal.pending .rv-main,.reveal.pending .rv-list{visibility:hidden}
+.reveal:not(.pending) .rv-main{animation:rv-in .35s cubic-bezier(.2,.9,.3,1.1) both}
+@keyframes rv-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* round header: theme and dimension, plus a sticker for special rounds */
+.ask-sub{display:flex;align-items:center;gap:8px;margin-bottom:6px;min-height:22px}
+.badge{font:800 13px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px 4px;border-radius:4px;background:var(--tape);color:var(--tape-ink);transform:rotate(-2deg)}
+.badge[data-kind=giant]{background:var(--measure);color:#fff}
+.badge[data-kind=close]{background:var(--green);color:#fff}
+.badge[data-kind=final]{background:var(--ink);color:var(--paper)}
+/* locking in: a quick press on the picture and a stamp */
+.stage-wrap{position:relative}
+.stage-wrap.thunk{animation:thunk .28s cubic-bezier(.3,1.5,.5,1)}
+@keyframes thunk{0%{transform:scale(1)}35%{transform:scale(.985)}100%{transform:scale(1)}}
+.lock-stamp{position:absolute;right:12px;bottom:46px;font:800 14px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--green);border:2px solid var(--green);border-radius:5px;padding:5px 8px 4px;transform:rotate(-4deg);background:var(--stage);
+  animation:stamp .25s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes stamp{from{opacity:0;transform:rotate(-8deg) scale(1.35)}to{opacity:1;transform:rotate(-4deg) scale(1)}}
+#stage.live{cursor:grab}
+.dbg{margin-top:24px;padding:16px 18px;display:grid;gap:10px}
+.dbg h2{font:800 26px/1 var(--display);text-transform:uppercase}
+.dbg h3{font:800 16px/1 var(--display);text-transform:uppercase;margin:10px 0 4px}
+.dbg table{border-collapse:collapse;font:500 12px/1.4 var(--mono)}
+.dbg td{border-bottom:1px solid var(--line);padding:3px 10px 3px 0;vertical-align:top}
+.dbg-ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.dbg-ctl input{width:90px}
+.dbg-cols{display:flex;gap:24px;flex-wrap:wrap}
+.dbg-list{margin:0;padding-left:20px;font-size:13px}
+#stage.live:active{cursor:grabbing}
 .rv-fact{font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
 .rv-fact strong{color:var(--ink)}
 .rv-side{padding:10px 12px;display:grid;gap:8px}
@@ -242,7 +282,6 @@ input[type=range]:disabled{opacity:.5;cursor:not-allowed}
   .roundbar{gap:10px}
   .stat b{font-size:24px}
 }
-@media (max-width:520px){ .scale-lbl span:nth-child(2),.scale-lbl span:nth-child(4){display:none} }
 /* ---------- phones and touch ---------- */
 button{touch-action:manipulation}
 input[type=text]{font-size:16px}
@@ -320,7 +359,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
     padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
     box-shadow:0 -10px 24px -16px rgba(0,0,0,.35)}
 }
-@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} .lock-stamp,.stage-wrap.thunk,.reveal .rv-main{animation:none!important} }
 </style>
 </head>
 <body>
@@ -342,13 +381,13 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
     <div class="hero">
       <h1 class="title"><img src="logo.svg?v=1" alt="How Big?" width="1374" height="814"></h1>
       <div class="tape-strip" aria-hidden="true" id="tape-strip"></div>
-      <p class="tagline">Two things, side by side. Stretch the one on the right until their heights are to scale. Closest guess wins.</p>
+      <p class="tagline">You know both of these things. So how big is one next to the other? Resize the one on the right, lock it in, and watch the truth grow into place.</p>
     </div>
 
     <div class="home-grid">
       <figure class="card demo" style="margin:0">
-        <canvas id="demo" aria-label="Example round: the Colosseum next to the Taj Mahal being resized"></canvas>
-        <figcaption>Example round: the Colosseum is the reference. Resize the Taj Mahal until it's the right height.</figcaption>
+        <canvas id="demo" aria-label="Example round: a person next to a polar bear being resized"></canvas>
+        <figcaption>Example round: the person is the reference. Resize the polar bear until it's as tall as a real one standing up.</figcaption>
       </figure>
 
       <div class="card play">
@@ -369,17 +408,16 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
     </div>
 
     <div class="rules">
-      <div class="rule"><b>1. Read the reference</b><p>The object on the left is shown at its real height, like a compact car at 4 ft 9 in tall.</p></div>
-      <div class="rule"><b>2. Resize the right one</b><p>Drag the slider or the picture to make it taller or shorter. Use ×10 and ÷10 for big jumps.</p></div>
-      <div class="rule"><b>3. Lock in by 20 s</b><p>Ten rounds per game. Everyone in the room gets the same pairs.</p></div>
+      <div class="rule"><b>1. Size up the reference</b><p>The thing on the left is shown at its real size: a person, a school bus, the Moon. Rounds compare height, length, wingspan or width.</p></div>
+      <div class="rule"><b>2. Resize the right one</b><p>Drag the picture or the slider until it looks right. Use ×10 and ÷10 for big jumps. Lock in within 20 seconds.</p></div>
+      <div class="rule"><b>3. Watch it grow</b><p>Your guess stays as a ghost while the real size grows into place, next to everyone else's guesses. Ten rounds, with a surprise or two.</p></div>
     </div>
 
     <div class="card scoring">
       <h3>100 points<br>per round</h3>
       <div class="scale-row">
-        <div class="scale-bar" aria-hidden="true"></div>
-        <div class="scale-lbl"><span><b>0</b> at ½ size</span><span><b>68</b> at 0.8×</span><span><b>100</b> within 3%</span><span><b>68</b> at 1.25×</span><span><b>0</b> at 2×</span></div>
-        <p class="note">Scores follow how many times too big or too small you were, so 2× too big costs the same as ½ size. When the two heights are far apart the scale widens: if one is 20× taller than the other, you keep scoring until you're about 2.5× off. Not touching the slider scores 0.</p>
+        <div class="bands"><span class="b1"><b>+100</b> within 5%</span><span class="b2"><b>+80</b> within 10%</span><span class="b3"><b>+60</b> within 20%</span><span class="b4"><b>+35</b> within 35%</span><span class="b5"><b>+15</b> within 50%</span></div>
+        <p class="note">How far off is measured against the real size: guessing 9 ft for something 10 ft tall is 10% off. Not resizing at all scores 0.</p>
       </div>
     </div>
   </section>
@@ -423,8 +461,9 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
       <div class="tape" id="tape" aria-hidden="true"><div class="tape-fill" id="tape-fill"></div><span class="tape-sec" id="tape-sec">20</span></div>
       <div class="stat right"><span class="eyebrow">Score</span><b id="rb-score">0</b></div>
     </div>
+    <div class="ask-sub"><span class="eyebrow" id="ask-sub"></span><span class="badge" id="ask-badge" hidden></span></div>
     <h2 class="prompt" id="prompt"></h2>
-    <div class="stage-wrap"><canvas id="stage"></canvas></div>
+    <div class="stage-wrap" id="stage-wrap"><canvas id="stage"></canvas><span class="lock-stamp" id="lock-stamp" hidden>Locked in</span></div>
 
     <div id="play-ui">
       <div class="controls">
@@ -444,8 +483,9 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
 
     <div class="reveal" id="reveal" hidden>
       <div class="card rv-main" aria-live="polite">
-        <div class="rv-pts"><b id="rv-pts">+0</b><span id="rv-verdict"></span></div>
-        <div class="rv-off" id="rv-off"></div>
+        <div class="rv-cmp" id="rv-cmp"></div>
+        <div class="rv-score"><span class="rv-pct" id="rv-pct"></span><span class="rv-band" id="rv-verdict"></span><b class="rv-pts" id="rv-pts">+0</b></div>
+        <p class="rv-special" id="rv-special" hidden></p>
         <p class="rv-fact" id="rv-fact"></p>
       </div>
       <div class="card rv-side">
@@ -2847,37 +2887,279 @@ Object.assign(ART, {
   makalu: mountainArt({aspect: 1.6, rock: '#50555E', rock2: 'rgba(15,18,25,.3)', ridge: [[0.06, 0.85], [0.26, 0.5], [0.4, 0.15], [0.5, 0], [0.56, 0.08], [0.62, 0.12], [0.74, 0.4], [0.94, 0.85]], snow: 0.55}),
 });
 
+/* ---------------- round 5: other dimensions, and the curated comparisons the game is built from ----------------
+   Every object so far is measured by height. These add length, wingspan, width and diameter, each drawn side-on (or
+   face-on for discs) so the measured span is the drawing's width (length, wingspan, width) or height (height, diameter).
+   Row: [id, emoji (null = drawn art), phrase, size in meters, how it's measured, short label, dimension, art to reuse] */
+const RAW5 = [
+  ['polarbear',null,'a polar bear',2.6,'an adult male standing on its hind legs','Polar bear','height'],
+  ['gorilla','🦍','a silverback gorilla',1.7,'standing upright','Gorilla','height'],
+  ['kangaroo','🦘','a red kangaroo',1.8,'a big male standing tall','Kangaroo','height'],
+  ['fridge',null,'a refrigerator',1.78,'a standard 70-inch fridge','Refrigerator','height'],
+  ['hoop',null,'a basketball hoop',3.96,'to the top of the backboard; the rim is at 10 ft','Basketball hoop','height'],
+  ['house','🏠','a house',6,'a one-story house, ground to roof peak','House','height'],
+  ['gameboy',null,'an original Game Boy',0.148,'1989 model','Game Boy','height'],
+  ['ipod',null,'an iPod classic',0.104,'','iPod classic','height'],
+  ['bus_l','🚌','a city bus',12,'a standard 40-foot bus','City bus','length'],
+  ['car_l','🚗','a car',4.5,'a midsize sedan','Car','length'],
+  ['pickup_l','🛻','a pickup truck',5.9,'a full-size crew cab','Pickup truck','length'],
+  ['semi_l','🚛','a semi truck',21,'tractor and 53-foot trailer','Semi truck','length'],
+  ['couch','🛋️','a couch',2.1,'a three-seat sofa','Couch','length'],
+  ['whale_l','🐋','a blue whale',25,'a typical adult; the record is about 30 m','Blue whale','length'],
+  ['shark','🦈','a great white shark',4.6,'a large adult','Great white shark','length'],
+  ['croc','🐊','a saltwater crocodile',5,'a big male','Saltwater crocodile','length'],
+  ['elephant_l','🐘','an African elephant',6.5,'trunk to tail','Elephant','length'],
+  ['trex_l','🦖','a T. rex',12.3,'nose to tail, the Sue skeleton','T. rex','length'],
+  ['raptor_l','🦖','a Velociraptor',2,'nose to tail','Velociraptor','length'],
+  ['brachio_l','🦕','a Brachiosaurus',20,'nose to tail','Brachiosaurus','length'],
+  ['titanic_l',null,'the Titanic',269,'bow to stern','Titanic','length','titanic'],
+  ['a380_l',null,'an Airbus A380',72.7,'nose to tail','Airbus A380','length','a380'],
+  ['cruise','🛳️','Icon of the Seas',365,'the largest cruise ship, bow to stern','Icon of the Seas','length'],
+  ['field',null,'an American football field',109.7,'end zone to end zone','Football field','length'],
+  ['eagle','🦅','a bald eagle',2,'wingtip to wingtip','Bald eagle','wingspan'],
+  ['fruitbat','🦇','a flying fox bat',1.5,'the biggest bats, wingtip to wingtip','Flying fox','wingspan'],
+  ['dove','🕊️','a dove',0.55,'a rock dove (pigeon), wingtip to wingtip','Dove','wingspan'],
+  ['laptop','💻','a 13-inch laptop',0.31,'','Laptop','width'],
+  ['keyboard','⌨️','a full-size keyboard',0.44,'with a number pad','Keyboard','width'],
+  ['cd_d','💿','a CD',0.12,'','CD','diameter'],
+  ['plate',null,'a dinner plate',0.27,'','Dinner plate','diameter'],
+  ['vinyl',null,'a vinyl record',0.3,'a 12-inch LP','Vinyl record','diameter'],
+  ['pizza',null,'a large pizza',0.356,'a 14-inch pie','Large pizza','diameter'],
+  ['wheel',null,'a steering wheel',0.38,'a typical car wheel','Steering wheel','diameter'],
+  ['moon','🌕','the Moon',3474.8e3,'','Moon','diameter'],
+  ['pluto',null,'Pluto',2376.6e3,'','Pluto','diameter'],
+  ['mars',null,'Mars',6779e3,'','Mars','diameter'],
+  ['earth','🌍','Earth',12742e3,'','Earth','diameter'],
+  ['neptune',null,'Neptune',49244e3,'','Neptune','diameter'],
+  ['jupiter',null,'Jupiter',139820e3,'','Jupiter','diameter'],
+  ['sun',null,'the Sun',1392700e3,'','Sun','diameter'],
+];
+// how each dimension is measured on screen: 'h' = the drawing's height, 'w' = its width
+const DIMS = {
+  height: {ax: 'h', word: 'tall', noun: 'height', ask: 'how tall is', tag: 'HEIGHT'},
+  length: {ax: 'w', word: 'long', noun: 'length', ask: 'how long is', tag: 'LENGTH'},
+  wingspan: {ax: 'w', word: 'wingspan', noun: 'wingspan', ask: "what's the wingspan of", tag: 'WINGSPAN'},
+  width: {ax: 'w', word: 'wide', noun: 'width', ask: 'how wide is', tag: 'WIDTH'},
+  diameter: {ax: 'h', word: 'across', noun: 'diameter', ask: 'how wide is', tag: 'DIAMETER'},
+};
+for (const o of OBJ) { o.dim = 'height'; o.ax = 'h'; }
+for (const [id, e, a, s, note, label, dim, art] of RAW5) {
+  const noun = a.replace(/^(an?|the) /, '');
+  const o = {id, e, a, s, note, noun, label: label || cap0(noun), dim, ax: DIMS[dim].ax, art};
+  OBJ.push(o); BY[id] = o;
+}
+const artOf = o => ART[o.art || o.id];
+
+function sphereArt(fill, deco) { return ballArt(fill, deco); }
+Object.assign(ART, {
+  polarbear: {aspect: 0.56, shade: null, draw(c, w, h) {
+    const fur = '#F3EFE4', dark = '#D9D2C2', line = 'rgba(40,50,60,.35)';
+    E(c, w, h, 0.22, 0.64, 0.13, 0.2, dark, line); E(c, w, h, 0.78, 0.64, 0.13, 0.2, dark, line);   // legs
+    E(c, w, h, 0.5, 0.56, 0.4, 0.34, fur, line);                                                   // body
+    E(c, w, h, 0.24, 0.93, 0.16, 0.07, fur, line); E(c, w, h, 0.76, 0.93, 0.16, 0.07, fur, line);  // feet
+    E(c, w, h, 0.1, 0.33, 0.1, 0.16, fur, line); E(c, w, h, 0.9, 0.33, 0.1, 0.16, fur, line);      // raised paws
+    E(c, w, h, 0.25, 0.07, 0.08, 0.05, fur, line); E(c, w, h, 0.75, 0.07, 0.08, 0.05, fur, line);  // ears
+    E(c, w, h, 0.5, 0.17, 0.26, 0.15, fur, line);                                                  // head
+    E(c, w, h, 0.5, 0.22, 0.12, 0.07, '#FFFFFF', line);                                            // muzzle
+    E(c, w, h, 0.5, 0.2, 0.04, 0.025, '#1C2530'); E(c, w, h, 0.39, 0.13, 0.025, 0.018, '#1C2530'); E(c, w, h, 0.61, 0.13, 0.025, 0.018, '#1C2530');
+    E(c, w, h, 0.5, 0.62, 0.22, 0.2, 'rgba(255,255,255,.55)');
+  }},
+  fridge: {aspect: 0.43, shade: 0.62, draw(c, w, h) {
+    c.fillStyle = '#E4E9EE'; c.beginPath(); c.roundRect(0, 0, w, h * 0.985, Math.min(w, h) * 0.06); c.fill();
+    c.strokeStyle = 'rgba(40,50,60,.45)'; c.lineWidth = Math.max(1, w * 0.02); c.stroke();
+    R(c, w, h, 0.02, 0.34, 0.98, 0.35, 'rgba(40,50,60,.45)');
+    R(c, w, h, 0.84, 0.1, 0.9, 0.28, '#9AA6B1'); R(c, w, h, 0.84, 0.4, 0.9, 0.64, '#9AA6B1');
+    R(c, w, h, 0.1, 0.985, 0.2, 1, '#555'); R(c, w, h, 0.8, 0.985, 0.9, 1, '#555');
+  }},
+  hoop: {aspect: 0.62, shade: null, draw(c, w, h) {
+    R(c, w, h, 0.08, 0.2, 0.15, 1, '#3F4852');                 // pole
+    R(c, w, h, 0.0, 0.96, 0.24, 1, '#2C333A');                 // base
+    R(c, w, h, 0.12, 0.2, 0.52, 0.23, '#3F4852');              // arm
+    fillP(c, w, h, [[0.5, 0], [1, 0], [1, 0.27], [0.5, 0.27]], '#F7F9FB', 'rgba(40,50,60,.5)');   // backboard
+    c.strokeStyle = '#E4572E'; c.lineWidth = Math.max(1, w * 0.02); c.strokeRect(0.66 * w, 0.1 * h, 0.18 * w, 0.1 * h);
+    R(c, w, h, 0.58, 0.225, 0.92, 0.24, '#E4572E');            // rim, 10 ft up
+    L(c, w, h, [[0.6, 0.24], [0.66, 0.36], [0.84, 0.36], [0.9, 0.24]], 'rgba(255,255,255,.9)', Math.max(1, w * 0.012));
+    L(c, w, h, [[0.66, 0.24], [0.7, 0.36]], 'rgba(200,205,210,.9)', 1); L(c, w, h, [[0.84, 0.24], [0.8, 0.36]], 'rgba(200,205,210,.9)', 1);
+  }},
+  gameboy: {aspect: 0.61, shade: null, draw(c, w, h) {
+    c.fillStyle = '#C9C7C0'; c.beginPath(); c.roundRect(0, 0, w, h, [w * 0.06, w * 0.06, w * 0.3, w * 0.06]); c.fill();
+    c.strokeStyle = 'rgba(40,50,60,.4)'; c.lineWidth = 1; c.stroke();
+    R(c, w, h, 0.1, 0.07, 0.9, 0.46, '#5E5E6E'); R(c, w, h, 0.22, 0.12, 0.78, 0.41, '#8FA66B');
+    R(c, w, h, 0.14, 0.6, 0.38, 0.66, '#2A2A2E'); R(c, w, h, 0.23, 0.55, 0.29, 0.71, '#2A2A2E');
+    E(c, w, h, 0.68, 0.64, 0.07, 0.045, '#9B2C54'); E(c, w, h, 0.84, 0.59, 0.07, 0.045, '#9B2C54');
+    R(c, w, h, 0.36, 0.8, 0.46, 0.82, '#77777F'); R(c, w, h, 0.52, 0.8, 0.62, 0.82, '#77777F');
+  }},
+  ipod: {aspect: 0.6, shade: null, draw(c, w, h) {
+    c.fillStyle = '#F4F5F6'; c.beginPath(); c.roundRect(0, 0, w, h, w * 0.1); c.fill();
+    c.strokeStyle = 'rgba(40,50,60,.4)'; c.lineWidth = 1; c.stroke();
+    R(c, w, h, 0.1, 0.07, 0.9, 0.44, '#3B5B7E');
+    E(c, w, h, 0.5, 0.72, 0.32, 0.19, '#E1E4E8', 'rgba(40,50,60,.25)'); E(c, w, h, 0.5, 0.72, 0.12, 0.07, '#F4F5F6', 'rgba(40,50,60,.25)');
+  }},
+  field: {aspect: 9, shade: null, draw(c, w, h) {
+    fillP(c, w, h, [[0.02, 0.62], [0.98, 0.62], [1, 1], [0, 1]], '#58A651', 'rgba(30,60,30,.5)');
+    fillP(c, w, h, [[0.02, 0.62], [0.1, 0.62], [0.092, 1], [0, 1]], '#2F6FB5');                   // end zones
+    fillP(c, w, h, [[0.9, 0.62], [0.98, 0.62], [1, 1], [0.908, 1]], '#C0392B');
+    for (let i = 0; i <= 10; i++) { const u = 0.1 + i * 0.08; L(c, w, h, [[u, 0.62], [0.092 + i * 0.0816, 1]], 'rgba(255,255,255,.85)', Math.max(1, h * 0.02)); }
+    for (const x of [0.025, 0.975]) {                                                        // goalposts
+      L(c, w, h, [[x, 0.66], [x, 0.3]], '#F2C80F', Math.max(1.5, w * 0.004));
+      L(c, w, h, [[x - 0.02, 0.3], [x + 0.02, 0.3]], '#F2C80F', Math.max(1.5, w * 0.004));
+      L(c, w, h, [[x - 0.02, 0.3], [x - 0.02, 0]], '#F2C80F', Math.max(1.5, w * 0.004));
+      L(c, w, h, [[x + 0.02, 0.3], [x + 0.02, 0]], '#F2C80F', Math.max(1.5, w * 0.004));
+    }
+  }},
+  plate: ballArt('#FBFCFD', (c, w, h) => { E(c, w, h, 0.5, 0.5, 0.36, 0.36, '#F1F3F5', 'rgba(40,50,60,.15)'); }),
+  vinyl: ballArt('#1D1F23', (c, w, h) => { for (const r of [0.42, 0.34, 0.26]) E(c, w, h, 0.5, 0.5, r, r, 'rgba(0,0,0,0)', 'rgba(255,255,255,.12)'); E(c, w, h, 0.5, 0.5, 0.16, 0.16, '#D9483B'); E(c, w, h, 0.5, 0.5, 0.02, 0.02, '#111'); }),
+  pizza: ballArt('#D99A4E', (c, w, h) => {
+    E(c, w, h, 0.5, 0.5, 0.44, 0.44, '#F4C542');
+    for (const [u, v] of [[0.35, 0.3], [0.62, 0.28], [0.72, 0.52], [0.52, 0.5], [0.3, 0.58], [0.45, 0.74], [0.68, 0.72]]) E(c, w, h, u, v, 0.07, 0.07, '#B8322A');
+    L(c, w, h, [[0.5, 0.06], [0.5, 0.94]], 'rgba(120,70,20,.35)', 1); L(c, w, h, [[0.06, 0.5], [0.94, 0.5]], 'rgba(120,70,20,.35)', 1);
+  }),
+  wheel: {aspect: 1, shade: null, draw(c, w, h) {
+    c.save(); c.beginPath(); c.ellipse(0.5 * w, 0.5 * h, 0.47 * w, 0.47 * h, 0, 0, Math.PI * 2);
+    c.strokeStyle = '#2C3036'; c.lineWidth = w * 0.06; c.stroke(); c.restore();
+    L(c, w, h, [[0.08, 0.5], [0.92, 0.5]], '#3A3F46', w * 0.07); L(c, w, h, [[0.5, 0.5], [0.5, 0.93]], '#3A3F46', w * 0.07);
+    E(c, w, h, 0.5, 0.52, 0.14, 0.12, '#4A5058');
+  }},
+  pluto: ballArt('#D8C3A5', (c, w, h) => { E(c, w, h, 0.62, 0.62, 0.22, 0.2, '#F1E6D2'); E(c, w, h, 0.28, 0.4, 0.14, 0.1, '#A68A6A'); }),
+  mars: ballArt('#C4552E', (c, w, h) => { E(c, w, h, 0.35, 0.4, 0.16, 0.08, '#9C3E20'); E(c, w, h, 0.65, 0.62, 0.12, 0.06, '#A6452A'); E(c, w, h, 0.5, 0.06, 0.16, 0.05, '#F2E9E1'); }),
+  neptune: ballArt('#3F6FD8', (c, w, h) => { E(c, w, h, 0.5, 0.35, 0.46, 0.06, 'rgba(255,255,255,.18)'); E(c, w, h, 0.6, 0.6, 0.1, 0.06, '#27479B'); }),
+  jupiter: ballArt('#D9B98F', (c, w, h) => {
+    c.save(); c.beginPath(); c.ellipse(0.5 * w, 0.5 * h, 0.5 * w, 0.5 * h, 0, 0, Math.PI * 2); c.clip();
+    for (const [v, t, col] of [[0.18, 0.06, '#B98A5E'], [0.34, 0.07, '#A8744A'], [0.52, 0.05, '#EEDCC2'], [0.66, 0.08, '#B07E55'], [0.82, 0.05, '#C99E73']]) R(c, w, h, 0, v, 1, v + t, col);
+    E(c, w, h, 0.66, 0.7, 0.1, 0.05, '#C0503A'); c.restore();
+  }),
+  sun: ballArt('#FFC530', (c, w, h) => { E(c, w, h, 0.45, 0.42, 0.34, 0.34, '#FFD85A'); E(c, w, h, 0.62, 0.64, 0.05, 0.04, '#E89A20'); E(c, w, h, 0.3, 0.6, 0.03, 0.025, '#E89A20'); }),
+});
+
+/* ---------------- curated comparisons ----------------
+   Pairs are chosen by hand, not by ratio: both things should be familiar and the size should be guessable.
+   Row: [reference (left), resized (right), theme, level 1 easy .. 3 harder, tags]
+   tags: star = memorable enough for the last round; giant / tiny / close = special rounds (see PAIR_RULES). */
+const THEMES = {animals: 'Animals', ocean: 'Ocean', dinos: 'Dinosaurs', everyday: 'Everyday stuff', tech: 'Tech', landmarks: 'Landmarks',
+  mega: 'Mega stuff', space: 'Space', people: 'People', sports: 'Sports'};
+const PAIRS_RAW = [
+  // animals
+  ['person','giraffe','animals',1,'star'], ['person','polarbear','animals',1,'star'], ['hoop','giraffe','animals',2,''],
+  ['fridge','gorilla','animals',0,'close'], ['car','elephant','animals',1,''], ['person','ostrich','animals',2,''],
+  ['person','camel','animals',2,''], ['person','penguin','animals',2,''], ['door','giraffe','animals',1,'star'],
+  ['person','kangaroo','animals',0,'close'], ['cow','elephant','animals',2,''], ['labrador','person','animals',1,''],
+  ['greatdane','person','animals',2,''], ['cat','labrador','animals',1,'star'], ['person','horse','animals',0,'close'],
+  ['elephant','giraffe','animals',2,'star'], ['elephant','mammoth','animals',0,'close'], ['hippo','rhino','animals',3,''],
+  ['tiger','person','animals',2,''], ['chihuahua','cat','animals',0,'close'], ['polarbear','giraffe','animals',2,''],
+  ['gorilla','polarbear','animals',2,''], ['flamingo','person','animals',3,''], ['fridge','polarbear','animals',2,'star'],
+  ['couch','eagle','animals',0,'close'], ['dove','eagle','animals',2,''], ['fruitbat','eagle','animals',3,''],
+  ['eagle','car_l','animals',2,''], ['person','bison','animals',0,'close'], ['bike','kangaroo','animals',3,''],
+  // ocean
+  ['bus_l','whale_l','ocean',1,'star'], ['car_l','shark','ocean',0,'close'], ['car_l','croc','ocean',0,'close'],
+  ['shark','whale_l','ocean',0,'giant'], ['pickup_l','shark','ocean',2,''], ['semi_l','whale_l','ocean',0,'close'],
+  ['couch','shark','ocean',2,''], ['car_l','whale_l','ocean',0,'giant'], ['couch','croc','ocean',2,''],
+  ['elephant_l','whale_l','ocean',2,'star'], ['shark','bus_l','ocean',2,''],
+  // dinosaurs
+  ['bus_l','trex_l','dinos',0,'close'], ['elephant_l','trex_l','dinos',1,'star'], ['bus_l','brachio_l','dinos',2,''],
+  ['couch','raptor_l','dinos',0,'close'], ['car_l','trex_l','dinos',1,'star'], ['raptor_l','car_l','dinos',2,''],
+  ['trex_l','brachio_l','dinos',2,''], ['person','brachio','dinos',0,'giant'], ['elephant','brachio','dinos',2,''],
+  ['giraffe','brachio','dinos',1,'star'], ['croc','trex_l','dinos',2,''],
+  // everyday
+  ['person','door','everyday',0,'close'], ['door','fridge','everyday',0,'close'], ['person','hoop','everyday',1,'star'],
+  ['person','car','everyday',0,'close'], ['person','bike','everyday',1,''], ['door','xmastree','everyday',0,'close'],
+  ['person','pickup','everyday',0,'close'], ['chair','person','everyday',1,''], ['toilet','fridge','everyday',2,''],
+  ['pizza','wheel','everyday',0,'close'], ['plate','pizza','everyday',2,''], ['couch','car_l','everyday',2,''],
+  ['person','house','everyday',2,''], ['door','house','everyday',2,''], ['hoop','house','everyday',3,''],
+  ['bus','house','everyday',3,''], ['cd_d','plate','everyday',2,''], ['cd_d','vinyl','everyday',2,''],
+  ['cd_d','pizza','everyday',2,''],
+  // tech
+  ['phone','gameboy','tech',0,'close'], ['ipod','phone','tech',2,''], ['keyboard','laptop','tech',2,''],
+  ['gameboy','ipod','tech',3,''], ['sodacan','phone','tech',0,'close'], ['phone','paper','tech',2,''],
+  ['creditcard','phone','tech',2,''], ['creditcard','gameboy','tech',2,''],
+  // landmarks
+  ['liberty','shuttle','landmarks',0,'close'], ['liberty','bigben','landmarks',1,'star'], ['bigben','eiffel','landmarks',2,''],
+  ['liberty','eiffel','landmarks',0,'giant'], ['eiffel','empire','landmarks',2,''], ['empire','burj','landmarks',2,'star'],
+  ['pyramid','eiffel','landmarks',2,'star'], ['colosseum','liberty','landmarks',0,'close'], ['taj','bigben','landmarks',3,''],
+  ['washington','pyramid','landmarks',0,'close'], ['spaceneedle','eiffel','landmarks',2,''], ['pisa','bigben','landmarks',2,''],
+  ['christ','liberty','landmarks',0,'close'], ['londoneye','pyramid','landmarks',0,'close'], ['arch','washington','landmarks',0,'close'],
+  ['sphinx','pyramid','landmarks',0,'giant'], ['empire','cntower','landmarks',0,'close'], ['house','hollywood','landmarks',3,''],
+  ['giraffe','stonehenge','landmarks',3,''], ['bigben','saturnv','landmarks',0,'close'], ['liberty','saturnv','landmarks',2,'star'],
+  ['eiffel','burj','landmarks',2,''], ['burj','everest','landmarks',0,'giant'], ['fuji','everest','landmarks',3,''],
+  ['burj','fuji','landmarks',0,'giant'], ['liberty','titanic','landmarks',0,'close'], ['liberty','hyperion','landmarks',2,''],
+  ['person','liberty','landmarks',0,'giant'], ['house','liberty','landmarks',0,'giant'], ['bigben','pyramid','landmarks',2,''],
+  // mega stuff
+  ['field','titanic_l','mega',1,'star'], ['titanic_l','cruise','mega',2,''], ['a380_l','field','mega',2,''],
+  ['a380_l','titanic_l','mega',2,'star'], ['whale_l','a380_l','mega',2,'star'], ['field','cruise','mega',2,'star'],
+  ['bus_l','a380_l','mega',0,'giant'], ['semi_l','a380_l','mega',2,''], ['whale_l','titanic_l','mega',0,'giant'],
+  // space
+  ['moon','earth','space',1,'star'], ['mars','earth','space',2,'star'], ['moon','mars','space',2,''], ['pluto','moon','space',2,''],
+  ['earth','neptune','space',3,''], ['earth','jupiter','space',0,'giant'], ['jupiter','sun','space',0,'giant'],
+  // people
+  ['person','shaq','people',2,'star'], ['biles','shaq','people',1,'star'], ['door','wemby','people',0,'close'],
+  ['person','wadlow','people',2,''], ['dangi','person','people',3,''], ['messi','lebron','people',0,'close'],
+  ['bogues','yao','people',2,''], ['curry','wemby','people',0,'close'], ['biles','giraffe','people',2,''],
+  ['shaq','hoop','people',1,'star'], ['bogues','door','people',2,''],
+  // tiny things
+  ['golfball','tennisball','sports',0,'tiny'], ['baseball','softball','sports',0,'tiny'], ['golfball','baseball','sports',0,'tiny'],
+  ['tennisball','basketball','sports',0,'tiny'], ['marble','golfball','sports',0,'tiny'], ['die','quarter','everyday',0,'tiny'],
+  ['dime','quarter','everyday',0,'tiny'], ['egg','phone','everyday',0,'tiny'], ['battery','phone','tech',0,'tiny'],
+  ['crayon','pencil','everyday',0,'tiny'], ['mug','sodacan','everyday',0,'tiny'], ['creditcard','paperback','everyday',0,'tiny'],
+  ['soccer','bucket','sports',2,''], ['baseball','basketball','sports',1,''], ['basketball','bucket','sports',2,''],
+  ['basketball','trophy','sports',2,''], ['person','goal','sports',1,''], ['goal','hoop','sports',2,''],
+];
+// what each kind of round allows (ratio = the bigger size over the smaller one)
+const PAIR_RULES = {
+  normal: {min: 1.25, max: 4, label: ''},
+  close: {min: 1, max: 1.25, label: 'Close call'},
+  tiny: {min: 1.25, max: 4, maxSize: 0.3, label: 'Tiny mode'},
+  giant: {min: 4, max: 30, label: 'Giant mode'},
+};
+const kindOf = tags => tags.includes('giant') ? 'giant' : tags.includes('tiny') ? 'tiny' : tags.includes('close') ? 'close' : 'normal';
+const PAIRS = PAIRS_RAW.map(([ref, tgt, theme, lvl, tags]) => ({key: `${ref}|${tgt}`, ref, tgt, theme, lvl, star: tags.includes('star'), kind: kindOf(tags)}));
+// the quality gate: every pair is checked here; a pair with problems never reaches a game
+function auditPair(p) {
+  const a = BY[p.ref], b = BY[p.tgt], issues = [];
+  if (!a || !b) return ['missing object'];
+  if (!artOf(a) && !a.e) issues.push(`${a.id} has no picture`);
+  if (!artOf(b) && !b.e) issues.push(`${b.id} has no picture`);
+  if (a.ax !== b.ax) issues.push('measured along different axes');
+  const q = Math.max(a.s, b.s) / Math.min(a.s, b.s), rule = PAIR_RULES[p.kind];
+  p.ratio = b.s / a.s;
+  if (q < rule.min - 1e-9 || q > rule.max + 1e-9) issues.push(`${q.toFixed(2)}x is outside ${rule.min}-${rule.max}x for ${p.kind} rounds`);
+  if (rule.maxSize && Math.max(a.s, b.s) > rule.maxSize) issues.push('too big for tiny mode');
+  if (!THEMES[p.theme]) issues.push('unknown theme');
+  return issues;
+}
+const PAIR_ISSUES = PAIRS.map(p => ({p, issues: auditPair(p)})).filter(x => x.issues.length);
+const POOL = PAIRS.filter(p => !auditPair(p).length);
+const PBY = Object.fromEntries(PAIRS.map(p => [p.key, p]));
+// objects that make good anchors can show up twice in a game; everything else once
+const ANCHORS = new Set(['person', 'door', 'car', 'car_l', 'bus_l', 'couch', 'house', 'liberty', 'phone', 'hoop', 'eiffel', 'giraffe']);
+
 /* ---------------- rules ---------------- */
-const ROUNDS = 10, SECONDS = 20, REVEAL_MS = 9000;
+const ROUNDS = 10, SECONDS = 20, REVEAL_MS = 12500;
+// the reveal, in ms after it starts: hold the guess, bring in the ghosts, grow to the true size, then show the score
+const RV = {zoom0: 150, zoom1: 750, ghost: 450, grow0: 900, grow1: 2800, done: 3000};
 const G_MIN = 1 / 100, G_MAX = 100, SLIDER_STEPS = 4000;
 const COLORS = ['#E4572E','#3A7FD0','#23905A','#9B5DE5','#D99A00','#D6337F','#12A4B6','#7F8F2A','#C0632B','#5C6BC0'];
 const EMOJI_FONT = '"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol",sans-serif';
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// how forgiving scoring is: 1 for pairs up to 10x apart, growing with each extra factor of 10
-const tolerance = r => Math.max(1, Math.abs(Math.log10(r)));
+// scoring: how far the guess is from the true size, as a percent of the true size, in simple bands
+const BANDS = [[5, 100, 'Perfect-ish'], [10, 80, 'Great'], [20, 60, 'Close'], [35, 35, 'Way off'], [50, 15, 'Way off']];
+const pctOff = (g, r) => Math.round(Math.abs(g / r - 1) * 100);
 function scoreFor(g, r) {
   if (g == null) return 0;
-  const t = tolerance(r), err = Math.abs(Math.log(g / r));
-  if (err <= Math.log(1.03) * t) return 100;
-  return Math.max(0, Math.round(100 * (1 - err / (Math.log(2) * t))));
+  const e = pctOff(g, r);
+  for (const [lim, pts] of BANDS) if (e <= lim) return pts;
+  return 0;
 }
 function verdict(p, g) {
   if (g == null) return 'No answer';
-  if (p === 100) return 'Bullseye';
-  if (p >= 85) return 'Dead on';
-  if (p >= 65) return 'Close';
-  if (p >= 35) return 'Ballpark';
-  if (p > 0) return 'Way off';
-  return 'Off the scale';
+  const b = BANDS.find(([, pts]) => pts === p);
+  return b ? b[2] : 'Way off';
 }
+// "12% off", with which way it missed
 function offBy(g, r) {
   if (g == null) return 'no answer';
-  const q = g / r;
-  if (Math.abs(Math.log(q)) < 0.005) return 'exact';
-  if (q >= 3) return `${fmtNum(q)}× too big`;
-  if (q <= 1 / 3) return `${fmtNum(1 / q)}× too small`;
-  return q > 1 ? `${Math.round((q - 1) * 100)}% too big` : `${Math.round((1 - q) * 100)}% too small`;
+  const e = pctOff(g, r);
+  if (e === 0) return 'spot on';
+  return `${e.toLocaleString('en-US')}% ${g > r ? 'too big' : 'too small'}`;
 }
 
 /* ---------------- helpers ---------------- */
@@ -2903,8 +3185,13 @@ function fmtLen(m) {
     return i ? `${f} ft ${i} in` : `${f} ft`;
   }
   if (ft < 100) return `${+ft.toFixed(1)} ft`;
-  return `${Math.round(ft).toLocaleString('en-US')} ft`;
+  if (ft < 20000) return `${Math.round(ft).toLocaleString('en-US')} ft`;
+  const mi = m / 1609.344;
+  return `${(mi < 100 ? +mi.toFixed(1) : Math.round(mi)).toLocaleString('en-US')} mi`;
 }
+// "9 ft 6 in tall", "82 ft long", "7,918 mi across"
+const dimOf = o => DIMS[o.dim || 'height'];
+const fmtSize = (o, m) => o.dim === 'wingspan' ? `${fmtLen(m)} wingspan` : `${fmtLen(m)} ${dimOf(o).word}`;
 const LS = {
   get(k) { try { return localStorage.getItem('sizeup.' + k); } catch { return null; } },
   set(k, v) { try { v == null ? localStorage.removeItem('sizeup.' + k) : localStorage.setItem('sizeup.' + k, v); } catch {} },
@@ -2922,7 +3209,7 @@ mCanvas.width = mCanvas.height = MS + MP * 2;
 let mCache = {};
 function meas(o) {
   if (mCache[o.id]) return mCache[o.id];
-  if (ART[o.id]) return (mCache[o.id] = {ox: 0, oy: 0, w: ART[o.id].aspect, h: 1});
+  if (artOf(o)) return (mCache[o.id] = {ox: 0, oy: 0, w: artOf(o).aspect, h: 1});
   const c = mCanvas.getContext('2d', {willReadFrequently: true});
   const N = mCanvas.width;
   c.clearRect(0, 0, N, N);
@@ -2971,7 +3258,7 @@ function tok() {
 }
 const artCanvas = document.createElement('canvas');
 function drawArt(c, o, hPx, left, ground, alpha) {
-  const a = ART[o.id], h = hPx, w = hPx * a.aspect;
+  const a = artOf(o), h = hPx, w = hPx * a.aspect;
   if (!(h > 0.5)) return;
   const dpr = Math.min(2, window.devicePixelRatio || 1);
   artCanvas.width = Math.max(1, Math.ceil(w * dpr));
@@ -2988,7 +3275,7 @@ function drawArt(c, o, hPx, left, ground, alpha) {
   c.save(); c.globalAlpha = alpha; c.drawImage(artCanvas, left, ground - h, w, h); c.restore();
 }
 function drawEmoji(c, o, m, axisPx, left, ground, alpha) {
-  if (ART[o.id]) { drawArt(c, o, axisPx, left, ground, alpha); return; }
+  if (artOf(o)) { drawArt(c, o, axisPx, left, ground, alpha); return; }
   const fs = axisPx / m.h;
   if (!(fs > 0.2)) return;
   c.save();
@@ -2997,17 +3284,50 @@ function drawEmoji(c, o, m, axisPx, left, ground, alpha) {
   c.fillText(o.e, left - m.ox * fs, ground - m.h * fs - m.oy * fs);
   c.restore();
 }
-function bracket(c, o, left, w, h, ground, side, color, dashed, off = 0) {
+// a measuring line along the object's measured side: vertical beside it for heights, horizontal above it for lengths
+function measureLine(c, ax, x0, w, h, ground, side, color, dashed, off = 0, lw = 1.5) {
   c.save();
-  c.strokeStyle = color; c.lineWidth = 1.5; c.setLineDash(dashed ? [4, 3] : []);
+  c.strokeStyle = color; c.lineWidth = lw; c.setLineDash(dashed ? [5, 4] : []); c.lineCap = 'round';
   c.beginPath();
-  // height bracket: a vertical line from the ground to the top of the object
-  const x = side === 'left' ? left - 10 - off : left + w + 10 + off;
-  c.moveTo(x, ground); c.lineTo(x, ground - h);
-  c.moveTo(x - 5, ground - h); c.lineTo(x + 5, ground - h);
-  c.moveTo(x - 5, ground); c.lineTo(x + 5, ground);
-  c.stroke();
+  let end;
+  if (ax === 'h') {
+    const x = side === 'left' ? x0 - 10 - off : x0 + w + 10 + off;
+    c.moveTo(x, ground); c.lineTo(x, ground - h);
+    c.moveTo(x - 5, ground - h); c.lineTo(x + 5, ground - h);
+    c.moveTo(x - 5, ground); c.lineTo(x + 5, ground);
+    end = {x, y: ground - h};
+  } else {
+    const y = ground - h - 10 - off;
+    c.moveTo(x0, y); c.lineTo(x0 + w, y);
+    c.moveTo(x0, y - 5); c.lineTo(x0, y + 5);
+    c.moveTo(x0 + w, y - 5); c.lineTo(x0 + w, y + 5);
+    end = {x: x0 + w, y};
+  }
+  c.stroke(); c.restore();
+  return end;
+}
+// a small colored pill with text, e.g. a player's name at the end of their guess line
+function pill(c, x, y, text, bg, fg, align = 'left') {
+  c.save(); c.font = '700 11px "Instrument Sans", system-ui, sans-serif';
+  const w = c.measureText(text).width + 12, h = 18;
+  let px = align === 'exact' ? x : align === 'left' ? x + 6 : align === 'right' ? x - w - 6 : x - w / 2;
+  px = Math.max(4, Math.min(c.canvas.clientWidth - w - 4, px));
+  c.fillStyle = bg; c.beginPath(); c.roundRect(px, y - h / 2, w, h, 9); c.fill();
+  c.fillStyle = fg; c.textBaseline = 'middle'; c.textAlign = 'left'; c.fillText(text, px + 6, y + 0.5);
   c.restore();
+}
+// an object as a flat, see-through color: used for guess ghosts
+const tintCanvas = document.createElement('canvas');
+function drawGhost(c, o, sh, X, left, ground, color, alpha) {
+  const hPx = X * sh.h, wPx = X * sh.w, pad = 4;
+  if (!(hPx > 1) || hPx > 3000 || wPx > 4000) return;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  tintCanvas.width = Math.ceil((wPx + pad * 2) * dpr); tintCanvas.height = Math.ceil((hPx + pad * 2) * dpr);
+  const g = tintCanvas.getContext('2d');
+  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawEmoji(g, o, sh.m, hPx, pad, hPx + pad, 1);
+  g.globalCompositeOperation = 'source-in'; g.fillStyle = color; g.fillRect(0, 0, wPx + pad * 2, hPx + pad * 2);
+  c.save(); c.globalAlpha = alpha; c.drawImage(tintCanvas, left - pad, ground - hPx - pad, wPx + pad * 2, hPx + pad * 2); c.restore();
 }
 function label(c, x, y, align, lines, maxW) {
   c.save(); c.textAlign = align; c.textBaseline = 'alphabetic';
@@ -3020,7 +3340,10 @@ function label(c, x, y, align, lines, maxW) {
   }
   c.restore();
 }
-/* s: {ref, tgt, g (target factor drawn), fit, ghost, tgtLines, refLines, tgtColor} */
+// an object's drawn shape in units of its measured size (so measured side = 1)
+function shapeOf(o) { const m = meas(o), a = o.ax === 'w' ? m.w : m.h; return {m, w: m.w / a, h: m.h / a}; }
+/* s: {ref, tgt, g (target size drawn, as a multiple of the reference), fit (largest target size to make room for),
+       ghosts [{g, color, text, mine, alpha}], refLines, tgtLines, tgtColor, tagR, handle, actual (label on the true size)} */
 function drawStage(cv, s) {
   const W = cv.clientWidth, H = cv.clientHeight;
   if (!W || !H) return;
@@ -3041,15 +3364,13 @@ function drawStage(cv, s) {
   for (let x = 0.5, i = 0; x < W; x += 8, i++) { c.moveTo(x, ground); c.lineTo(x, ground + (i % 5 ? 3 : 6)); }
   c.stroke();
 
-  const pad = 30, top = 70, gap = Math.min(48, W * 0.08);
-  const mr = meas(s.ref), mt = meas(s.tgt);
-  // everything is scaled by height: 1 unit = the reference's height; widths follow each drawing's shape
-  const rw = mr.w / mr.h, rh = 1;
-  const aw = mt.w / mt.h, ah = 1;
-  const k = Math.min((W - 2 * pad - gap) / (rw + aw * s.fit), (ground - top) / Math.max(rh, ah * s.fit));
-  // reference sits left of a fixed centre line, the object being resized grows rightward from it
-  const lw = rw * k, rwid = aw * s.fit * k;
-  const mid = Math.min(Math.max(W / 2, pad + lw + gap / 2), W - pad - rwid - gap / 2);
+  const ax = s.tgt.ax || 'h', ghosts = s.ghosts || [];
+  const pad = 30, top = ax === 'w' ? 104 : 70, gap = Math.min(48, W * 0.08), extraR = ax === 'h' ? 16 + ghosts.length * 7 : 0;
+  const R0 = shapeOf(s.ref), T0 = shapeOf(s.tgt);
+  // 1 unit = the reference's measured size; drawings keep their own proportions
+  const k = Math.min((W - 2 * pad - gap - extraR) / (R0.w + T0.w * s.fit), (ground - top) / Math.max(R0.h, T0.h * s.fit));
+  const lw = R0.w * k, rwid = T0.w * s.fit * k;
+  const mid = Math.min(Math.max(W / 2, pad + lw + gap / 2), W - pad - extraR - rwid - gap / 2);
   const x0 = mid - gap / 2 - lw, x1 = mid + gap / 2;
   c.save(); c.strokeStyle = T.line; c.lineWidth = 1; c.setLineDash([4, 5]);
   c.beginPath(); c.moveTo(mid + 0.5, top - 6); c.lineTo(mid + 0.5, ground); c.stroke(); c.restore();
@@ -3061,22 +3382,55 @@ function drawStage(cv, s) {
   c.fillText(tr, Math.max(lx + wl + 10, Math.min(W - 8 - wr, mid + 12)), ground + 27);
   c.restore();
 
-  drawEmoji(c, s.ref, mr, k, x0, ground, 1);
-  bracket(c, s.ref, x0, rw * k, rh * k, ground, 'left', T.ink, false);
-  if (s.ghost != null) {
-    // a guess far taller than the view only shows as its dashed marker running off the top
-    if (s.ghost <= s.fit * 1.02) drawEmoji(c, s.tgt, mt, k * s.ghost, x1, ground, 0.32);
-    bracket(c, s.tgt, x1, aw * k * s.ghost, ah * k * s.ghost, ground, 'right', T.red, true, 10);
-  }
-  drawEmoji(c, s.tgt, mt, k * s.g, x1, ground, 1);
+  // reference
+  drawEmoji(c, s.ref, R0.m, k * R0.h, x0, ground, 1);
+  measureLine(c, ax, x0, lw, k * R0.h, ground, 'left', T.ink, false);
+  // guesses: my ghost as a see-through silhouette, everyone's as a dashed line with a name tag
+  const tagged = [];
+  ghosts.forEach((gh, i) => {
+    if (!(gh.alpha > 0)) return;
+    const gg = Math.min(gh.g, s.fit * 1.06);
+    if (gh.mine && gh.g <= s.fit * 1.02) drawGhost(c, s.tgt, T0, k * gg, x1, ground, gh.color, 0.26 * gh.alpha);
+    c.save(); c.globalAlpha = gh.alpha;
+    const end = measureLine(c, ax, x1, T0.w * k * gg, T0.h * k * gg, ground, 'right', gh.color, true, ax === 'h' ? 14 + i * 7 : 16 + i * 7);
+    c.restore();
+    if (gh.text) tagged.push({end, gh});
+  });
+  // the object being resized (during the reveal: growing or shrinking to its true size)
+  drawEmoji(c, s.tgt, T0.m, k * s.g * T0.h, x1, ground, 1);
   const tc = T[s.tgtColor || 'measure'];
-  bracket(c, s.tgt, x1, aw * k * s.g, ah * k * s.g, ground, 'right', tc, false);
+  const tEnd = measureLine(c, ax, x1, T0.w * k * s.g, T0.h * k * s.g, ground, 'right', tc, false, 0, s.actual ? 2.5 : 1.5);
+  if (s.handle) {
+    // a grab handle on the corner that grows, so it reads as something to pull
+    const hx = x1 + T0.w * k * s.g, hy = ground - T0.h * k * s.g;
+    c.save(); c.fillStyle = T.measure; c.strokeStyle = T.stage; c.lineWidth = 2.5;
+    c.beginPath(); c.arc(hx, hy, 9, 0, Math.PI * 2); c.fill(); c.stroke();
+    c.strokeStyle = '#fff'; c.lineWidth = 1.6; c.beginPath();
+    c.moveTo(hx - 3.5, hy + 3.5); c.lineTo(hx + 3.5, hy - 3.5); c.moveTo(hx + 0.5, hy - 3.5); c.lineTo(hx + 3.5, hy - 3.5); c.lineTo(hx + 3.5, hy - 0.5);
+    c.moveTo(hx - 3.5, hy + 0.5); c.lineTo(hx - 3.5, hy + 3.5); c.lineTo(hx - 0.5, hy + 3.5);
+    c.stroke(); c.restore();
+  }
+  // tags last so they sit on top; each one is nudged down until it's clear of the ones already placed
+  const tags = [];
+  if (s.actual) tags.push({x: tEnd.x, y: Math.max(ax === 'h' ? tEnd.y - 14 : tEnd.y - 16, 72), text: s.actual, bg: T.green, alpha: 1, align: ax === 'h' && tEnd.x < W - 130 ? 'left' : 'right'});
+  for (const {end, gh} of tagged.sort((a, b) => a.end.y - b.end.y)) tags.push({x: end.x, y: Math.max(end.y, 72), text: gh.text, bg: gh.color, alpha: gh.alpha, align: 'left'});
+  c.save(); c.font = '700 11px "Instrument Sans", system-ui, sans-serif';
+  const placed = [];
+  for (const t of tags) {
+    const w = c.measureText(t.text).width + 12;
+    let x = t.align === 'left' ? t.x + 6 : t.x - w - 6;
+    x = Math.max(4, Math.min(W - w - 4, x));
+    for (let n = 0; n < 8 && placed.some(p => x < p.x + p.w + 4 && p.x < x + w + 4 && Math.abs(p.y - t.y) < 20); n++) t.y += 20;
+    placed.push({x, y: t.y, w});
+    c.globalAlpha = t.alpha; pill(c, x, t.y, t.text, t.bg, '#fff', 'exact');
+  }
+  c.restore();
 
   // tiny objects: draw a zoomed-in view so they never vanish next to something huge
-  const ZMIN = 26, tgtMax = Math.max(s.g, s.ghost != null && s.ghost <= s.g * 3 ? s.ghost : 0);
+  const ZMIN = 26, tgtMax = Math.max(s.g, ...ghosts.filter(g => g.mine && g.g <= s.g * 3).map(g => g.g));
   let zoom = null;
-  if (k < ZMIN) zoom = {who: 'ref', foot: x0 + rw * k / 2, unit: k};
-  else if (k * tgtMax < ZMIN) zoom = {who: 'tgt', foot: x1 + aw * k * tgtMax / 2, unit: k * tgtMax};
+  if (k * Math.max(R0.h, R0.w) < ZMIN) zoom = {who: 'ref', foot: x0 + lw / 2, unit: k};
+  else if (k * tgtMax * Math.max(T0.h, T0.w) < ZMIN) zoom = {who: 'tgt', foot: x1 + T0.w * k * tgtMax / 2, unit: k * tgtMax};
   if (zoom) {
     const bh = Math.round(Math.min(150, Math.max(100, (ground - top) * 0.55))), bw = Math.round(bh * 1.15);
     const bx = Math.max(8, Math.min(W - bw - 8, zoom.foot - bw / 2));
@@ -3091,18 +3445,18 @@ function drawStage(cv, s) {
     c.clip();
     const gy = by + bh - 14;
     c.lineWidth = 1; c.beginPath(); c.moveTo(bx, gy); c.lineTo(bx + bw, gy); c.stroke();
-    const isRef = zoom.who === 'ref', o = isRef ? s.ref : s.tgt, m = isRef ? mr : mt, asp = isRef ? rw : aw;
-    const hz = Math.min(bh - 42, (bw - 34) / asp), z = hz / zoom.unit, left = bx + (bw - asp * hz) / 2;
+    const isRef = zoom.who === 'ref', o = isRef ? s.ref : s.tgt, sh = isRef ? R0 : T0;
+    const hz = Math.min(bh - 42, (bw - 34) * sh.h / sh.w), z = hz / (zoom.unit * sh.h), left = bx + (bw - sh.w * zoom.unit * z) / 2;
     if (isRef) {
-      drawEmoji(c, o, m, k * z, left, gy, 1);
-      bracket(c, o, left, asp * k * z, k * z, gy, 'left', T.ink, false);
+      drawEmoji(c, o, sh.m, k * z * sh.h, left, gy, 1);
+      measureLine(c, ax, left, sh.w * k * z, sh.h * k * z, gy, 'left', T.ink, false);
     } else {
-      if (s.ghost != null) {
-        drawEmoji(c, o, m, k * s.ghost * z, left, gy, 0.32);
-        bracket(c, o, left, asp * k * s.ghost * z, k * s.ghost * z, gy, 'right', T.red, true, 6);
+      for (const gh of ghosts) if (gh.mine && gh.alpha > 0) {
+        drawGhost(c, o, sh, k * gh.g * z, left, gy, gh.color, 0.26 * gh.alpha);
+        measureLine(c, ax, left, sh.w * k * gh.g * z, sh.h * k * gh.g * z, gy, 'right', gh.color, true, 6);
       }
-      drawEmoji(c, o, m, k * s.g * z, left, gy, 1);
-      bracket(c, o, left, asp * k * s.g * z, k * s.g * z, gy, 'right', T[s.tgtColor || 'measure'], false);
+      drawEmoji(c, o, sh.m, k * s.g * z * sh.h, left, gy, 1);
+      measureLine(c, ax, left, sh.w * k * s.g * z, sh.h * k * s.g * z, gy, 'right', tc, false);
     }
     c.font = '500 10px "IBM Plex Mono", ui-monospace, monospace'; c.fillStyle = T.muted; c.textBaseline = 'top';
     c.fillText(`zoom ×${fmtNum(z)}`, bx + 8, by + 7);
@@ -3112,8 +3466,8 @@ function drawStage(cv, s) {
   const small = W < 420;
   const f1 = `600 ${small ? 12 : 14}px "Instrument Sans", system-ui, sans-serif`;
   const f2 = `500 ${small ? 11 : 12}px "IBM Plex Mono", ui-monospace, monospace`;
-  label(c, 14, 24, 'left', [[s.ref.label, f1, T.ink], ...s.refLines.map(t => [t[0], f2, T[t[1]]])], W / 2 - 22);
-  label(c, W - 14, 24, 'right', [[s.tgt.label, f1, T.ink], ...s.tgtLines.map(t => [t[0], f2, T[t[1]]])], W / 2 - 22);
+  label(c, 14, 24, 'left', [[s.ref.label, f1, T.ink], ...s.refLines.map(t => [t[0], f2, T[t[1]] || t[1]])], W / 2 - 22);
+  label(c, W - 14, 24, 'right', [[s.tgt.label, f1, T.ink], ...s.tgtLines.map(t => [t[0], f2, T[t[1]] || t[1]])], W / 2 - 22);
 }
 
 /* ---------------- in-memory store (solo, host copy, guest mirror) ---------------- */
@@ -3182,33 +3536,67 @@ function show(name) {
 
 const isHost = () => !!room && room.host === me.pid;
 const pairOf = i => { const [a, b] = room.rounds[i].split('|'); return [BY[a], BY[b]]; };
+const flagOf = i => room.rounds[i].split('|')[2] || '';
+const pairInfo = i => PBY[room.rounds[i].split('|').slice(0, 2).join('|')];
 const scoreRec = (p, i) => p?.scores?.[room.game]?.['r' + i];
 const totalOf = p => { const g = p?.scores?.[room?.game]; return g ? Object.values(g).reduce((t, x) => t + (x?.p || 0), 0) : 0; };
 const mine = () => players.find(p => p.pid === me.pid);
 const activePlayers = () => players.filter(p => p.online !== false);
 
-function makeRounds(n) {
-  const used = new Set(), out = [];
-  // every pair stays readable: about 35% near 2x (1.5x-3x), 35% near 5x (3x-8x), 30% near 10-20x (8x-25x)
-  const bands = Array.from({length: n}, (_, i) => i < Math.round(n * 0.35) ? [1.5, 3] : i < Math.round(n * 0.7) ? [3, 8] : [8, 25]);
-  for (let i = bands.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [bands[i], bands[j]] = [bands[j], bands[i]]; }
-  const tryPick = (lo, hi) => {
-    for (let t = 0; t < 80; t++) {
-      const ref = pick(OBJ.filter(o => !used.has(o.id)));
-      const cands = OBJ.filter(o => {
-        if (o.id === ref.id || used.has(o.id) || (o.e && o.e === ref.e)) return false;
-        const k = Math.abs(Math.log(o.s / ref.s));
-        return k >= Math.log(lo) && k <= Math.log(hi);
-      });
-      if (!cands.length) continue;
-      const tg = pick(cands);
-      used.add(ref.id); used.add(tg.id);
-      out.push(`${ref.id}|${tg.id}`);
-      return true;
+/* A game is built from the curated POOL, not from random pairs:
+   rounds 1-2 are easy and familiar, 3-6 mix it up, 7-9 get a little harder, and the last round is a memorable one.
+   One or two special rounds (giant, tiny, close call) land somewhere in the middle. An object shows up once per game
+   (anchors like a person or a door at most twice), themes don't repeat back to back, and pairs from the last few games
+   on this device are held back so Play Again feels new. Round string: "ref|target|flag". */
+const recentPairs = [];
+const SPECIAL_KINDS = [['close', 45], ['giant', 35], ['tiny', 20]];
+function wpick(items, weight) {
+  const ws = items.map(weight), tot = ws.reduce((a, b) => a + b, 0);
+  let x = Math.random() * tot;
+  for (let i = 0; i < items.length; i++) if ((x -= ws[i]) < 0) return items[i];
+  return items[items.length - 1];
+}
+function makeRounds(n, hist = recentPairs) {
+  const nSpecial = n >= 6 ? (Math.random() < 0.5 ? 2 : 1) : 0;
+  const slots = new Set();
+  for (let guard = 0; slots.size < nSpecial && guard < 50; guard++) {
+    const i = 2 + Math.floor(Math.random() * Math.max(1, n - 3));
+    if (![...slots].some(j => Math.abs(j - i) < 2)) slots.add(i);
+  }
+  const kinds = [];
+  for (const i of [...slots].sort((a, b) => a - b)) kinds[i] = wpick(SPECIAL_KINDS.filter(([k]) => !kinds.includes(k)), k => k[1])[0];
+  const out = [], uses = {}, emo = new Set(), themeN = {}, keys = new Set(), recent = new Set(hist);
+  const asTgt = new Set();
+  const objOk = id => (uses[id] || 0) < (ANCHORS.has(id) ? 2 : 1);
+  const pairOk = p => objOk(p.ref) && objOk(p.tgt) && !asTgt.has(p.tgt);   // nothing is the one you resize twice
+  const emoOk = o => ANCHORS.has(o.id) || !o.e || !emo.has(o.e);
+  const wantLvl = i => i < 2 ? [1] : i === n - 1 ? [1, 2] : i < 6 ? [1, 2, 2] : [2, 3, 3];
+  for (let i = 0; i < n; i++) {
+    const kind = kinds[i] || 'normal', last = i === n - 1, prevTheme = out.length ? PBY[out[out.length - 1].split('|').slice(0, 2).join('|')].theme : null;
+    // strict first, then relax the soft rules one at a time so a round is always found
+    const passes = [
+      p => !recent.has(p.key) && p.theme !== prevTheme && (themeN[p.theme] || 0) < 3,
+      p => p.theme !== prevTheme && (themeN[p.theme] || 0) < 3,
+      p => true,
+    ];
+    let cands = [];
+    for (const extra of passes) {
+      cands = POOL.filter(p => p.kind === kind && !keys.has(p.key) && pairOk(p) && emoOk(BY[p.ref]) && emoOk(BY[p.tgt]) && extra(p)
+        && (kind !== 'normal' || wantLvl(i).includes(p.lvl)) && (!last || p.star));
+      if (cands.length) break;
     }
-    return false;
-  };
-  for (const [lo, hi] of bands) if (!tryPick(lo, hi)) tryPick(1.5, 25);
+    if (!cands.length && last) cands = POOL.filter(p => p.kind === 'normal' && p.lvl <= 2 && !keys.has(p.key) && pairOk(p));
+    if (!cands.length) cands = POOL.filter(p => p.kind === 'normal' && !keys.has(p.key) && pairOk(p));
+    if (!cands.length) continue;
+    const lv = wantLvl(i);
+    const p = wpick(cands, c => (kind === 'normal' ? lv.filter(x => x === c.lvl).length : 1) * (c.star && !last ? 0.8 : 1) / (1 + (themeN[c.theme] || 0)));
+    keys.add(p.key);
+    for (const id of [p.ref, p.tgt]) { uses[id] = (uses[id] || 0) + 1; if (BY[id].e) emo.add(BY[id].e); }
+    asTgt.add(p.tgt);
+    themeN[p.theme] = (themeN[p.theme] || 0) + 1;
+    out.push(`${p.ref}|${p.tgt}|${kind !== 'normal' ? kind : last ? 'final' : ''}`);
+  }
+  if (hist === recentPairs) { recentPairs.push(...out.map(r => r.split('|').slice(0, 2).join('|'))); recentPairs.splice(0, Math.max(0, recentPairs.length - 40)); }
   return out;
 }
 
@@ -3488,6 +3876,7 @@ async function submit() {
   const g = local.touched ? +local.g.toFixed(4) : null;
   const p = scoreFor(g, tgt.s / ref.s);
   local.locked = local.submitted = true;
+  if (g != null) lockFx();
   renderRound();
   const body = {scores: {[game]: {['r' + round]: {g, p}}}};
   const pref = db.doc(`rooms/${code}/players/${me.pid}`);
@@ -3515,6 +3904,7 @@ function sync() {
         local.revealAt = performance.now();
         const [ref, tgt] = pairOf(room.round);
         local.anim = {t0: performance.now(), from: local.touched ? local.g : 1, to: tgt.s / ref.s};
+        local.shown = REDUCED;
       }
     }
     show('round'); renderRound();
@@ -3540,21 +3930,46 @@ function renderLobby() {
   $('#lb-wait').textContent = hostP ? `Waiting for ${hostP.name} to start the game` : 'Waiting for the host to start the game';
 }
 
+const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const logLerp = (a, b, t) => a * Math.pow(b / a, t);
+const revealT = () => REDUCED ? 1e9 : performance.now() - local.revealAt;
+// everyone's guesses for the reveal; big groups get a short summary instead of a line per player
+function guessMarks(r) {
+  const all = players.map(pl => ({pl, g: scoreRec(pl, room.round)?.g})).filter(x => x.g != null);
+  const meG = all.find(x => x.pl.pid === me.pid);
+  const nm = pl => pl.pid === me.pid ? 'You' : pl.name;
+  if (mode === 'solo' || all.length <= 5) return all.map(x => ({g: x.g, color: x.pl.color || '#E4572E', text: all.length > 1 || x.pl.pid !== me.pid ? nm(x.pl) : 'Your guess', mine: x.pl.pid === me.pid}));
+  const byErr = all.slice().sort((a, b) => Math.abs(Math.log(a.g / r)) - Math.abs(Math.log(b.g / r)));
+  const best = byErr[0], worst = byErr[byErr.length - 1];
+  const avg = Math.exp(all.reduce((t, x) => t + Math.log(x.g), 0) / all.length);
+  const out = [{g: best.g, color: best.pl.color, text: `Closest: ${nm(best.pl)}`}, {g: worst.g, color: worst.pl.color, text: `Furthest: ${nm(worst.pl)}`},
+    {g: avg, color: '#6B7885', text: 'Average'}];
+  if (meG && meG !== best && meG !== worst) out.push({g: meG.g, color: meG.pl.color, text: 'You', mine: true});
+  else (out.find(o => o.text.endsWith('You')) || {}).mine = true;
+  return out;
+}
 function stageState() {
   const [ref, tgt] = pairOf(room.round);
   const r = tgt.s / ref.s;
-  const refLines = [[`${fmtLen(ref.s)} tall`, 'muted']];
+  const refLines = [[fmtSize(ref, ref.s), 'muted']];
   if (room.phase === 'reveal') {
-    const a = local.anim;
-    let g = r;
-    if (a && !REDUCED) { const t = Math.min(1, (performance.now() - a.t0) / 900); const e = 1 - Math.pow(1 - t, 3); g = a.from * Math.pow(a.to / a.from, e); }
-    const guess = local.touched ? local.g : null;
-    const tgtLines = [[`${fmtLen(tgt.s)} tall`, 'green']];
-    if (guess != null) tgtLines.push([`you: ${fmtLen(guess * ref.s)}`, 'red']);
-    const near = x => (x != null && x <= r * 3 ? x : r); // keep the true answer in view even if the guess was wildly too big
-    return {ref, tgt, g, fit: Math.max(r, near(guess), near(a ? a.from : null)), ghost: guess, refLines, tgtLines, tgtColor: 'green', tagR: 'TRUE HEIGHT'};
+    const a = local.anim || {from: 1}, t = revealT(), from = a.from;
+    const g = t < RV.grow0 ? from : t < RV.grow1 ? logLerp(from, r, ease((t - RV.grow0) / (RV.grow1 - RV.grow0))) : r;
+    const done = t >= RV.grow1;
+    const marks = guessMarks(r);
+    const near = x => x <= r * 3; // guesses far too big show as a line running off the top, not a tiny answer
+    const fitEnd = Math.max(r, ...marks.map(m => m.g).filter(near));
+    const fit = t < RV.zoom0 ? Math.max(from, g) : t < RV.zoom1 ? Math.max(logLerp(from, fitEnd, ease((t - RV.zoom0) / (RV.zoom1 - RV.zoom0))), g) : fitEnd;
+    const alpha = Math.max(0, Math.min(1, (t - RV.ghost) / 300));
+    const ghosts = marks.map(m => ({...m, alpha}));
+    const mineG = local.touched ? local.g : null;
+    const tgtLines = done ? [[fmtSize(tgt, tgt.s), 'green']] : [['? ' + dimOf(tgt).word, 'measure']];
+    if (mineG != null) tgtLines.push([`you: ${fmtLen(mineG * ref.s)}`, 'red']);
+    return {ref, tgt, g, fit, ghosts, refLines, tgtLines, tgtColor: done ? 'green' : 'measure', tagR: done ? 'ACTUAL SIZE' : 'REVEALING…',
+      actual: done ? `Actual: ${fmtLen(tgt.s)}` : null};
   }
-  return {ref, tgt, g: local.g, fit: local.g, ghost: null, refLines, tgtLines: [['? tall', 'measure']], tgtColor: 'measure'};
+  return {ref, tgt, g: local.g, fit: local.g, ghosts: [], refLines, tgtLines: [['? ' + dimOf(tgt).word, 'measure']], tgtColor: 'measure',
+    handle: !local.locked};
 }
 
 function renderRound() {
@@ -3565,8 +3980,14 @@ function renderRound() {
   $('#rb-num').textContent = room.round + 1;
   $('#rb-of').textContent = '/' + room.rounds.length;
   const cur = scoreRec(mine(), room.round);
-  $('#rb-score').textContent = totalOf(mine()) - (reveal || !cur ? 0 : cur.p || 0);
-  $('#prompt').innerHTML = `Next to <em>${esc(ref.a.split(',')[0])}</em>, how tall is <em>${esc(tgt.a.split(',')[0])}</em>?`;
+  // this round's points join the total only once the reveal has shown them
+  $('#rb-score').textContent = totalOf(mine()) - (cur && (!reveal || !local.shown) ? cur.p || 0 : 0);
+  const info = pairInfo(room.round), flag = flagOf(room.round), D = dimOf(tgt);
+  $('#ask-sub').textContent = `${info ? THEMES[info.theme] : 'Size'} · ${D.tag}`;
+  // giant and tiny rounds are announced up front; a close call is only revealed afterwards
+  const badge = flag === 'giant' ? 'Giant mode' : flag === 'tiny' ? 'Tiny mode' : flag === 'final' ? 'Final round' : flag === 'close' && reveal ? 'Close call' : '';
+  $('#ask-badge').hidden = !badge; $('#ask-badge').textContent = badge; $('#ask-badge').dataset.kind = flag;
+  $('#prompt').innerHTML = `Next to <em>${esc(ref.a.split(',')[0])}</em>, ${D.ask} <em>${esc(tgt.a.split(',')[0])}</em>?`;
 
   $('#play-ui').hidden = reveal;
   $('#reveal').hidden = !reveal;
@@ -3579,7 +4000,8 @@ function renderRound() {
   }
   for (const id of ['#size', '#btn-minus', '#btn-plus', '#btn-div10', '#btn-mul10', '#btn-lock']) $(id).disabled = local.locked;
   $('#btn-lock').textContent = local.locked ? 'Locked' : 'Lock in';
-  $('#readout').innerHTML = `${fmtX(local.g)}<small>the height of ${esc(ref.a)}</small>`;
+  $('#readout').innerHTML = `${fmtX(local.g)}<small>the ${dimOf(ref).noun} of ${esc(ref.a)}</small>`;
+  $('#lock-stamp').hidden = !(local.locked && !reveal && local.touched);
   $('#hint').hidden = local.locked;
 
   const w = $('#waiting');
@@ -3596,18 +4018,27 @@ function renderRound() {
     const rec = scoreRec(mine(), room.round);
     const g = rec ? rec.g : (local.touched ? local.g : null);
     const p = rec ? rec.p : scoreFor(g, r);
+    // the panel waits for the size animation to finish, so the picture lands first and the score second
+    $('#reveal').classList.toggle('pending', !local.shown);
+    const cell = (k, x, m, cls) => `<div class="${cls}"><span class="eyebrow">${k}</span><b>${x}</b><small>${m}</small></div>`;
+    $('#rv-cmp').innerHTML = g == null
+      ? `${cell('You guessed', '—', 'no resize', 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtX(r), fmtSize(tgt, tgt.s), 'rv-act')}`
+      : `${cell('You guessed', fmtX(g), fmtLen(g * ref.s), 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtX(r), fmtSize(tgt, tgt.s), 'rv-act')}`;
+    $('#rv-pct').textContent = g == null ? 'No answer' : pctOff(g, r) === 0 ? 'Spot on' : `${pctOff(g, r).toLocaleString('en-US')}% off`;
+    $('#rv-verdict').textContent = g == null ? '' : verdict(p, g);
     $('#rv-pts').textContent = '+' + p;
-    $('#rv-pts').style.color = p >= 65 ? 'var(--green)' : p > 0 ? 'var(--ink)' : 'var(--red)';
-    $('#rv-verdict').textContent = verdict(p, g);
-    $('#rv-off').textContent = g == null ? "You didn't move the slider this round." : `Your guess was ${offBy(g, r)} (${fmtLen(g * ref.s)} vs ${fmtLen(tgt.s)}).`;
-    $('#rv-fact').innerHTML = `<strong>${esc(cap(tgt.a))}</strong>${tgt.a.includes(',') ? ',' : ''} is ${fmtLen(tgt.s)} tall${tgt.note ? ` (${esc(tgt.note)})` : ''}, or ${fmtX(r)} the height of ${esc(ref.a)} (${fmtLen(ref.s)}${ref.note ? `, ${esc(ref.note)}` : ''}).`;
+    $('.rv-main').dataset.band = g == null ? 'none' : p >= 80 ? 'great' : p >= 60 ? 'close' : 'off';
+    $('#rv-special').hidden = flag !== 'close' && flag !== 'giant' && flag !== 'tiny';
+    $('#rv-special').textContent = flag === 'close' ? `Close call: they're only ${Math.round(Math.abs(r - 1) * 100)}% apart.`
+      : flag === 'giant' ? `Giant mode: ${fmtX(r)} the ${dimOf(ref).noun} of ${ref.a}.` : flag === 'tiny' ? 'Tiny mode: small things, small differences.' : '';
+    $('#rv-fact').innerHTML = `<strong>${esc(tgt.label)}</strong>: ${fmtSize(tgt, tgt.s)}${tgt.note ? ` (${esc(tgt.note)})` : ''}. <strong>${esc(ref.label)}</strong>: ${fmtSize(ref, ref.s)}${ref.note ? ` (${esc(ref.note)})` : ''}.`;
     const rows = players.map(pl => ({pl, rec: scoreRec(pl, room.round)}))
-      .sort((a, b) => (b.rec?.p ?? -1) - (a.rec?.p ?? -1));
+      .sort((a, b) => (b.rec?.p ?? -1) - (a.rec?.p ?? -1) || Math.abs(Math.log((a.rec?.g || 1e-9) / r)) - Math.abs(Math.log((b.rec?.g || 1e-9) / r)));
     $('#rv-list').innerHTML = rows.map(({pl, rec}) => `
       <li><i class="dot" style="background:${esc(pl.color)}"></i>
       <span class="nm">${esc(pl.name)}${pl.pid === me.pid ? ' <span class="tag">you</span>' : ''}</span>
-      <span class="off">${rec ? offBy(rec.g, r) : 'no answer'}</span>
-      <span class="pts">${rec ? rec.p : 0}</span></li>`).join('');
+      <span class="off">${rec && rec.g != null ? `${fmtX(rec.g)} · ${offBy(rec.g, r)}` : 'no answer'}</span>
+      <span class="pts">+${rec ? rec.p : 0}</span></li>`).join('');
     const last = room.round + 1 >= room.rounds.length;
     $('#btn-next').hidden = !isHost();
     $('#btn-next').textContent = last ? 'See final scores' : 'Next round';
@@ -3643,12 +4074,12 @@ function renderFinal() {
 }
 
 /* ---------------- demo on home ---------------- */
-const DEMO = {ref: BY.colosseum, tgt: BY.taj};
+const DEMO = {ref: BY.person, tgt: BY.polarbear};
 function drawDemo(now) {
   const r = DEMO.tgt.s / DEMO.ref.s;
-  const g = REDUCED ? r * 0.75 : Math.exp(Math.log(r) + Math.sin(now / 1400) * 0.55);
-  drawStage($('#demo'), {ref: DEMO.ref, tgt: DEMO.tgt, g, fit: g, ghost: null,
-    refLines: [[`${fmtLen(DEMO.ref.s)} tall`, 'muted']], tgtLines: [[`${fmtX(g)} the Colosseum`, 'measure']], tgtColor: 'measure'});
+  const g = REDUCED ? r * 0.75 : Math.exp(Math.log(r) + Math.sin(now / 1400) * 0.45);
+  drawStage($('#demo'), {ref: DEMO.ref, tgt: DEMO.tgt, g, fit: g, ghosts: [], handle: true,
+    refLines: [[fmtSize(DEMO.ref, DEMO.ref.s), 'muted']], tgtLines: [[`${fmtX(g)} the person`, 'measure']], tgtColor: 'measure'});
 }
 
 function redrawAll() {
@@ -3673,6 +4104,12 @@ $('#btn-plus').addEventListener('click', () => setG(local.g * 1.04));
 $('#btn-div10').addEventListener('click', () => setG(local.g / 10));
 $('#btn-mul10').addEventListener('click', () => setG(local.g * 10));
 $('#btn-lock').addEventListener('click', () => { if (!local.locked) { try { navigator.vibrate?.(12); } catch {} submit(); } });
+// locking in: the picture gives a small press, the controls freeze, and a stamp says it's in
+function lockFx() {
+  if (REDUCED) return;
+  const w = $('#stage-wrap'); w.classList.remove('thunk'); void w.offsetWidth; w.classList.add('thunk');
+  w.addEventListener('animationend', () => w.classList.remove('thunk'), {once: true});
+}
 /* resize by dragging the picture (right or up = taller) or pinching it with two fingers */
 const pointers = new Map();
 let gesture = null;
@@ -3775,7 +4212,9 @@ function frame(now) {
       tape.classList.remove('low');
       if (lastW !== '0%') { fill.style.width = '0%'; lastW = '0%'; }
     }
-    if (local.anim && now - local.anim.t0 < 950) drawRound();
+    const t = now - local.revealAt;
+    if (t < RV.done + 200) drawRound();
+    if (!local.shown && t >= RV.done) { local.shown = true; renderRound(); }
   }
 }
 requestAnimationFrame(frame);
@@ -3823,6 +4262,83 @@ async function boot() {
     catch { LS.set('room', null); }
     finally { setNet(); }
   }
+}
+const DEBUG = new URLSearchParams(location.search).has('debug');
+if (DEBUG) { window.HowBig = {makeRounds, POOL, PAIRS, PAIR_ISSUES, BY, PBY, scoreFor, pctOff}; mountDebug(); }
+/* ---------------- ?debug=1: content simulator ----------------
+   Plays thousands of games through the real makeRounds (with its own history, like Play Again on one device)
+   and reports what came out. Nothing here changes how games are made. */
+function simulate(games, session) {
+  const st = {games, rounds: 0, short: 0, pair: {}, theme: {}, kind: {}, ratio: {}, lvlPos: Array.from({length: ROUNDS}, () => ({n: 0, sum: 0, special: 0})),
+    specialsPer: {}, overNormal: 0, sessionRepeats: 0, objRepeats: 0, themeRuns: 0, missingFinal: 0};
+  const bucket = q => q <= 1.25 ? '≤1.25×' : q <= 1.5 ? '1.25–1.5×' : q <= 2 ? '1.5–2×' : q <= 3 ? '2–3×' : q <= 4 ? '3–4×' : q <= 10 ? '4–10×' : '>10×';
+  let hist = [], seen = new Set();
+  for (let g = 0; g < games; g++) {
+    if (g % session === 0) { hist = []; seen = new Set(); }
+    const rs = makeRounds(ROUNDS, hist);
+    hist.push(...rs.map(r => r.split('|').slice(0, 2).join('|'))); hist.splice(0, Math.max(0, hist.length - 40));
+    if (rs.length < ROUNDS) st.short++;
+    const uses = {}, tg = new Set(); let prevT = null, nSp = 0;
+    rs.forEach((r, i) => {
+      const [a, b, flag] = r.split('|'), p = PBY[`${a}|${b}`], q = Math.max(BY[a].s, BY[b].s) / Math.min(BY[a].s, BY[b].s);
+      st.rounds++;
+      st.pair[p.key] = (st.pair[p.key] || 0) + 1; st.theme[p.theme] = (st.theme[p.theme] || 0) + 1; st.kind[p.kind] = (st.kind[p.kind] || 0) + 1;
+      const bk = (p.kind === 'normal' ? 'normal ' : 'special ') + bucket(q); st.ratio[bk] = (st.ratio[bk] || 0) + 1;
+      if (p.kind === 'normal' && (q < PAIR_RULES.normal.min || q > PAIR_RULES.normal.max)) st.overNormal++;
+      if (p.kind !== 'normal') { nSp++; st.lvlPos[i].special++; } else { st.lvlPos[i].n++; st.lvlPos[i].sum += p.lvl; }
+      if (seen.has(p.key)) st.sessionRepeats++; seen.add(p.key);
+      for (const id of [a, b]) { uses[id] = (uses[id] || 0) + 1; if (uses[id] > (ANCHORS.has(id) ? 2 : 1)) st.objRepeats++; }
+      if (tg.has(b)) st.objRepeats++; tg.add(b);
+      if (p.theme === prevT) st.themeRuns++; prevT = p.theme;
+      if (i === rs.length - 1 && !(flag === 'final' && p.star)) st.missingFinal++;
+    });
+    st.specialsPer[nSp] = (st.specialsPer[nSp] || 0) + 1;
+  }
+  return st;
+}
+function mountDebug() {
+  const el = document.createElement('section'); el.className = 'card dbg';
+  el.innerHTML = `<h2>Content simulator</h2><p class="muted">Runs games through the real round generator. ${POOL.length} pairs in the pool; ${PAIR_ISSUES.length} held back by the quality check.</p>
+    <div class="dbg-ctl"><label>Games <input id="dbg-n" type="number" value="1000" min="10" max="20000"></label>
+    <label>Games per session <input id="dbg-s" type="number" value="5" min="1" max="50"></label>
+    <button class="btn primary" id="dbg-run">Run</button><button class="btn" id="dbg-prev">Preview a game</button></div>
+    <div id="dbg-prev-out"></div><canvas id="dbg-stage" style="width:100%;height:300px;display:none"></canvas><div id="dbg-out"></div>`;
+  $('#scr-home').appendChild(el);
+  const pct = (x, of) => (100 * x / (of || 1)).toFixed(1) + '%';
+  const table = (title, m, of, cols = 2) => `<h3>${title}</h3><table>${Object.entries(m).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v}</td><td>${pct(v, of)}</td></tr>`).join('')}</table>`;
+  const name = key => { const [a, b] = key.split('|'); return `${BY[a].label} → ${BY[b].label}`; };
+  $('#dbg-run').addEventListener('click', () => {
+    const t0 = performance.now(), st = simulate(+$('#dbg-n').value || 1000, +$('#dbg-s').value || 5), ms = Math.round(performance.now() - t0), R = st.rounds;
+    const freq = Object.entries(st.pair).sort((a, b) => b[1] - a[1]);
+    const never = POOL.filter(p => !st.pair[p.key]).map(p => p.key);
+    $('#dbg-out').innerHTML = `<p><b>${st.games}</b> games, ${R} rounds in ${ms} ms. Short or failed games: <b>${st.short}</b>.</p>
+      <h3>Checks</h3><table>
+        <tr><td>Normal rounds outside ${PAIR_RULES.normal.min}–${PAIR_RULES.normal.max}×</td><td>${st.overNormal}</td></tr>
+        <tr><td>Same pair twice in a session</td><td>${st.sessionRepeats}</td><td>${pct(st.sessionRepeats, R)}</td></tr>
+        <tr><td>Object used more than allowed in a game</td><td>${st.objRepeats}</td></tr>
+        <tr><td>Same theme back to back</td><td>${st.themeRuns}</td><td>${pct(st.themeRuns, R)}</td></tr>
+        <tr><td>Last round not a star pair</td><td>${st.missingFinal}</td></tr>
+        <tr><td>Pairs never used</td><td>${never.length}</td><td>${never.map(name).map(esc).join(', ') || '—'}</td></tr></table>
+      <h3>Difficulty by round</h3><table><tr>${st.lvlPos.map((x, i) => `<td>R${i + 1}<br><b>${x.n ? (x.sum / x.n).toFixed(2) : '–'}</b><br><small>${pct(x.special, st.games)} special</small></td>`).join('')}</tr></table>
+      <div class="dbg-cols">${table('Round kinds', st.kind, R)}${table('Special rounds per game', st.specialsPer, st.games)}</div>
+      <div class="dbg-cols">${table('Themes', st.theme, R)}${table('Size ratios', st.ratio, R)}</div>
+      <h3>Most and least used pairs</h3><table>${[...freq.slice(0, 12), ['…', ''], ...freq.slice(-12)].map(([k, v]) => `<tr><td>${k === '…' ? '…' : esc(name(k))}</td><td>${v}</td><td>${v === '' ? '' : pct(v, R)}</td></tr>`).join('')}</table>
+      <h3>Quality check</h3>${PAIR_ISSUES.length ? `<table>${PAIR_ISSUES.map(x => `<tr><td>${esc(x.p.key)}</td><td>${esc(x.issues.join('; '))}</td></tr>`).join('')}</table>` : '<p class="muted">Every pair passes.</p>'}`;
+  });
+  const cv = $('#dbg-stage');
+  const preview = key => {
+    const [a, b] = key.split('|'), ref = BY[a], tgt = BY[b], r = tgt.s / ref.s, guess = r * Math.exp((Math.random() - 0.5) * 0.8);
+    cv.style.display = 'block';
+    drawStage(cv, {ref, tgt, g: r, fit: Math.max(r, guess), refLines: [[fmtSize(ref, ref.s), 'muted']], tgtLines: [[fmtSize(tgt, tgt.s), 'green']], tgtColor: 'green',
+      ghosts: [{g: guess, color: '#E4572E', text: `a guess, ${pctOff(guess, r)}% off`, mine: true, alpha: 1}], actual: `Actual: ${fmtLen(tgt.s)}`, tagR: 'ACTUAL SIZE'});
+  };
+  $('#dbg-prev').addEventListener('click', () => {
+    const rs = makeRounds(ROUNDS, []);
+    $('#dbg-prev-out').innerHTML = `<ol class="dbg-list">${rs.map(r => { const [a, b, f] = r.split('|'), p = PBY[`${a}|${b}`];
+      return `<li><button class="btn link" data-k="${a}|${b}">${esc(BY[a].label)} → ${esc(BY[b].label)}</button> <small>${THEMES[p.theme]} · ${dimOf(BY[b]).tag} · ${fmtX(p.ratio)} · level ${p.lvl || '–'}${f ? ` · <b>${f}</b>` : ''}</small></li>`; }).join('')}</ol>`;
+    preview(rs[0].split('|').slice(0, 2).join('|'));
+  });
+  $('#dbg-prev-out').addEventListener('click', e => { const k = e.target.closest('[data-k]')?.dataset.k; if (k) preview(k); });
 }
 show('home');
 drawDemo(performance.now());
