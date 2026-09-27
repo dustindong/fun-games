@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap">
 <style>
 :root{
-  --paper:#EDF1F4; --paper-top:#F5F8FA; --grid:rgba(20,33,44,.05); --pool-a:rgba(242,178,27,.12); --pool-b:rgba(238,94,51,.08); --surface:#FFFFFF; --surface-2:#F1F4F6;
+  --paper:#EDF1F4; --paper-top:#F5F8FA; --pool-a:rgba(242,178,27,.12); --pool-b:rgba(238,94,51,.08); --surface:#FFFFFF; --surface-2:#F1F4F6;
   --ink:#14212C; --muted:#3F4E5A; --line:#C8D2D9;
   --tape:#F2B21B; --tape-ink:#261C02; --measure:#2D69AC;
   --stage:#F8FAFB; --stage-grid:#E5EBEF; --focus:#2D69AC; --figure:#9AA6B1; --accent:#EE5E33; --accent-ink:#2A0C02;
@@ -34,7 +34,7 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#0F1D2B; --paper-top:#1B2E43; --grid:rgba(150,190,230,.075); --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.12); --surface:#122130; --surface-2:#172a3b;
+    --paper:#0F1D2B; --paper-top:#1B2E43; --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.12); --surface:#122130; --surface-2:#172a3b;
     --ink:#E3EBF1; --muted:#B3C2CE; --line:#26394B;
     --tape:#F4BE36; --tape-ink:#261C02; --measure:#72AAE8;
     --stage:#0F1E2C; --stage-grid:#182B3D; --focus:#72AAE8; --figure:#5E7080; --accent:#F7815C; --accent-ink:#2A0C02;
@@ -44,7 +44,7 @@
   }
 }
 :root[data-theme="dark"]{
-  --paper:#0F1D2B; --paper-top:#1B2E43; --grid:rgba(150,190,230,.075); --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.12); --surface:#122130; --surface-2:#172a3b;
+  --paper:#0F1D2B; --paper-top:#1B2E43; --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.12); --surface:#122130; --surface-2:#172a3b;
   --ink:#E3EBF1; --muted:#B3C2CE; --line:#26394B;
   --tape:#F4BE36; --tape-ink:#261C02; --measure:#72AAE8;
   --stage:#0F1E2C; --stage-grid:#182B3D; --focus:#72AAE8; --figure:#5E7080; --accent:#F7815C; --accent-ink:#2A0C02;
@@ -66,10 +66,6 @@ body{
   padding-inline:max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
   -webkit-font-smoothing:antialiased;
 }
-/* the grid: plain around the edges, fading to almost nothing behind the cards */
-body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;
-  -webkit-mask-image:radial-gradient(ellipse 60% 55% at 50% 58%,rgba(0,0,0,.12) 30%,#000 100%);mask-image:radial-gradient(ellipse 60% 55% at 50% 58%,rgba(0,0,0,.12) 30%,#000 100%)}
 .wrap{max-width:940px;margin:0 auto;padding-block:28px 56px}
 h1,h2,p{margin:0}
 :focus-visible{outline:2px solid var(--focus);outline-offset:3px}
@@ -161,7 +157,6 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
     radial-gradient(ellipse 80% 22% at 50% 42%,var(--pool-a),transparent 72%),
     radial-gradient(ellipse 80% 22% at 50% 80%,var(--pool-b),transparent 72%),
     linear-gradient(var(--paper-top),var(--paper) 480px) var(--paper)}
-  body::before{-webkit-mask-image:linear-gradient(90deg,#000,rgba(0,0,0,.12) 20%,rgba(0,0,0,.12) 80%,#000);mask-image:linear-gradient(90deg,#000,rgba(0,0,0,.12) 20%,rgba(0,0,0,.12) 80%,#000)}
   .wrap{padding-block:16px 32px}
   .hero{margin-bottom:20px}
   .games{grid-template-columns:1fr}
