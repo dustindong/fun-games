@@ -69,12 +69,12 @@ h1,h2,p{margin:0}
 
 /* ---------- header ---------- */
 .hero{display:grid;gap:14px;margin-bottom:28px}
-.title{font:900 clamp(60px,11.5vw,120px)/.84 var(--display);text-transform:uppercase;letter-spacing:-.005em}
+.title{font:900 clamp(42px,7.7vw,80px)/.86 var(--display);text-transform:uppercase;letter-spacing:-.005em}
 .title span{color:var(--measure)}
-.tape-strip{height:30px;border-radius:3px;background:var(--tape);position:relative;overflow:hidden;box-shadow:inset 0 -1px 0 rgba(0,0,0,.12)}
+.tape-strip{width:min(220px,50%);height:9px;border-radius:2px;background:var(--tape);position:relative;overflow:hidden}
 .tape-strip::before{content:"";position:absolute;inset:0;
-  background:repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 8px) left top/100% 7px no-repeat,
-             repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 40px) left top/100% 14px no-repeat;opacity:.85}
+  background:repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 6px) left top/100% 3px no-repeat,
+             repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 30px) left top/100% 6px no-repeat;opacity:.7}
 .tagline{font-size:clamp(17px,2.3vw,21px);max-width:64ch;line-height:1.35}
 
 /* ---------- game cards ---------- */
@@ -120,33 +120,33 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 .game-ou{background:color-mix(in srgb,var(--accent) 7%,var(--surface));border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
 .game-hb .meta span{background:color-mix(in srgb,var(--tape) 20%,var(--surface))}
 .game-ou .meta span{background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
-.game-hb .preview{border-bottom-color:color-mix(in srgb,var(--tape) 40%,var(--line))}
-.game-ou .preview{border-bottom-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.game-hb .preview,.game-ou .preview{background:none;border-bottom:0}
 
-/* previews */
+/* previews: drawn on the card's own wash, with its color as the only accent */
 .emo{font-family:var(--emoji)}
-.hb-sky{fill:#DDF1FB}.hb-ground{fill:#FBE3A0}.hb-line{stroke:#E0B84A}
-.hb-mark{stroke:var(--ink)}.hb-mark2{stroke:var(--measure)}
+.hb-g0{stop-color:color-mix(in srgb,var(--tape) 30%,var(--surface))}.hb-g1{stop-color:color-mix(in srgb,var(--tape) 9%,var(--surface))}
+.hb-line{stroke:var(--tape)}
+.hb-mark,.hb-mark2{stroke:var(--ink)}
 .hb-tag{font:700 10px var(--mono);letter-spacing:.08em;fill:var(--ink)}
-.hb-bubble{fill:var(--measure)}.hb-q{font:700 11px var(--mono);letter-spacing:.06em;fill:#fff}
-.ou-sky{fill:#FFE7DD}
-.ou-row{fill:#FFFFFF;stroke:#F2C3B2}
-.ou-lift{fill:#FFFFFF;stroke:var(--accent);stroke-width:2;filter:drop-shadow(0 6px 8px rgba(120,40,10,.25))}
-.ou-name{font:600 12px var(--body);fill:#14212C}
-.ou-name-lift{fill:#C2401A}
-.ou-tag{font:700 9px var(--mono);letter-spacing:.08em;fill:#9A4A30}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]) .hb-sky{fill:#15324A} :root:not([data-theme="light"]) .hb-ground{fill:#4A3D16} :root:not([data-theme="light"]) .hb-line{stroke:#8C7424}
-  :root:not([data-theme="light"]) .ou-sky{fill:#3A2019} :root:not([data-theme="light"]) .ou-row{fill:#1B2A38;stroke:#5B3A30}
-  :root:not([data-theme="light"]) .ou-lift{fill:#1B2A38} :root:not([data-theme="light"]) .ou-name{fill:#E3EBF1} :root:not([data-theme="light"]) .ou-name-lift{fill:#F7815C}
-  :root:not([data-theme="light"]) .ou-tag{fill:#E3A48E}
-}
-.slide{animation:slide 4.2s ease-in-out infinite}
-@keyframes slide{0%,18%{transform:translate(22px,-14px)}42%,100%{transform:translate(0,0)}}
+.hb-bubble{fill:var(--tape)}.hb-q{font:700 11px var(--mono);letter-spacing:.06em;fill:var(--tape-ink)}
+.ou-row{fill:var(--surface);stroke:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.ou-slot{fill:color-mix(in srgb,var(--accent) 10%,transparent);stroke:var(--accent);stroke-dasharray:5 4;stroke-width:1.5}
+.ou-lift{fill:var(--surface);stroke:var(--accent);stroke-width:2.5;filter:drop-shadow(0 8px 10px rgba(120,40,10,.28))}
+.ou-name{font:600 13px var(--body);fill:var(--ink)}
+.ou-name-lift{font-weight:700;fill:var(--accent)}
+.ou-tag{font:700 9px var(--mono);letter-spacing:.08em;fill:color-mix(in srgb,var(--accent) 70%,var(--ink))}
+.ou-axis{stroke:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.ou-arrow{stroke:var(--accent);stroke-dasharray:4 5;fill:none;stroke-width:2;stroke-linecap:round}
+.ou-head{fill:var(--accent)}
+/* the giraffe: picked up off to the side, then it drops into its gap and the arrow fades */
+.gir{transform-box:fill-box;transform-origin:50% 50%;animation:gir 4.4s cubic-bezier(.5,0,.3,1) infinite}
+@keyframes gir{0%,24%{transform:translate(118px,-40px) rotate(-7deg) scale(1.12)}50%,86%{transform:none}100%{transform:translate(118px,-40px) rotate(-7deg) scale(1.12)}}
+.gir-hint{animation:hint 4.4s ease infinite}
+@keyframes hint{0%,26%{opacity:1}42%,90%{opacity:0}100%{opacity:1}}
 .play-alt{background:var(--accent);color:var(--accent-ink)}
 .grow{transform-box:fill-box;transform-origin:50% 100%;animation:grow 4.2s ease-in-out infinite}
 @keyframes grow{0%,100%{transform:scale(.62)}50%{transform:scale(1)}}
-@media (prefers-reduced-motion: reduce){ .grow,.slide{animation:none} .game,.play svg{transition:none} }
+@media (prefers-reduced-motion: reduce){ .grow,.gir,.gir-hint{animation:none} .game,.play svg{transition:none} }
 
 @media (max-width:700px){
   .wrap{padding-block:16px 32px}
@@ -170,8 +170,8 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
     <!-- How Big? -->
     <a class="game game-hb" href="how-big/">
       <svg class="preview hb" viewBox="0 0 400 200" role="img" aria-label="A rubber duck next to a T. rex that's being stretched to the right height">
-        <rect class="hb-sky" width="400" height="200"/>
-        <rect class="hb-ground" y="150" width="400" height="50"/>
+                <defs><linearGradient id="hb-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="hb-g0"/><stop offset="1" class="hb-g1"/></linearGradient></defs>
+        <rect fill="url(#hb-g)" y="150" width="400" height="50"/>
         <line class="hb-line" x1="0" y1="150" x2="400" y2="150" stroke-width="2"/>
         <!-- the reference: a rubber duck -->
         <text class="emo" x="96" y="147" font-size="30">🦆</text>
@@ -194,12 +194,13 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 
     <!-- Order Up! -->
     <a class="game game-ou" href="order-up/">
-      <svg class="preview ou" viewBox="0 0 400 200" role="img" aria-label="Animals sorted biggest to smallest, with the giraffe lifted and sliding into place">
-        <rect class="ou-sky" width="400" height="200"/>
-        <text class="ou-tag" x="100" y="28" text-anchor="end">BIGGEST</text>
-        <text class="ou-tag" x="100" y="140" text-anchor="end">SMALLEST</text>
-        <g transform="translate(0 12)"><rect class="ou-row" x="112" width="176" height="24" rx="6"/><text class="emo" x="122" y="17" font-size="14">🐋</text><text class="ou-name" x="144" y="16.5">Blue whale</text></g><g transform="translate(0 40)"><rect class="ou-row" x="112" width="176" height="24" rx="6"/><text class="emo" x="122" y="17" font-size="14">🐘</text><text class="ou-name" x="144" y="16.5">Elephant</text></g><g transform="translate(0 96)"><rect class="ou-row" x="112" width="176" height="24" rx="6"/><text class="emo" x="122" y="17" font-size="14">🐎</text><text class="ou-name" x="144" y="16.5">Horse</text></g><g transform="translate(0 124)"><rect class="ou-row" x="112" width="176" height="24" rx="6"/><text class="emo" x="122" y="17" font-size="14">🐈</text><text class="ou-name" x="144" y="16.5">House cat</text></g>
-        <g class="slide"><rect class="ou-lift" x="112" y="68" width="176" height="24" rx="6"/><text class="emo" x="122" y="85" font-size="14">🦒</text><text class="ou-name ou-name-lift" x="144" y="84.5">Giraffe</text></g>
+      <svg class="preview ou" viewBox="0 0 400 200" role="img" aria-label="Animals sorted biggest to smallest, with the giraffe picked up and dropping into its spot">
+        <text class="ou-tag" x="44" y="34" text-anchor="middle">BIG</text>
+        <path class="ou-axis" d="M44 42V156M40 150l4 7 4-7" stroke-width="1.5" fill="none"/>
+        <g transform="translate(0 16)"><rect class="ou-row" x="62" width="176" height="27" rx="7"/><text class="emo" x="70" y="21" font-size="21">🐋</text><text class="ou-name" x="100" y="18.5">Blue whale</text></g><g transform="translate(0 48)"><rect class="ou-row" x="62" width="176" height="27" rx="7"/><text class="emo" x="70" y="21" font-size="21">🐘</text><text class="ou-name" x="100" y="18.5">Elephant</text></g><g transform="translate(0 112)"><rect class="ou-row" x="62" width="176" height="27" rx="7"/><text class="emo" x="70" y="21" font-size="21">🐎</text><text class="ou-name" x="100" y="18.5">Horse</text></g><g transform="translate(0 144)"><rect class="ou-row" x="62" width="176" height="27" rx="7"/><text class="emo" x="70" y="21" font-size="21">🐈</text><text class="ou-name" x="100" y="18.5">House cat</text></g>
+        <rect class="ou-slot" x="62" y="80" width="176" height="27" rx="7"/>
+        <g class="gir-hint"><path class="ou-arrow" d="M318 94C318 120 286 116 250 100"/><path class="ou-head" d="M243 97l11-4-4 10z"/></g>
+        <g class="gir"><rect class="ou-lift" x="62" y="80" width="176" height="27" rx="7"/><text class="emo" x="70" y="101" font-size="21">🦒</text><text class="ou-name ou-name-lift" x="100" y="98.5">Giraffe</text></g>
       </svg>
       <div class="body">
         <h2 class="name"><img class="name-logo" src="order-up/logo.svg" alt="Order Up!" width="1416" height="964"></h2>
