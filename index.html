@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#E8EDF0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#EDF1F4" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0C1722" media="(prefers-color-scheme: dark)">
-<meta name="description" content="Pick a game and play with friends in your browser. No sign-up, nothing to install.">
+<meta name="description" content="Little games. Big guesses. Play solo or challenge your friends in your browser. No sign-up, no downloads.">
 <title>Pick a Game</title>
 <script>
   // old invite links pointed at this page (…/?room=ABCD), so send them straight to the game
@@ -20,8 +20,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap">
 <style>
 :root{
-  --paper:#E8EDF0; --grid:rgba(20,33,44,.05); --surface:#FFFFFF; --surface-2:#F1F4F6;
-  --ink:#14212C; --muted:#586874; --line:#C8D2D9;
+  --paper:#EDF1F4; --grid:rgba(20,33,44,.028); --surface:#FFFFFF; --surface-2:#F1F4F6;
+  --ink:#14212C; --muted:#3F4E5A; --line:#C8D2D9;
   --tape:#F2B21B; --tape-ink:#261C02; --measure:#2D69AC;
   --stage:#F8FAFB; --stage-grid:#E5EBEF; --focus:#2D69AC; --figure:#9AA6B1; --accent:#EE5E33; --accent-ink:#2A0C02;
   --shadow:0 1px 0 rgba(20,33,44,.05),0 10px 28px -16px rgba(20,33,44,.28);
@@ -29,12 +29,13 @@
   --display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",Impact,sans-serif;
   --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --emoji:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#0C1722; --grid:rgba(120,170,220,.06); --surface:#122130; --surface-2:#172a3b;
-    --ink:#E3EBF1; --muted:#8FA1B0; --line:#26394B;
+    --paper:#0C1722; --grid:rgba(120,170,220,.035); --surface:#122130; --surface-2:#172a3b;
+    --ink:#E3EBF1; --muted:#B3C2CE; --line:#26394B;
     --tape:#F4BE36; --tape-ink:#261C02; --measure:#72AAE8;
     --stage:#0F1E2C; --stage-grid:#182B3D; --focus:#72AAE8; --figure:#5E7080; --accent:#F7815C; --accent-ink:#2A0C02;
     --shadow:0 1px 0 rgba(0,0,0,.2),0 12px 30px -16px rgba(0,0,0,.6);
@@ -43,8 +44,8 @@
   }
 }
 :root[data-theme="dark"]{
-  --paper:#0C1722; --grid:rgba(120,170,220,.06); --surface:#122130; --surface-2:#172a3b;
-  --ink:#E3EBF1; --muted:#8FA1B0; --line:#26394B;
+  --paper:#0C1722; --grid:rgba(120,170,220,.035); --surface:#122130; --surface-2:#172a3b;
+  --ink:#E3EBF1; --muted:#B3C2CE; --line:#26394B;
   --tape:#F4BE36; --tape-ink:#261C02; --measure:#72AAE8;
   --stage:#0F1E2C; --stage-grid:#182B3D; --focus:#72AAE8; --figure:#5E7080; --accent:#F7815C; --accent-ink:#2A0C02;
   --shadow:0 1px 0 rgba(0,0,0,.2),0 12px 30px -16px rgba(0,0,0,.6);
@@ -68,13 +69,13 @@ h1,h2,p{margin:0}
 
 /* ---------- header ---------- */
 .hero{display:grid;gap:14px;margin-bottom:28px}
-.title{font:900 clamp(72px,15vw,148px)/.8 var(--display);text-transform:uppercase;letter-spacing:-.005em}
+.title{font:900 clamp(60px,11.5vw,120px)/.84 var(--display);text-transform:uppercase;letter-spacing:-.005em}
 .title span{color:var(--measure)}
 .tape-strip{height:30px;border-radius:3px;background:var(--tape);position:relative;overflow:hidden;box-shadow:inset 0 -1px 0 rgba(0,0,0,.12)}
 .tape-strip::before{content:"";position:absolute;inset:0;
   background:repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 8px) left top/100% 7px no-repeat,
              repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 40px) left top/100% 14px no-repeat;opacity:.85}
-.tagline{font-size:clamp(17px,2.3vw,21px);max-width:40ch;line-height:1.35}
+.tagline{font-size:clamp(17px,2.3vw,21px);max-width:64ch;line-height:1.35}
 
 /* ---------- game cards ---------- */
 .games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
@@ -85,9 +86,9 @@ a.game:active{transform:translateY(0)}
 .preview{display:block;width:100%;aspect-ratio:2/1;background:var(--stage);border-bottom:1px solid var(--line)}
 .body{display:grid;gap:10px;align-content:start;padding:16px 18px 18px}
 .name{font:900 40px/.9 var(--display);text-transform:uppercase;letter-spacing:.01em}
-.desc{color:var(--muted);max-width:44ch}
+.desc{color:var(--muted);max-width:36ch;font-size:17px;line-height:1.4;font-weight:500}
 .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
-.meta span{font:600 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--surface-2)}
+.meta span{font:600 12px/1 var(--body);padding:6px 10px;border-radius:999px;background:var(--surface-2);color:var(--muted)}
 .play{justify-self:start;margin-top:6px;display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:6px;
   background:var(--tape);color:var(--tape-ink);font-weight:700;line-height:1.1}
 .play svg{transition:transform .15s ease}
@@ -99,7 +100,7 @@ a.game:hover .play svg{transform:translateX(3px)}
 .game.soon .name{color:var(--muted)}
 /* the logo is the card's title: a sticker that sits over the illustration's bottom edge, with the pitch centered under it */
 .game .body:has(.name-logo){justify-items:center;text-align:center;padding-top:0}
-.game .body:has(.name-logo) .name{margin:-58px 0 -2px;position:relative;z-index:1}
+.game .body:has(.name-logo) .name{margin:-44px 0 -2px;position:relative;z-index:1}
 .game .body:has(.name-logo) .meta{justify-content:center}
 .game .body:has(.name-logo) .play{justify-self:center}
 .name-logo{display:block;height:140px;width:auto;filter:drop-shadow(0 6px 10px rgba(20,33,44,.18));transition:transform .15s ease}
@@ -113,28 +114,37 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 .badge{justify-self:start;margin-top:6px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
   padding:9px 11px;border:1px dashed var(--line);border-radius:6px}
 
-.foot{margin-top:28px;color:var(--muted);font-size:13px}
 
-/* illustration pieces */
-.stage-bg{fill:var(--stage)}
-.stage-grid{stroke:var(--stage-grid)}
-.ground{stroke:var(--line)}
-.divider{stroke:var(--line);stroke-dasharray:4 5}
-.ref-fig{fill:var(--figure)}
-.ref-mark{stroke:var(--ink)}
-.tgt{fill:var(--measure)}
-.tgt-mark{stroke:var(--measure)}
-.tag{font:600 9px var(--mono);letter-spacing:.08em;fill:var(--muted)}
-.row-bg{fill:var(--surface);stroke:var(--line)}
-.row-lift{fill:var(--surface);stroke:var(--accent);stroke-width:1.5;filter:drop-shadow(0 6px 8px rgba(20,33,44,.22))}
-.rank{font:800 15px var(--display);fill:var(--muted)}
-.lift-rank{fill:var(--accent)}
-.bar{fill:var(--figure);opacity:.6}
-.lift-bar{fill:var(--accent);opacity:.85}
+/* each card carries a light wash of its button color */
+.game-hb{background:color-mix(in srgb,var(--tape) 9%,var(--surface));border-color:color-mix(in srgb,var(--tape) 40%,var(--line))}
+.game-ou{background:color-mix(in srgb,var(--accent) 7%,var(--surface));border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.game-hb .meta span{background:color-mix(in srgb,var(--tape) 20%,var(--surface))}
+.game-ou .meta span{background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
+.game-hb .preview{border-bottom-color:color-mix(in srgb,var(--tape) 40%,var(--line))}
+.game-ou .preview{border-bottom-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+
+/* previews */
+.emo{font-family:var(--emoji)}
+.hb-sky{fill:#DDF1FB}.hb-ground{fill:#FBE3A0}.hb-line{stroke:#E0B84A}
+.hb-mark{stroke:var(--ink)}.hb-mark2{stroke:var(--measure)}
+.hb-tag{font:700 10px var(--mono);letter-spacing:.08em;fill:var(--ink)}
+.hb-bubble{fill:var(--measure)}.hb-q{font:700 11px var(--mono);letter-spacing:.06em;fill:#fff}
+.ou-sky{fill:#FFE7DD}
+.ou-row{fill:#FFFFFF;stroke:#F2C3B2}
+.ou-lift{fill:#FFFFFF;stroke:var(--accent);stroke-width:2;filter:drop-shadow(0 6px 8px rgba(120,40,10,.25))}
+.ou-name{font:600 12px var(--body);fill:#14212C}
+.ou-name-lift{fill:#C2401A}
+.ou-tag{font:700 9px var(--mono);letter-spacing:.08em;fill:#9A4A30}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .hb-sky{fill:#15324A} :root:not([data-theme="light"]) .hb-ground{fill:#4A3D16} :root:not([data-theme="light"]) .hb-line{stroke:#8C7424}
+  :root:not([data-theme="light"]) .ou-sky{fill:#3A2019} :root:not([data-theme="light"]) .ou-row{fill:#1B2A38;stroke:#5B3A30}
+  :root:not([data-theme="light"]) .ou-lift{fill:#1B2A38} :root:not([data-theme="light"]) .ou-name{fill:#E3EBF1} :root:not([data-theme="light"]) .ou-name-lift{fill:#F7815C}
+  :root:not([data-theme="light"]) .ou-tag{fill:#E3A48E}
+}
 .slide{animation:slide 4.2s ease-in-out infinite}
-@keyframes slide{0%,18%{transform:translate(18px,-12px)}42%,100%{transform:translate(0,0)}}
+@keyframes slide{0%,18%{transform:translate(22px,-14px)}42%,100%{transform:translate(0,0)}}
 .play-alt{background:var(--accent);color:var(--accent-ink)}
-.grow{transform-box:fill-box;transform-origin:0 100%;animation:grow 4.2s ease-in-out infinite}
+.grow{transform-box:fill-box;transform-origin:50% 100%;animation:grow 4.2s ease-in-out infinite}
 @keyframes grow{0%,100%{transform:scale(.62)}50%{transform:scale(1)}}
 @media (prefers-reduced-motion: reduce){ .grow,.slide{animation:none} .game,.play svg{transition:none} }
 
@@ -150,39 +160,32 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 <body>
 <main class="wrap">
   <header class="hero">
-    <span class="eyebrow">Browser games for friends</span>
-    <h1 class="title">Pick a <span>game</span></h1>
+    <span class="eyebrow">Browser games · solo or with friends</span>
+    <h1 class="title">Little games.<br><span>Big guesses.</span></h1>
     <div class="tape-strip" aria-hidden="true"></div>
-    <p class="tagline">Start a room, send the link, play together. No sign&#8209;up and nothing to install.</p>
+    <p class="tagline">Play solo or challenge your friends! No sign&#8209;up, no downloads.</p>
   </header>
 
   <section class="games" aria-label="Games">
     <!-- How Big? -->
-    <a class="game" href="how-big/">
-      <svg class="preview" viewBox="0 0 400 200" role="img" aria-label="A person on the left as the reference, and a tower on the right being stretched to scale">
-        <rect class="stage-bg" width="400" height="200"/>
-        <g class="stage-grid" stroke-width="1">
-          <path d="M24 0V200M48 0V200M72 0V200M96 0V200M120 0V200M144 0V200M168 0V200M192 0V200M216 0V200M240 0V200M264 0V200M288 0V200M312 0V200M336 0V200M360 0V200M384 0V200"/>
-          <path d="M0 26H400M0 50H400M0 74H400M0 98H400M0 122H400M0 146H400"/>
-        </g>
-        <line class="ground" x1="0" y1="170.5" x2="400" y2="170.5" stroke-width="1.5"/>
-        <line class="divider" x1="200.5" y1="22" x2="200.5" y2="170"/>
-        <!-- reference: a person -->
-        <polygon class="ref-fig" points="119.5,108.8 118.0,108.8 117.8,110.5 113.6,111.5 112.2,113.3 111.1,123.1 110.0,137.1 111.7,137.8 112.8,125.9 113.8,121.0 114.2,135.0 114.9,167.6 113.2,170.0 118.7,170.0 118.7,167.6 119.1,142.0 119.5,139.9 119.9,142.0 120.3,167.6 120.3,170.0 125.8,170.0 124.1,167.6 124.8,135.0 125.2,121.0 126.2,125.9 127.3,137.8 128.9,137.1 127.9,123.1 126.8,113.3 125.4,111.5 121.2,110.5 121.0,108.8"/>
-        <ellipse class="ref-fig" cx="119.5" cy="104.5" rx="3.6" ry="4.1"/>
-        <path class="ref-mark" d="M98 170V100M93 100H103M93 170H103" stroke-width="1.5" fill="none"/>
-        <!-- the thing you resize: a tower that grows and shrinks -->
-        <g class="grow">
-          <polygon class="tgt" points="270.0,30.0 269.4,34.2 268.6,44.0 267.8,58.0 266.6,76.2 265.2,93.0 262.7,108.4 259.4,122.4 255.4,136.4 251.0,151.8 245.9,165.8 244.2,170.0 252.6,170.0 254.9,161.6 258.2,153.9 263.3,149.0 270.0,147.6 276.7,149.0 281.8,153.9 285.1,161.6 287.4,170.0 295.8,170.0 294.1,165.8 289.0,151.8 284.6,136.4 280.6,122.4 277.3,108.4 274.8,93.0 273.4,76.2 272.2,58.0 271.4,44.0 270.6,34.2"/>
-          <path class="tgt-mark" d="M314 170V30M309 30H319M309 170H319" stroke-width="1.5" fill="none" vector-effect="non-scaling-stroke"/>
-        </g>
-        <text class="tag" x="190" y="190" text-anchor="end">REFERENCE</text>
-        <text class="tag" x="211" y="190">RESIZE THIS</text>
+    <a class="game game-hb" href="how-big/">
+      <svg class="preview hb" viewBox="0 0 400 200" role="img" aria-label="A rubber duck next to a T. rex that's being stretched to the right height">
+        <rect class="hb-sky" width="400" height="200"/>
+        <rect class="hb-ground" y="150" width="400" height="50"/>
+        <line class="hb-line" x1="0" y1="150" x2="400" y2="150" stroke-width="2"/>
+        <!-- the reference: a rubber duck -->
+        <text class="emo" x="96" y="147" font-size="30">🦆</text>
+        <path class="hb-mark" d="M80 150V120M75 120H85M75 150H85" stroke-width="2" fill="none"/>
+        <text class="hb-tag" x="112" y="106" text-anchor="middle">DUCK</text>
+        <!-- the thing you stretch: a T. rex that grows and shrinks -->
+        <g class="grow"><text class="emo" x="214" y="134" font-size="112">🦖</text></g>
+        <path class="hb-mark2" d="M352 150V36M346 36H358M346 150H358" stroke-width="2.4" fill="none"/>
+        <g transform="translate(352 22)"><rect class="hb-bubble" x="-44" y="-14" width="88" height="24" rx="12"/><text class="hb-q" y="3" text-anchor="middle">T. REX?</text></g>
       </svg>
       <div class="body">
         <h2 class="name"><img class="name-logo" src="how-big/logo.svg" alt="How Big?" width="1374" height="814"></h2>
-        <p class="desc">Two things, side by side. Stretch the one on the right until their heights are to scale. Closest guess wins.</p>
-        <div class="meta"><span>Solo or up to 16</span><span>10 rounds</span><span>373 things</span></div>
+        <p class="desc">How tall is it, really? Resize it and beat your friends&#8217; guesses.</p>
+        <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>373 things</span></div>
         <span class="play">Play How Big?
           <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
@@ -190,27 +193,18 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
     </a>
 
     <!-- Order Up! -->
-    <a class="game" href="order-up/">
-      <svg class="preview" viewBox="0 0 400 200" role="img" aria-label="A list of five rows being sorted, with one row lifted and moving into place">
-        <rect class="stage-bg" width="400" height="200"/>
-        <g class="stage-grid" stroke-width="1">
-          <path d="M24 0V200M48 0V200M72 0V200M96 0V200M120 0V200M144 0V200M168 0V200M192 0V200M216 0V200M240 0V200M264 0V200M288 0V200M312 0V200M336 0V200M360 0V200M384 0V200"/>
-          <path d="M0 26H400M0 50H400M0 74H400M0 98H400M0 122H400M0 146H400M0 170H400"/>
-        </g>
-        <text class="tag" x="112" y="20">BIGGEST</text>
-        <text class="tag" x="112" y="193">SMALLEST</text>
-        <g class="rows">
-          <g transform="translate(0 26)"><rect class="row-bg" x="104" y="0" width="192" height="26" rx="5"/><text class="rank" x="118" y="18">1</text><rect class="bar" x="136" y="10" width="112" height="6" rx="3"/></g>
-          <g transform="translate(0 58)"><rect class="row-bg" x="104" y="0" width="192" height="26" rx="5"/><text class="rank" x="118" y="18">2</text><rect class="bar" x="136" y="10" width="92" height="6" rx="3"/></g>
-          <g transform="translate(0 122)"><rect class="row-bg" x="104" y="0" width="192" height="26" rx="5"/><text class="rank" x="118" y="18">4</text><rect class="bar" x="136" y="10" width="54" height="6" rx="3"/></g>
-          <g transform="translate(0 154)"><rect class="row-bg" x="104" y="0" width="192" height="26" rx="5"/><text class="rank" x="118" y="18">5</text><rect class="bar" x="136" y="10" width="36" height="6" rx="3"/></g>
-          <g class="slide"><rect class="row-lift" x="104" y="90" width="192" height="26" rx="5"/><text class="rank lift-rank" x="118" y="108">3</text><rect class="bar lift-bar" x="136" y="100" width="72" height="6" rx="3"/></g>
-        </g>
+    <a class="game game-ou" href="order-up/">
+      <svg class="preview ou" viewBox="0 0 400 200" role="img" aria-label="Animals sorted biggest to smallest, with the giraffe lifted and sliding into place">
+        <rect class="ou-sky" width="400" height="200"/>
+        <text class="ou-tag" x="100" y="28" text-anchor="end">BIGGEST</text>
+        <text class="ou-tag" x="100" y="140" text-anchor="end">SMALLEST</text>
+        <g transform="translate(0 12)"><rect class="ou-row" x="112" width="176" height="24" rx="6"/><text class="emo" x="122" y="17" font-size="14">🐋</text><text class="ou-name" x="144" y="16.5">Blue whale</text></g><g transform="translate(0 40)"><rect class="ou-row" x="112" width="176" height="24" rx="6"/><text class="emo" x="122" y="17" font-size="14">🐘</text><text class="ou-name" x="144" y="16.5">Elephant</text></g><g transform="translate(0 96)"><rect class="ou-row" x="112" width="176" height="24" rx="6"/><text class="emo" x="122" y="17" font-size="14">🐎</text><text class="ou-name" x="144" y="16.5">Horse</text></g><g transform="translate(0 124)"><rect class="ou-row" x="112" width="176" height="24" rx="6"/><text class="emo" x="122" y="17" font-size="14">🐈</text><text class="ou-name" x="144" y="16.5">House cat</text></g>
+        <g class="slide"><rect class="ou-lift" x="112" y="68" width="176" height="24" rx="6"/><text class="emo" x="122" y="85" font-size="14">🦒</text><text class="ou-name ou-name-lift" x="144" y="84.5">Giraffe</text></g>
       </svg>
       <div class="body">
         <h2 class="name"><img class="name-logo" src="order-up/logo.svg" alt="Order Up!" width="1416" height="964"></h2>
-        <p class="desc">Five things, one topic, like biggest to smallest or oldest to newest. Put them in order before 30 seconds run out. Closest order wins.</p>
-        <div class="meta"><span>Solo or up to 16</span><span>10 rounds</span><span>34 kinds of rounds</span></div>
+        <p class="desc">Five things. Thirty seconds. Can you put them in order?</p>
+        <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>34 kinds of rounds</span></div>
         <span class="play play-alt">Play Order Up!
           <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
@@ -220,7 +214,6 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
     <!-- To add another game, copy one of the cards above and point its href at the new game's folder. -->
   </section>
 
-  <p class="foot">Games run right in your browser. Rooms connect players directly, so the host needs to keep their tab open.</p>
 </main>
 </body>
 </html>
