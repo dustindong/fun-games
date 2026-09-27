@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Sans:wght@400;500;600;700&family=Noto+Color+Emoji&display=swap">
 <style>
 :root{
-  --paper:#EDF1F4; --paper-top:#F5F8FA; --grid:rgba(20,33,44,.05); --pool-a:rgba(242,178,27,.13); --pool-b:rgba(238,94,51,.06); --surface:#FFFFFF; --surface-2:#F1F4F6;
+  --paper:#EDF1F4; --paper-top:#F5F8FA; --pool-a:rgba(242,178,27,.13); --pool-b:rgba(238,94,51,.06); --surface:#FFFFFF; --surface-2:#F1F4F6;
   --ink:#14212C; --muted:#586874; --line:#C8D2D9;
   --tape:#F2B21B; --tape-ink:#261C02; --measure:#2D69AC; --red:#C93D26; --green:#1E8452;
   --stage:#F8FAFB; --stage-grid:#E5EBEF; --focus:#2D69AC;
@@ -27,7 +27,7 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#0F1D2B; --paper-top:#1B2E43; --grid:rgba(150,190,230,.075); --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.07); --surface:#122130; --surface-2:#172a3b;
+    --paper:#0F1D2B; --paper-top:#1B2E43; --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.07); --surface:#122130; --surface-2:#172a3b;
     --ink:#E3EBF1; --muted:#8FA1B0; --line:#26394B;
     --tape:#F4BE36; --tape-ink:#261C02; --measure:#72AAE8; --red:#F06B51; --green:#45C182;
     --stage:#0F1E2C; --stage-grid:#182B3D; --focus:#72AAE8;
@@ -36,7 +36,7 @@
   }
 }
 :root[data-theme="dark"]{
-  --paper:#0F1D2B; --paper-top:#1B2E43; --grid:rgba(150,190,230,.075); --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.07); --surface:#122130; --surface-2:#172a3b;
+  --paper:#0F1D2B; --paper-top:#1B2E43; --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.07); --surface:#122130; --surface-2:#172a3b;
   --ink:#E3EBF1; --muted:#8FA1B0; --line:#26394B;
   --tape:#F4BE36; --tape-ink:#261C02; --measure:#72AAE8; --red:#F06B51; --green:#45C182;
   --stage:#0F1E2C; --stage-grid:#182B3D; --focus:#72AAE8;
@@ -51,18 +51,12 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 html{background:var(--paper)}
-/* the page backdrop, fixed behind everything: a navy (or paper) that lifts toward the top with soft pools of the game's color,
-   and a grid that's plain at the edges and fades almost out behind the content */
-body::before,body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none}
+/* the page backdrop, fixed behind everything: a navy (or paper) that lifts toward the top with soft pools of the game's color */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none}
 body::before{background:
   radial-gradient(ellipse 55% 50% at 24% 30%,var(--pool-a),transparent 70%),
   radial-gradient(ellipse 55% 55% at 80% 78%,var(--pool-b),transparent 70%),
   linear-gradient(var(--paper-top),var(--paper) 70%)}
-body::after{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;
-  -webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(0,0,0,.12) 30%,#000 100%);mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(0,0,0,.12) 30%,#000 100%)}
-@media (max-width:700px){
-  body::after{-webkit-mask-image:linear-gradient(90deg,#000,rgba(0,0,0,.12) 20%,rgba(0,0,0,.12) 80%,#000);mask-image:linear-gradient(90deg,#000,rgba(0,0,0,.12) 20%,rgba(0,0,0,.12) 80%,#000)}
-}
 .wrap{max-width:940px;margin:0 auto;padding-block:10px 56px}
 button,input{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--focus);outline-offset:2px}
