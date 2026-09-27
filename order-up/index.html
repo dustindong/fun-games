@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#E8EDF0" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0C1722" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F5F8FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1B2E43" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Order Up!">
@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Sans:wght@400;500;600;700&family=Noto+Color+Emoji&display=swap">
 <style>
 :root{
-  --paper:#E8EDF0; --grid:rgba(20,33,44,.05); --surface:#FFFFFF; --surface-2:#F1F4F6;
+  --paper:#EDF1F4; --paper-top:#F5F8FA; --grid:rgba(20,33,44,.05); --pool-a:rgba(238,94,51,.10); --pool-b:rgba(242,160,60,.08); --surface:#FFFFFF; --surface-2:#F1F4F6;
   --ink:#14212C; --muted:#586874; --line:#C8D2D9;
   --accent:#EE5E33; --accent-ink:#2A0C02; --tape:#F2B21B; --tape-ink:#261C02;
   --measure:#2D69AC; --red:#C93D26; --green:#1E8452; --amber:#B7791F;
@@ -32,7 +32,7 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#0C1722; --grid:rgba(120,170,220,.06); --surface:#122130; --surface-2:#172a3b;
+    --paper:#0F1D2B; --paper-top:#1B2E43; --grid:rgba(150,190,230,.075); --pool-a:rgba(247,129,92,.12); --pool-b:rgba(244,170,80,.08); --surface:#122130; --surface-2:#172a3b;
     --ink:#E3EBF1; --muted:#8FA1B0; --line:#26394B;
     --accent:#F7815C; --accent-ink:#2A0C02; --tape:#F4BE36; --tape-ink:#261C02;
     --measure:#72AAE8; --red:#F06B51; --green:#45C182; --amber:#F4BE36;
@@ -44,7 +44,7 @@
   }
 }
 :root[data-theme="dark"]{
-  --paper:#0C1722; --grid:rgba(120,170,220,.06); --surface:#122130; --surface-2:#172a3b;
+  --paper:#0F1D2B; --paper-top:#1B2E43; --grid:rgba(150,190,230,.075); --pool-a:rgba(247,129,92,.12); --pool-b:rgba(244,170,80,.08); --surface:#122130; --surface-2:#172a3b;
   --ink:#E3EBF1; --muted:#8FA1B0; --line:#26394B;
   --accent:#F7815C; --accent-ink:#2A0C02; --tape:#F4BE36; --tape-ink:#261C02;
   --measure:#72AAE8; --red:#F06B51; --green:#45C182; --amber:#F4BE36;
@@ -57,11 +57,21 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  background-color:var(--paper);
-  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:24px 24px;
   color:var(--ink); font:15px/1.5 var(--body); padding-inline:max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
   -webkit-font-smoothing:antialiased;
+}
+html{background:var(--paper)}
+/* the page backdrop, fixed behind everything: a navy (or paper) that lifts toward the top with soft pools of the game's color,
+   and a grid that's plain at the edges and fades almost out behind the content */
+body::before,body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none}
+body::before{background:
+  radial-gradient(ellipse 55% 50% at 24% 30%,var(--pool-a),transparent 70%),
+  radial-gradient(ellipse 55% 55% at 80% 78%,var(--pool-b),transparent 70%),
+  linear-gradient(var(--paper-top),var(--paper) 70%)}
+body::after{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;
+  -webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(0,0,0,.12) 30%,#000 100%);mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(0,0,0,.12) 30%,#000 100%)}
+@media (max-width:700px){
+  body::after{-webkit-mask-image:linear-gradient(90deg,#000,rgba(0,0,0,.12) 20%,rgba(0,0,0,.12) 80%,#000);mask-image:linear-gradient(90deg,#000,rgba(0,0,0,.12) 20%,rgba(0,0,0,.12) 80%,#000)}
 }
 .wrap{max-width:940px;margin:0 auto;padding-block:10px 56px}
 button,input{font:inherit;color:inherit}
@@ -607,7 +617,7 @@ input[type=text]{font-size:16px}
 
 <div class="wrap">
   <header class="top">
-    <div class="brand"><img src="logo.svg?v=2026-09-30k" alt="Order Up!" width="1416" height="964"></div>
+    <div class="brand"><img src="logo.svg?v=2026-09-30l" alt="Order Up!" width="1416" height="964"></div>
     <div class="top-right">
       <a class="btn small" id="btn-hub" href="../">All games</a>
       <span class="chip" id="room-chip" hidden></span>
@@ -618,7 +628,7 @@ input[type=text]{font-size:16px}
   <!-- HOME -->
   <section class="screen" id="scr-home">
     <div class="hero">
-      <h1 class="title"><img src="logo.svg?v=2026-09-30k" alt="Order Up!" width="1416" height="964"></h1>
+      <h1 class="title"><img src="logo.svg?v=2026-09-30l" alt="Order Up!" width="1416" height="964"></h1>
       <p class="headline">Five things.<br><span>One order.</span></p>
       <p class="tagline">Think you know what came first? You'll recognize every one of them. The order is the hard part.</p>
     </div>
@@ -792,24 +802,24 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-30k"></script>
-<script src="data/countries.js?v=2026-09-30k"></script>
-<script src="data/songs.js?v=2026-09-30k"></script>
-<script src="data/movies.js?v=2026-09-30k"></script>
-<script src="data/tv.js?v=2026-09-30k"></script>
-<script src="data/games.js?v=2026-09-30k"></script>
-<script src="data/pokemon.js?v=2026-09-30k"></script>
-<script src="data/tech.js?v=2026-09-30k"></script>
-<script src="data/nostalgia.js?v=2026-09-30k"></script>
-<script src="data/people.js?v=2026-09-30k"></script>
-<script src="data/animals.js?v=2026-09-30k"></script>
-<script src="data/dogs.js?v=2026-09-30k"></script>
-<script src="data/cars.js?v=2026-09-30k"></script>
-<script src="data/food.js?v=2026-09-30k"></script>
-<script src="data/drinks.js?v=2026-09-30k"></script>
-<script src="data/stuff.js?v=2026-09-30k"></script>
-<script src="data/sequences.js?v=2026-09-30k"></script>
-<script src="engine.js?v=2026-09-30k"></script>
+<script src="data/states.js?v=2026-09-30l"></script>
+<script src="data/countries.js?v=2026-09-30l"></script>
+<script src="data/songs.js?v=2026-09-30l"></script>
+<script src="data/movies.js?v=2026-09-30l"></script>
+<script src="data/tv.js?v=2026-09-30l"></script>
+<script src="data/games.js?v=2026-09-30l"></script>
+<script src="data/pokemon.js?v=2026-09-30l"></script>
+<script src="data/tech.js?v=2026-09-30l"></script>
+<script src="data/nostalgia.js?v=2026-09-30l"></script>
+<script src="data/people.js?v=2026-09-30l"></script>
+<script src="data/animals.js?v=2026-09-30l"></script>
+<script src="data/dogs.js?v=2026-09-30l"></script>
+<script src="data/cars.js?v=2026-09-30l"></script>
+<script src="data/food.js?v=2026-09-30l"></script>
+<script src="data/drinks.js?v=2026-09-30l"></script>
+<script src="data/stuff.js?v=2026-09-30l"></script>
+<script src="data/sequences.js?v=2026-09-30l"></script>
+<script src="engine.js?v=2026-09-30l"></script>
 <script>
 (() => {
 'use strict';
