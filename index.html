@@ -95,6 +95,7 @@ a.game:hover .play svg{transform:translateX(3px)}
 
 /* placeholder for the next game */
 .game.soon{background:transparent;border:1.5px dashed var(--line);box-shadow:none}
+.preview.logo{height:auto;object-fit:contain;padding:14px 0;box-sizing:border-box}
 .game.soon .preview{background:transparent;border-bottom:1.5px dashed var(--line)}
 .game.soon .name{color:var(--muted)}
 .badge{justify-self:start;margin-top:6px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
@@ -112,18 +113,10 @@ a.game:hover .play svg{transform:translateX(3px)}
 .tgt{fill:var(--measure)}
 .tgt-mark{stroke:var(--measure)}
 .tag{font:600 9px var(--mono);letter-spacing:.08em;fill:var(--muted)}
-.row-bg{fill:var(--surface);stroke:var(--line)}
-.row-lift{fill:var(--surface);stroke:var(--accent);stroke-width:1.5;filter:drop-shadow(0 6px 8px rgba(20,33,44,.22))}
-.rank{font:800 15px var(--display);fill:var(--muted)}
-.lift-rank{fill:var(--accent)}
-.bar{fill:var(--figure);opacity:.6}
-.lift-bar{fill:var(--accent);opacity:.85}
-.slide{animation:slide 4.2s ease-in-out infinite}
-@keyframes slide{0%,18%{transform:translate(18px,-12px)}42%,100%{transform:translate(0,0)}}
 .play-alt{background:var(--accent);color:var(--accent-ink)}
 .grow{transform-box:fill-box;transform-origin:0 100%;animation:grow 4.2s ease-in-out infinite}
 @keyframes grow{0%,100%{transform:scale(.62)}50%{transform:scale(1)}}
-@media (prefers-reduced-motion: reduce){ .grow,.slide{animation:none} .game,.play svg{transition:none} }
+@media (prefers-reduced-motion: reduce){ .grow{animation:none} .game,.play svg{transition:none} }
 
 @media (max-width:700px){
   .wrap{padding-block:16px 32px}
@@ -178,22 +171,7 @@ a.game:hover .play svg{transform:translateX(3px)}
 
     <!-- Order Up! -->
     <a class="game" href="order-up/">
-      <svg class="preview" viewBox="0 0 400 200" role="img" aria-label="A list of five rows being sorted, with one row lifted and moving into place">
-        <rect class="stage-bg" width="400" height="200"/>
-        <g class="stage-grid" stroke-width="1">
-          <path d="M24 0V200M48 0V200M72 0V200M96 0V200M120 0V200M144 0V200M168 0V200M192 0V200M216 0V200M240 0V200M264 0V200M288 0V200M312 0V200M336 0V200M360 0V200M384 0V200"/>
-          <path d="M0 26H400M0 50H400M0 74H400M0 98H400M0 122H400M0 146H400M0 170H400"/>
-        </g>
-        <text class="tag" x="112" y="20">BIGGEST</text>
-        <text class="tag" x="112" y="193">SMALLEST</text>
-        <g class="rows">
-          <g transform="translate(0 26)"><rect class="row-bg" x="104" y="0" width="192" height="26" rx="5"/><text class="rank" x="118" y="18">1</text><rect class="bar" x="136" y="10" width="112" height="6" rx="3"/></g>
-          <g transform="translate(0 58)"><rect class="row-bg" x="104" y="0" width="192" height="26" rx="5"/><text class="rank" x="118" y="18">2</text><rect class="bar" x="136" y="10" width="92" height="6" rx="3"/></g>
-          <g transform="translate(0 122)"><rect class="row-bg" x="104" y="0" width="192" height="26" rx="5"/><text class="rank" x="118" y="18">4</text><rect class="bar" x="136" y="10" width="54" height="6" rx="3"/></g>
-          <g transform="translate(0 154)"><rect class="row-bg" x="104" y="0" width="192" height="26" rx="5"/><text class="rank" x="118" y="18">5</text><rect class="bar" x="136" y="10" width="36" height="6" rx="3"/></g>
-          <g class="slide"><rect class="row-lift" x="104" y="90" width="192" height="26" rx="5"/><text class="rank lift-rank" x="118" y="108">3</text><rect class="bar lift-bar" x="136" y="100" width="72" height="6" rx="3"/></g>
-        </g>
-      </svg>
+      <img class="preview logo" src="order-up/logo.svg" alt="Order Up! logo: five smiling cards above the words Order Up!" width="1416" height="964">
       <div class="body">
         <h2 class="name">Order Up!</h2>
         <p class="desc">Five things, one topic, like biggest to smallest or oldest to newest. Put them in order before 30 seconds run out. Closest order wins.</p>
