@@ -17,7 +17,7 @@
      src: 'Lifetime units sold, from Wikipedia’s list of best-selling game consoles.'},
     {id: 'apple', key: 'year', filter: {tag: 'apple'}, type: 'chronology', title: 'Apple launches', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', dir: 'asc', unit: 'year', gap: 2, year: true,
      src: 'Launch year, from Apple and each product’s Wikipedia page.'},
-    {id: 'iphones', key: 'year', filter: {tag: 'iphone'}, type: 'chronology', weight: 0.6, title: 'iPhones', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', dir: 'asc', unit: 'year', gap: 2, year: true,
+    {id: 'iphones', key: 'year', filter: {tag: 'iphone'}, type: 'chronology', weight: 0.3, title: 'iPhones', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', dir: 'asc', unit: 'year', gap: 2, year: true,
      src: 'Release year of each model, from Apple.'},
     {id: 'web', key: 'year', filter: {tag: 'web'}, type: 'chronology', title: 'Websites & apps', ask: 'Oldest to newest', hi: 'Launched first', lo: 'Launched last', dir: 'asc', unit: 'year', gap: 2, year: true,
      src: 'Public launch year, from each site’s or app’s Wikipedia page.'},

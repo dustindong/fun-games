@@ -4,7 +4,7 @@
   comparisons: [
     {key:"weight",type:"measure",title:"Pokémon weight",ask:"Heaviest to lightest",hi:"Heaviest",lo:"Lightest",unit:"kg",gap:1.4,src:"Official weight from the Pokédex."},
     {key:"height",type:"measure",weight:0.6,title:"Pokémon height",ask:"Tallest to shortest",hi:"Tallest",lo:"Shortest",unit:"ftin",gap:1.3,src:"Official height from the Pokédex."},
-    {key:"dex",type:"knowledge",title:"Pokédex number",ask:"Lowest number to highest",hi:"Lowest number",lo:"Highest number",asc:true,unit:"dex",gap:10,abs:true,src:"National Pokédex number."},
+    {key:"dex",type:"knowledge",weight:0.6,title:"Pokédex number",ask:"Lowest number to highest",hi:"Lowest number",lo:"Highest number",asc:true,unit:"dex",gap:10,abs:true,src:"National Pokédex number."},
   ],
   items: [
     {name:"Groudon",fam:4,weight:950,height:3.5},

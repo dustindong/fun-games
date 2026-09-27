@@ -54,6 +54,12 @@ doneness). Each is `{id, title, ask, hi, lo, category, src, items}` pushed to `g
 with items in order first to last, as names or `{name, note, label}` (`label`, like `'145°F'`, is shown on
 the reveal). The planner keeps them to about one round in five, so the datasets stay the main course.
 
+**Presets and special rounds** live in `engine.js`: `PRESETS` are ready-made category lists for the picker
+(Party Mix, Pop Culture, Throwback, Classic Trivia, Everything), and the round generator adds light pacing
+(familiar openers, a Final Order in round 10) and occasional labels (Wild Card, Throwback, Close Call). A
+comparison can opt out of Close Call with `close: false`. Open the game with `?debug=1` to simulate thousands of
+games through the real generator and see how often each category, comparison, type and label comes up.
+
 **Registering a new dataset:** add a `<script src="data/NAME.js">` tag in `../index.html` and put the id in
 one category's `sets` in `engine.js`.
 

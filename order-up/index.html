@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Order Up!">
-<meta name="description" content="Order Up! A multiplayer game about putting five things in order before time runs out.">
+<meta name="description" content="Order Up! Five things. One question. Put them in order. A party game for phones: Pixar movies, fast food, Pokémon, old websites and more.">
 <title>Order Up!</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='4' width='24' height='5' rx='2' fill='%23EE5E33'/%3E%3Crect x='4' y='11' width='19' height='5' rx='2' fill='%23EE5E33'/%3E%3Crect x='4' y='18' width='14' height='5' rx='2' fill='%23EE5E33'/%3E%3Crect x='4' y='25' width='9' height='5' rx='2' fill='%23EE5E33'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,7 +103,10 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .stairs{display:grid;gap:4px}
 .stairs span{height:7px;border-radius:2px;background:var(--accent)}
 .stairs span:nth-child(2){width:80%;opacity:.8}.stairs span:nth-child(3){width:60%;opacity:.62}.stairs span:nth-child(4){width:40%;opacity:.46}.stairs span:nth-child(5){width:20%;opacity:.32}
-.tagline{font-size:clamp(17px,2.3vw,21px);max-width:36ch;line-height:1.35}
+.tagline{font-size:clamp(17px,2.3vw,21px);max-width:40ch;line-height:1.35}
+.tagline b{font-weight:700}
+.teasers{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.teasers li{font:600 13px/1.2 var(--body);padding:6px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
 .home-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;align-items:start}
 .demo{padding:0;overflow:hidden;margin:0}
 .demo-body{padding:14px 16px 16px;background:var(--surface-2)}
@@ -119,6 +122,10 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .cat-chip[aria-pressed="true"]::after{content:"✓";font-size:12px}
 .cat-chip:disabled{cursor:default}
 .cat-grid{padding-top:2px}
+.cat-grid .cat-chip{min-height:32px;padding:5px 10px;font-size:12px}
+.cat-chip.preset[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.preset-blurb{font-size:13px;color:var(--muted);line-height:1.35}
+.cat-list{font-size:13px;color:var(--muted)}
 .cat-tools{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 .cat-tools .btn.link{padding:2px 0;font-size:13px}
 .cat-hint{font-size:12px;color:var(--muted);margin-left:auto}
@@ -183,6 +190,19 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .ask{display:grid;gap:6px;margin-bottom:12px}
 .prompt{font:800 clamp(28px,4.6vw,44px)/1 var(--display);text-transform:uppercase;letter-spacing:.005em}
 .prompt em{font-style:normal;color:var(--accent)}
+/* special rounds: a label over the prompt; the finale gets gold trim and a bigger send-off */
+.badge{justify-self:start;display:inline-flex;align-items:center;gap:6px;font:800 13px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;
+  padding:6px 10px 5px;border-radius:4px;background:var(--ink);color:var(--surface);animation:callout-in .45s cubic-bezier(.2,1.4,.4,1) both}
+.badge.wild{background:var(--measure);color:#fff}
+.badge.throwback{background:var(--amber-bg);color:var(--ink);border:1px solid var(--amber)}
+.badge.close{background:var(--red-bg);color:var(--red);border:1px solid var(--red)}
+.badge.final{background:var(--tape);color:var(--tape-ink);font-size:16px;padding:8px 12px 7px}
+.finale .board-wrap{border-color:var(--tape);box-shadow:0 0 0 2px var(--tape),var(--shadow)}
+.finale .tape-fill{background-color:var(--accent)}
+.finale .reveal.pop .rv-main{border-color:var(--tape);box-shadow:0 0 0 2px var(--tape),var(--shadow)}
+.finale .reveal.pop .rv-main::before{content:"Final order";font:800 14px/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+.finale .sorter .row.landed{animation:land-final .6s cubic-bezier(.2,1.5,.4,1)}
+@keyframes land-final{0%{transform:scale(1)}40%{transform:scale(1.05);box-shadow:0 0 0 3px var(--tape),var(--lift)}100%{transform:scale(1)}}
 
 .board-wrap{padding:10px;display:grid;gap:6px;background:var(--surface-2)}
 .end{display:flex;align-items:center;gap:8px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:2px 4px}
@@ -244,6 +264,20 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .callout + .callout{animation-delay:.35s;font-size:clamp(18px,3.4vw,22px)}
 .callout + .callout + .callout{animation-delay:.7s}
 .sorter.revealing .row.pending{opacity:.55}
+/* everyone's picks under a revealed row, and the room's talking points */
+.picks{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;font:600 11px/1 var(--mono);color:var(--muted)}
+.pk{display:inline-flex;align-items:center;gap:3px;padding:2px 5px 2px 3px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-variant-numeric:tabular-nums}
+.pk .dot{width:9px;height:9px}
+.pk.exact{border-color:var(--green)}.pk.near{border-color:var(--amber)}.pk.far{opacity:.7}
+.rv-room{grid-column:1/-1;padding:12px 14px;display:grid;gap:8px}
+.rv-room ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rv-room li{display:grid;gap:2px}
+.rv-room li.has-dot{grid-template-columns:auto 1fr;column-gap:8px;align-items:center}
+.rv-room li b{font:800 clamp(17px,3vw,21px)/1.1 var(--display);text-transform:uppercase;letter-spacing:.01em}
+.rv-room li.has-dot b,.rv-room li.has-dot span{grid-column:2}
+.rv-room li .dot{grid-column:1;grid-row:1}
+.rv-room li span{font-size:13px;color:var(--muted)}
+.reveal.pop .rv-room{animation:rv-in .35s .25s ease both}
 .row.landed{animation:land .42s cubic-bezier(.2,1.5,.4,1)}
 @keyframes land{0%{transform:scale(1)}40%{transform:scale(1.035);box-shadow:var(--lift)}100%{transform:scale(1)}}
 @keyframes callout-in{from{opacity:0;transform:translateY(8px) scale(.94)}to{opacity:1;transform:none}}
@@ -312,6 +346,18 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .awards span{font-size:13px;color:var(--muted);line-height:1.3}
 .awards span strong{color:var(--ink);font-weight:600}
 
+/* ?debug=1 simulator */
+.debug{margin-top:22px;padding:16px;display:grid;gap:10px;font-size:13px;overflow-x:auto}
+.debug h2{font:800 26px/1 var(--display);text-transform:uppercase}
+.debug h3{font:800 17px/1 var(--display);text-transform:uppercase;margin-top:8px}
+.debug h4{margin:8px 0 2px}
+.debug table{border-collapse:collapse;font:12px/1.3 var(--mono)}
+.debug td,.debug th{border-bottom:1px solid var(--line);padding:3px 10px 3px 0;text-align:left;vertical-align:top}
+.debug ol{margin:0;padding-left:22px}
+.debug small{color:var(--muted)}
+.debug input,.debug select{width:90px;font:inherit;padding:4px}
+.dbg-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.dbg-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:calc(100% - 32px);
   background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:8px;font-size:14px;box-shadow:var(--shadow);z-index:10}
 
@@ -420,7 +466,11 @@ input[type=text]{font-size:16px}
     <div class="hero">
       <h1 class="title">Order <span>Up!</span></h1>
       <div class="stairs" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-      <p class="tagline">Five things, one topic. Put them in order before the clock runs out. Closest order wins.</p>
+      <p class="tagline"><b>Five things. One question. Put them in order.</b> You'll know every one of them. The order is the hard part.</p>
+      <ul class="teasers" aria-label="Example questions">
+        <li>Which Pixar movie came first?</li><li>Which fast-food item has more calories?</li><li>Did MySpace launch before YouTube?</li>
+        <li>Which Pokémon weighs more?</li><li>Which childhood toy came first?</li>
+      </ul>
     </div>
 
     <div class="home-grid">
@@ -430,7 +480,7 @@ input[type=text]{font-size:16px}
           <ol class="sorter still" id="demo-list" aria-label="Example round"></ol>
           <div class="end" id="demo-lo"></div>
         </div>
-        <figcaption id="demo-cap">Example round: sort these by size, biggest at the top.</figcaption>
+        <figcaption id="demo-cap">Example round: Pixar movies, oldest to newest.</figcaption>
       </figure>
 
       <div class="card play">
@@ -439,7 +489,7 @@ input[type=text]{font-size:16px}
           <input type="text" id="nm" maxlength="16" autocomplete="nickname" placeholder="e.g. Dustin">
         </div>
         <div class="field">
-          <span class="lbl" id="home-cats-lbl">Topics</span>
+          <span class="lbl" id="home-cats-lbl">Game mix</span>
           <div class="cats" id="home-cats" role="group" aria-labelledby="home-cats-lbl"></div>
         </div>
         <button class="btn primary" id="btn-create">Create a room</button>
@@ -455,9 +505,9 @@ input[type=text]{font-size:16px}
     </div>
 
     <div class="rules">
-      <div class="rule"><b>1. Read the topic</b><p>Every round has a topic, like song streams, movie box office or animal weight. Everyone gets the same five things.</p></div>
+      <div class="rule"><b>1. Get five things</b><p>Everyone gets the same five things and one question, like Pixar movies, oldest to newest. You'll recognize them all. Probably.</p></div>
       <div class="rule"><b>2. Sort the list</b><p>Drag the rows or use the arrows. Each round tells you what goes on top, like biggest first or oldest first.</p></div>
-      <div class="rule"><b>3. Lock in by 30 s</b><p>Ten rounds per game. Lock in when you're happy. Pressing Lock in counts even if you didn't move anything.</p></div>
+      <div class="rule"><b>3. Lock in, then argue</b><p>You have 30 seconds. Then the right order slides in and you see where everyone else put things. Ten rounds, highest total wins.</p></div>
     </div>
 
     <div class="card scoring">
@@ -513,6 +563,7 @@ input[type=text]{font-size:16px}
       <div class="stat right"><span class="eyebrow">Score</span><b id="rb-score">0</b></div>
     </div>
     <div class="ask">
+      <span class="badge" id="ask-badge" hidden></span>
       <span class="eyebrow" id="ask-sub"></span>
       <h2 class="prompt" id="prompt"></h2>
     </div>
@@ -532,6 +583,7 @@ input[type=text]{font-size:16px}
 
     <div class="reveal" id="reveal" hidden>
       <div class="rv-callouts" id="rv-callouts" aria-live="polite"></div>
+      <div class="card rv-room" id="rv-room" hidden><span class="eyebrow">What the room thought</span><ul id="rv-room-list"></ul></div>
       <div class="card rv-main" id="rv-main" aria-live="polite">
         <div class="rv-pts"><b id="rv-pts">+0</b><span id="rv-verdict"></span></div>
         <div class="rv-off" id="rv-off"></div>
@@ -574,22 +626,23 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-26a"></script>
-<script src="data/songs.js?v=2026-09-26a"></script>
-<script src="data/movies.js?v=2026-09-26a"></script>
-<script src="data/games.js?v=2026-09-26a"></script>
-<script src="data/pokemon.js?v=2026-09-26a"></script>
-<script src="data/tech.js?v=2026-09-26a"></script>
-<script src="data/nostalgia.js?v=2026-09-26a"></script>
-<script src="data/people.js?v=2026-09-26a"></script>
-<script src="data/animals.js?v=2026-09-26a"></script>
-<script src="data/dogs.js?v=2026-09-26a"></script>
-<script src="data/cars.js?v=2026-09-26a"></script>
-<script src="data/food.js?v=2026-09-26a"></script>
-<script src="data/drinks.js?v=2026-09-26a"></script>
-<script src="data/stuff.js?v=2026-09-26a"></script>
-<script src="data/sequences.js?v=2026-09-26a"></script>
-<script src="engine.js?v=2026-09-26a"></script>
+<script src="data/states.js?v=2026-09-27a"></script>
+<script src="data/songs.js?v=2026-09-27a"></script>
+<script src="data/movies.js?v=2026-09-27a"></script>
+<script src="data/tv.js?v=2026-09-27a"></script>
+<script src="data/games.js?v=2026-09-27a"></script>
+<script src="data/pokemon.js?v=2026-09-27a"></script>
+<script src="data/tech.js?v=2026-09-27a"></script>
+<script src="data/nostalgia.js?v=2026-09-27a"></script>
+<script src="data/people.js?v=2026-09-27a"></script>
+<script src="data/animals.js?v=2026-09-27a"></script>
+<script src="data/dogs.js?v=2026-09-27a"></script>
+<script src="data/cars.js?v=2026-09-27a"></script>
+<script src="data/food.js?v=2026-09-27a"></script>
+<script src="data/drinks.js?v=2026-09-27a"></script>
+<script src="data/stuff.js?v=2026-09-27a"></script>
+<script src="data/sequences.js?v=2026-09-27a"></script>
+<script src="engine.js?v=2026-09-27a"></script>
 <script>
 (() => {
 'use strict';
@@ -602,8 +655,8 @@ if (!window.OrderUp || !window.OrderUp.CATEGORIES.length) {
   document.querySelector('#home-err').hidden = false;
   throw new Error('Order Up: engine.js or its data did not load');
 }
-const {N, BASE_MAX, PERFECT_BONUS, ROUND_MAX, TOP, CATEGORIES, CAT, cleanCats, catsLabel,
-  fmtVal, rightOrder, scoreOrder, isPerfect, makeRounds, newHistory} = window.OrderUp;
+const {N, BASE_MAX, PERFECT_BONUS, ROUND_MAX, TOP, CATEGORIES, CAT, PRESETS, presetOf, cleanCats, catsLabel,
+  fmtVal, rightOrder, scoreOrder, isPerfect, makeRounds, newHistory, parseRound, FLAGS} = window.OrderUp;
 // rounds this page has already played, so Play Again and rematches avoid repeats and vary the comparisons
 const HISTORY = newHistory();
 
@@ -629,7 +682,7 @@ function toast(msg) {
   clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 3600);
 }
 
-const roundOf = i => { const [tid, ids] = room.rounds[i].split('|'); return {t: TOP[tid], ids: ids.split(',')}; };
+const roundOf = i => parseRound(room.rounds[i]);
 function cleanOrder(o, R) {
   if (typeof o !== 'string') return null;
   const ids = o.split(',');
@@ -905,36 +958,45 @@ function readName() {
   return n;
 }
 
-/* category picker: "All topics" or a hand-picked set. Used on the home card (solo, and the default for a new room)
-   and in the lobby, where only the host can change it. */
-let homeCats = (() => { try { return cleanCats(JSON.parse(LS.get('cats'))); } catch { return null; } })();
-const lastPicked = () => { try { const v = cleanCats(JSON.parse(LS.get('catsPicked'))); return v && v.length ? v : []; } catch { return []; } };
+/* category picker: presets across the top (Party Mix, Pop Culture... or Custom), the category chips below.
+   A preset just fills in the chips; changing a chip afterwards turns it into Custom. `null` means every category.
+   Used on the home card (solo, and the default for a new room) and in the lobby, where only the host can change it. */
+const PARTY = PRESETS.find(p => p.id === 'party')?.cats || null;
+let homeCats = (() => {
+  try { const raw = LS.get('cats2'), v = raw == null ? undefined : JSON.parse(raw); if (v === null || Array.isArray(v)) return cleanCats(v); } catch {}
+  // older saves: keep a hand-picked list, but move the old default ("All topics") to Party Mix
+  try { const v = cleanCats(JSON.parse(LS.get('cats'))); if (v && v.length) return v; } catch {}
+  return PARTY;
+})();
+const lastCustom = () => { try { const v = cleanCats(JSON.parse(LS.get('catsCustom'))); return v && v.length ? v : null; } catch { return null; } };
 function catPickerHTML(cats) {
-  const all = !cats, chip = (attrs, on, label) => `<button type="button" class="cat-chip" ${attrs} aria-pressed="${on}">${esc(label)}</button>`;
-  return `<div class="cat-row">${chip('data-mode="all"', all, 'All topics')}${chip('data-mode="pick"', !all, 'Choose categories')}</div>` + (all ? '' :
-    `<div class="cat-row cat-grid">${CATEGORIES.map(c => chip(`data-cat="${c.id}"`, cats.includes(c.id), c.name)).join('')}</div>
-     <div class="cat-tools"><button type="button" class="btn link" data-tool="all">Select all</button><button type="button" class="btn link" data-tool="none">Clear all</button>
-     <span class="cat-hint${cats.length ? '' : ' warn'}" aria-live="polite">${cats.length ? `${cats.length} of ${CATEGORIES.length} categories` : 'Pick at least one category'}</span></div>`);
+  const pre = presetOf(cats), on = id => !cats || cats.includes(id);
+  const chip = (attrs, pressed, label, cls = 'cat-chip') => `<button type="button" class="${cls}" ${attrs} aria-pressed="${pressed}">${esc(label)}</button>`;
+  return `<div class="cat-row presets">${PRESETS.map(p => chip(`data-preset="${p.id}"`, pre === p, p.name, 'cat-chip preset')).join('')}${chip('data-preset="custom"', !pre, 'Custom', 'cat-chip preset')}</div>
+    <p class="preset-blurb">${esc(pre ? pre.blurb : 'Your own mix. Tap categories to add or remove them.')}</p>
+    <div class="cat-row cat-grid">${CATEGORIES.map(c => chip(`data-cat="${c.id}"`, on(c.id), c.name)).join('')}</div>
+    <div class="cat-tools"><button type="button" class="btn link" data-tool="none">Clear all</button>
+    <span class="cat-hint${cats && !cats.length ? ' warn' : ''}" aria-live="polite">${cats && !cats.length ? 'Pick at least one category' : `${cats ? cats.length : CATEGORIES.length} of ${CATEGORIES.length} categories`}</span></div>`;
 }
 function catPickerClick(e, cats) {
   const b = e.target.closest('button');
   if (!b) return undefined;
-  if (b.dataset.mode === 'all') return null;
-  if (b.dataset.mode === 'pick') return cats || lastPicked();
-  if (b.dataset.tool === 'all') return CATEGORIES.map(c => c.id);
+  if (b.dataset.preset === 'custom') return presetOf(cats) ? lastCustom() || cats : cats;
+  if (b.dataset.preset) return PRESETS.find(p => p.id === b.dataset.preset).cats;
   if (b.dataset.tool === 'none') return [];
-  const id = b.dataset.cat, cur = cats || [];
+  const id = b.dataset.cat, cur = cats || CATEGORIES.map(c => c.id);
   return cleanCats(cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id]);
 }
 function paintPicker(el, cats, focusSel) {
   el.innerHTML = catPickerHTML(cats);
   if (focusSel) el.querySelector(focusSel)?.focus();
 }
-const focusKey = b => b.dataset.mode ? `[data-mode="${b.dataset.mode}"]` : b.dataset.cat ? `[data-cat="${b.dataset.cat}"]` : `[data-tool="${b.dataset.tool}"]`;
+const focusKey = b => b.dataset.preset ? `[data-preset="${b.dataset.preset}"]` : b.dataset.cat ? `[data-cat="${b.dataset.cat}"]` : `[data-tool="${b.dataset.tool}"]`;
+// remember a hand-made mix so the Custom button can bring it back after trying a preset
+const saveCats = cats => { LS.set('cats2', JSON.stringify(cats)); if (cats && cats.length && !presetOf(cats)) LS.set('catsCustom', JSON.stringify(cats)); };
 function setHomeCats(cats, focusSel) {
   homeCats = cats;
-  LS.set('cats', JSON.stringify(cats));
-  if (cats && cats.length) LS.set('catsPicked', JSON.stringify(cats));
+  saveCats(cats);
   paintPicker($('#home-cats'), cats, focusSel);
   $('#btn-solo').disabled = !!cats && !cats.length;
   if (!cats || cats.length) homeErr();
@@ -948,14 +1010,16 @@ function renderLobbyCats(cats, host) {
   if (el.dataset.key === key) return; // only repaint when something changed, so chips keep focus
   el.dataset.key = key;
   if (host) { paintPicker(el, cats, el.dataset.focus); delete el.dataset.focus; }
-  else el.innerHTML = `<p class="cat-summary">${esc(catsLabel(cats))}</p><p class="note">The host picks the categories.</p>`;
+  else {
+    const pre = presetOf(cats), list = cats ? cats.map(id => CAT[id].name).join(' · ') : 'All categories';
+    el.innerHTML = `<p class="cat-summary">${esc(!cats || cats.length ? (pre ? pre.name : 'Custom') : 'None yet')}</p>${cats && !cats.length ? '' : `<p class="cat-list">${esc(list)}</p>`}<p class="note">The host picks the categories.</p>`;
+  }
 }
 $('#lb-cats').addEventListener('click', e => {
   if (!room || !isHost() || room.phase !== 'lobby') return;
   const next = catPickerClick(e, cleanCats(room.cats));
   if (next === undefined) return;
-  if (next && next.length) LS.set('catsPicked', JSON.stringify(next));
-  LS.set('cats', JSON.stringify(next)); homeCats = next;
+  saveCats(next); homeCats = next;
   $('#lb-cats').dataset.focus = focusKey(e.target.closest('button'));
   db.doc(`rooms/${code}`).update({cats: next});
 });
@@ -992,7 +1056,7 @@ async function joinRoom() {
 }
 async function startSolo() {
   homeErr();
-  if (homeCats && !homeCats.length) { homeErr('Pick at least one category, or choose All topics.'); return; }
+  if (homeCats && !homeCats.length) { homeErr('Pick at least one category, or choose a preset.'); return; }
   me.name = $('#nm').value.trim().slice(0, 16) || 'You';
   mode = 'solo'; db = makeMemDB();
   await db.doc('rooms/SOLO').set({code: 'SOLO', host: me.pid, phase: 'lobby', game: '', round: 0, rounds: [], cats: homeCats, created: Date.now()});
@@ -1117,7 +1181,7 @@ const GRIP = '<svg width="10" height="16" viewBox="0 0 10 16" aria-hidden="true"
 
 function rowHTML(it) {
   return `<span class="pos"></span><span class="emo">${it.emo}</span>
-    <span class="lbl"><b>${esc(it.name)}</b>${it.note ? `<small>${esc(it.note)}</small>` : ''}</span>
+    <span class="lbl"><b>${esc(it.name)}</b>${it.note ? `<small>${esc(it.note)}</small>` : ''}<span class="picks" hidden></span></span>
     <span class="moves"><button class="mv" data-mv="-1" aria-label="Move ${esc(it.name)} up">${ARROW_UP}</button><button class="mv" data-mv="1" aria-label="Move ${esc(it.name)} down">${ARROW_DN}</button><span class="grip">${GRIP}</span></span>
     <span class="ans" hidden><span class="val"></span><span class="you"></span></span>`;
 }
@@ -1244,6 +1308,67 @@ function roundCallouts(i) {
   return out.slice(0, 3);
 }
 
+/* what the room thought: disagreement read from everyone's submitted orders. Returns up to two notes, only
+   when there's something worth talking about, plus each answering player's order for the per-row picks. */
+function roomTake(i) {
+  const R = roundOf(i), t = R.t, right = rightOrder(R);
+  const rows = standingsAt(i).map(r => ({p: r.p, o: r.rec?.o ? String(r.rec.o).split(',') : null}))
+    .filter(r => r.o && r.o.length === N);
+  const n = rows.length, notes = [];
+  if (n < 2) return {rows, notes};
+  const name = id => t.byId[id].name, val = id => t.byId[id].label || fmtVal(t, t.byId[id].v);
+  const both = (a, b) => `${name(a)}: ${val(a)} · ${name(b)}: ${val(b)}`;
+  const who = ps => ps.length === 1 ? ps[0].name : ps.length === 2 ? `${ps[0].name} and ${ps[1].name}` : `${ps.length} players`;
+  // every pair, in the right order (a above b); `flip` is who had them the other way round
+  const pairs = [];
+  for (let a = 0; a < N; a++) for (let b = a + 1; b < N; b++) {
+    const A = right[a], B = right[b];
+    pairs.push({A, B, dist: b - a, flip: rows.filter(r => r.o.indexOf(A) > r.o.indexOf(B)).map(r => r.p)});
+  }
+  const used = new Set(), mark = (...ids) => ids.forEach(id => used.add(id));
+  const fresh = (...ids) => ids.every(id => !used.has(id));
+  const byClose = (x, y) => x.dist - y.dist || right.indexOf(x.A) - right.indexOf(y.A);
+  // everyone had the same two the wrong way round
+  const swapped = pairs.filter(q => q.flip.length === n).sort(byClose)[0];
+  if (swapped) {
+    notes.push({kind: 'swap', head: `${n === 2 ? 'Both of you' : 'Everyone'} had ${name(swapped.B)} above ${name(swapped.A)}`, sub: both(swapped.A, swapped.B)});
+    mark(swapped.A, swapped.B);
+  }
+  // most of the room fell for the same trap, and someone saw through it
+  if (n >= 3) {
+    const trap = pairs.filter(q => q.flip.length < n && q.flip.length >= Math.ceil(n * 2 / 3) && fresh(q.A, q.B))
+      .sort((x, y) => y.flip.length - x.flip.length || byClose(x, y))[0];
+    if (trap) {
+      const sharp = rows.map(r => r.p).filter(p => !trap.flip.includes(p));
+      notes.push({kind: 'surprise', head: `Biggest surprise: ${name(trap.A)} goes above ${name(trap.B)}`,
+        sub: `${trap.flip.length} of ${n} had it the other way. ${sharp.length <= 2 ? `Only ${who(sharp)} got it. ` : ''}${both(trap.A, trap.B)}`});
+      mark(trap.A, trap.B);
+    }
+  }
+  // nobody agreed where something goes, or the room split down the middle on two things
+  if (n >= 3 && notes.length < 2) {
+    const spots = id => new Set(rows.map(r => r.o.indexOf(id))).size;
+    const lost = right.filter(id => fresh(id) && spots(id) === n && n <= N)[0];
+    if (lost) { notes.push({kind: 'debate', head: `Nobody agreed on ${name(lost)}`, sub: `${n} players, ${n} different spots. It goes ${ordinal(right.indexOf(lost) + 1)}.`}); mark(lost); }
+    else {
+      const split = pairs.filter(q => fresh(q.A, q.B) && Math.min(q.flip.length, n - q.flip.length) >= Math.max(1, Math.floor(n * 0.4)))
+        .sort((x, y) => Math.min(y.flip.length, n - y.flip.length) - Math.min(x.flip.length, n - x.flip.length) || byClose(x, y))[0];
+      if (split) {
+        notes.push({kind: 'debate', head: `Most debated: ${name(split.A)} vs ${name(split.B)}`,
+          sub: `${n - split.flip.length} put ${name(split.A)} higher, ${split.flip.length} put ${name(split.B)} higher. ${name(split.A)} was right.`});
+        mark(split.A, split.B);
+      }
+    }
+  }
+  // one player alone got something right
+  if (n >= 3 && notes.length < 2) {
+    const lone = right.map((id, k) => ({id, k, got: rows.filter(r => r.o[k] === id).map(r => r.p)}))
+      .filter(x => x.got.length === 1 && fresh(x.id)).sort((x, y) => Math.min(x.k, N - 1 - x.k) - Math.min(y.k, N - 1 - y.k))[0];
+    if (lone) { notes.push({kind: 'lone', who: lone.got, head: `Only ${lone.got[0].name} got ${name(lone.id)} ${lone.k === 0 ? 'on top' : lone.k === N - 1 ? 'at the bottom' : `in ${ordinal(lone.k + 1)}`}`, sub: val(lone.id)}); mark(lone.id); }
+  }
+  return {rows, notes: notes.slice(0, 2)};
+}
+
 function renderRound() {
   if (!room || screen !== 'round') return;
   const R = roundOf(room.round), t = R.t;
@@ -1254,6 +1379,12 @@ function renderRound() {
   $('#rb-score').textContent = totalOf(mine()) - (reveal || !cur ? 0 : cur.p || 0);
   $('#ask-sub').textContent = reveal ? `${t.title}: the right order` : `${t.cat.name} · ${t.title}`;
   $('#prompt').textContent = t.ask;
+  // special rounds wear a label; the finale also gets its own look
+  const flag = R.flag && FLAGS[R.flag] ? R.flag : '';
+  $('#ask-badge').hidden = !flag;
+  $('#ask-badge').className = 'badge ' + flag;
+  $('#ask-badge').textContent = flag ? FLAGS[flag] + (flag === 'close' && !reveal ? ' · closer than usual' : '') : '';
+  $('#scr-round').classList.toggle('finale', flag === 'final');
   $('#lbl-hi').innerHTML = `${ARROW_UP}${esc(t.hi)}`;
   $('#lbl-lo').innerHTML = `${ARROW_DN}${esc(t.lo)}`;
 
@@ -1287,6 +1418,8 @@ function renderRound() {
       startReveal(right);
     }
     sorterEl.classList.toggle('revealing', !local.revealDone);
+    // everyone's picks under each row: a dot per player with the spot they chose (a count for big groups)
+    const take = mode === 'solo' ? {rows: [], notes: []} : roomTake(room.round), many = take.rows.length > 6;
     [...sorterEl.children].forEach((li, i) => {
       const id = li.dataset.id, it = t.byId[id], done = local.landed.has(id);
       const at = mineO ? mineO.indexOf(id) : -1, d = at < 0 ? -1 : Math.abs(at - i);
@@ -1296,6 +1429,15 @@ function renderRound() {
       if (!done) return;
       if (d >= 0) li.classList.add(d === 0 ? 'exact' : d === 1 ? 'near' : 'far');
       li.querySelector('.val').textContent = it.label || fmtVal(t, it.v);
+      const picks = li.querySelector('.picks');
+      picks.hidden = take.rows.length < 2;
+      if (!picks.hidden) {
+        const html = many
+          ? `${take.rows.filter(r => r.o[i] === id).length} of ${take.rows.length} had it here`
+          : take.rows.map(r => { const k = r.o.indexOf(id), dd = Math.abs(k - i);
+              return `<span class="pk ${dd === 0 ? 'exact' : dd === 1 ? 'near' : 'far'}" title="${esc(r.p.name)}: ${ordinal(k + 1)}"><i class="dot" style="background:${esc(r.p.color)}"></i>${k + 1}</span>`; }).join('');
+        if (picks.dataset.html !== html) { picks.dataset.html = html; picks.innerHTML = html; }
+      }
       const you = li.querySelector('.you');
       you.hidden = d < 0;
       if (d >= 0) you.textContent = `you: ${at + 1} · +${d === 0 ? 20 : d === 1 ? 10 : 0}`;
@@ -1305,6 +1447,9 @@ function renderRound() {
     const calls = roundCallouts(room.round).map(c => `<div class="callout${c.big ? ' big' : ''}">${c.who?.length === 1 ? `<i class="dot" style="background:${esc(c.who[0].color)}"></i>` : ''}<span>${esc(c.text)}</span>${c.sub ? `<small>${esc(c.sub)}</small>` : ''}</div>`).join('');
     // only touch the banner when it changes, so its entrance animation plays once
     if ($('#rv-callouts').dataset.html !== calls) { $('#rv-callouts').dataset.html = calls; $('#rv-callouts').innerHTML = calls; }
+    const roomHTML = take.notes.map(x => `<li class="${x.kind}${x.who?.length === 1 ? ' has-dot' : ''}">${x.who?.length === 1 ? `<i class="dot" style="background:${esc(x.who[0].color)}"></i>` : ''}<b>${esc(x.head)}</b><span>${esc(x.sub)}</span></li>`).join('');
+    $('#rv-room').hidden = !roomHTML;
+    if ($('#rv-room-list').dataset.html !== roomHTML) { $('#rv-room-list').dataset.html = roomHTML; $('#rv-room-list').innerHTML = roomHTML; }
     const perfect = isPerfect(p) && !!mineO;
     $('#rv-main').classList.toggle('perfect', perfect);
     sorterEl.classList.toggle('perfect', perfect);
@@ -1337,7 +1482,8 @@ function renderRound() {
     $('#reveal').classList.remove('pop');
     $('#rv-main').classList.remove('perfect');
     sorterEl.classList.remove('revealing', 'perfect');
-    for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far', 'pending', 'landed'); li.querySelector('.ans').hidden = true; }
+    for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far', 'pending', 'landed'); li.querySelector('.ans').hidden = true; li.querySelector('.picks').hidden = true; }
+    $('#rv-room').hidden = true;
   }
 }
 
@@ -1525,10 +1671,11 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 
 /* ---------------- demo on home: a list sorting itself ---------------- */
 const demo = (() => {
-  const t = TOP['movies.box'], ids = ['barbie', 'home-alone', 'titanic', 'the-matrix', 'frozen'];
+  // the example round on the home card: Pixar, oldest first (falls back to box office if that view didn't load)
+  const t = TOP['movies.pixar'] || TOP['movies.box'], ids = TOP['movies.pixar'] ? ['up', 'toy-story', 'coco', 'finding-nemo', 'the-incredibles'] : ['barbie', 'home-alone', 'titanic', 'the-matrix', 'frozen'];
   const el = $('#demo-list');
   $('#demo-hi').innerHTML = `${ARROW_UP}${t.hi}`; $('#demo-lo').innerHTML = `${ARROW_DN}${t.lo}`;
-  $('#demo-cap').textContent = 'Example round: movie box office, most money to least. Here the list sorts itself. In the game, you drag the rows.';
+  $('#demo-cap').textContent = `Example round: ${t.title}, ${t.ask.toLowerCase()}. Here the list sorts itself. In the game, you drag the rows.`;
   let order, timer = null, on = false;
   const right = rightOrder({t, ids});
   function paint(done) {
@@ -1667,6 +1814,17 @@ async function boot() {
 
 show('home');
 boot();
+
+/* developer tools: ?debug=1 adds the content simulator under the home screen. It isn't linked anywhere. */
+if (new URLSearchParams(location.search).get('debug') === '1') {
+  const el = document.createElement('section');
+  el.className = 'card debug'; el.id = 'debug';
+  $('#scr-home').appendChild(el);
+  const js = document.createElement('script');
+  js.src = 'debug.js?v=' + (document.querySelector('script[src^="engine.js"]')?.src.split('v=')[1] || '1');
+  js.onload = () => window.OrderUpDebug.mount(el);
+  document.body.appendChild(js);
+}
 })();
 </script>
 </body>
