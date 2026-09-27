@@ -97,7 +97,13 @@ a.game:hover .play svg{transform:translateX(3px)}
 .game.soon{background:transparent;border:1.5px dashed var(--line);box-shadow:none}
 .game.soon .preview{background:transparent;border-bottom:1.5px dashed var(--line)}
 .game.soon .name{color:var(--muted)}
-.name-logo{display:block;height:104px;width:auto;margin:-2px 0 -4px -6px}
+/* the logo is the card's title: a sticker that sits over the illustration's bottom edge, with the pitch centered under it */
+.game .body:has(.name-logo){justify-items:center;text-align:center;padding-top:0}
+.game .body:has(.name-logo) .name{margin:-58px 0 -2px;position:relative;z-index:1}
+.game .body:has(.name-logo) .meta{justify-content:center}
+.game .body:has(.name-logo) .play{justify-self:center}
+.name-logo{display:block;width:220px;height:auto;filter:drop-shadow(0 6px 10px rgba(20,33,44,.18));transition:transform .15s ease}
+a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 .badge{justify-self:start;margin-top:6px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
   padding:9px 11px;border:1px dashed var(--line);border-radius:6px}
 
