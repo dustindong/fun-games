@@ -144,6 +144,8 @@ body:not(.in-room) .brand{visibility:hidden}
 .cat-hint.warn{color:var(--red);font-weight:500}
 .cat-summary{font-weight:600}
 .lobby-cats{padding:14px 16px;display:grid;gap:10px}
+.lobby-howto{margin-top:14px}
+.lobby-howto .rules{margin-top:10px}
 .field{display:grid;gap:6px}
 .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}
 .or::before,.or::after{content:"";height:1px;background:var(--line);flex:1}
@@ -605,7 +607,7 @@ input[type=text]{font-size:16px}
 
 <div class="wrap">
   <header class="top">
-    <div class="brand"><img src="logo.svg?v=2026-09-30i" alt="Order Up!" width="1416" height="964"></div>
+    <div class="brand"><img src="logo.svg?v=2026-09-30j" alt="Order Up!" width="1416" height="964"></div>
     <div class="top-right">
       <a class="btn small" id="btn-hub" href="../">All games</a>
       <span class="chip" id="room-chip" hidden></span>
@@ -616,7 +618,7 @@ input[type=text]{font-size:16px}
   <!-- HOME -->
   <section class="screen" id="scr-home">
     <div class="hero">
-      <h1 class="title"><img src="logo.svg?v=2026-09-30i" alt="Order Up!" width="1416" height="964"></h1>
+      <h1 class="title"><img src="logo.svg?v=2026-09-30j" alt="Order Up!" width="1416" height="964"></h1>
       <p class="headline">Five things.<br><span>One order.</span></p>
       <p class="tagline">Think you know what came first? You'll recognize every one of them. The order is the hard part.</p>
     </div>
@@ -659,6 +661,7 @@ input[type=text]{font-size:16px}
       </div>
     </div>
 
+    <div class="howto" id="howto">
     <div class="rules">
       <div class="rule"><b>1. Get five things</b><p>Everyone gets the same five things and one question, like Pixar movies, oldest to newest. You'll recognize them all. Probably.</p></div>
       <div class="rule"><b>2. Sort the list</b><p>Drag the rows or use the arrows. Each round tells you what goes on top, like biggest first or oldest first.</p></div>
@@ -671,6 +674,7 @@ input[type=text]{font-size:16px}
         <div class="pts-key"><span class="k-exact"><b>20</b> right spot</span><span class="k-near"><b>10</b> one spot off</span><span class="k-far"><b>0</b> two or more off</span><span class="k-bonus"><b>+15</b> all five exactly right</span></div>
         <p class="note">Each of the five things scores on its own, so a list with two neighbors swapped still earns 80. Get all five exactly right for 100 plus a +15 Perfect Order bonus: 115 points. If time runs out before you make a move or lock in, the round scores 0.</p>
       </div>
+    </div>
     </div>
   </section>
 
@@ -707,6 +711,10 @@ input[type=text]{font-size:16px}
         <button class="btn primary big" id="btn-start">Start game <span aria-hidden="true">→</span></button>
         <span class="muted" id="lb-wait" hidden></span>
       </div>
+    </div>
+    <div class="lobby-howto">
+      <span class="eyebrow">How to play</span>
+      <div id="lb-howto"></div>
     </div>
   </section>
 
@@ -784,24 +792,24 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-30i"></script>
-<script src="data/countries.js?v=2026-09-30i"></script>
-<script src="data/songs.js?v=2026-09-30i"></script>
-<script src="data/movies.js?v=2026-09-30i"></script>
-<script src="data/tv.js?v=2026-09-30i"></script>
-<script src="data/games.js?v=2026-09-30i"></script>
-<script src="data/pokemon.js?v=2026-09-30i"></script>
-<script src="data/tech.js?v=2026-09-30i"></script>
-<script src="data/nostalgia.js?v=2026-09-30i"></script>
-<script src="data/people.js?v=2026-09-30i"></script>
-<script src="data/animals.js?v=2026-09-30i"></script>
-<script src="data/dogs.js?v=2026-09-30i"></script>
-<script src="data/cars.js?v=2026-09-30i"></script>
-<script src="data/food.js?v=2026-09-30i"></script>
-<script src="data/drinks.js?v=2026-09-30i"></script>
-<script src="data/stuff.js?v=2026-09-30i"></script>
-<script src="data/sequences.js?v=2026-09-30i"></script>
-<script src="engine.js?v=2026-09-30i"></script>
+<script src="data/states.js?v=2026-09-30j"></script>
+<script src="data/countries.js?v=2026-09-30j"></script>
+<script src="data/songs.js?v=2026-09-30j"></script>
+<script src="data/movies.js?v=2026-09-30j"></script>
+<script src="data/tv.js?v=2026-09-30j"></script>
+<script src="data/games.js?v=2026-09-30j"></script>
+<script src="data/pokemon.js?v=2026-09-30j"></script>
+<script src="data/tech.js?v=2026-09-30j"></script>
+<script src="data/nostalgia.js?v=2026-09-30j"></script>
+<script src="data/people.js?v=2026-09-30j"></script>
+<script src="data/animals.js?v=2026-09-30j"></script>
+<script src="data/dogs.js?v=2026-09-30j"></script>
+<script src="data/cars.js?v=2026-09-30j"></script>
+<script src="data/food.js?v=2026-09-30j"></script>
+<script src="data/drinks.js?v=2026-09-30j"></script>
+<script src="data/stuff.js?v=2026-09-30j"></script>
+<script src="data/sequences.js?v=2026-09-30j"></script>
+<script src="engine.js?v=2026-09-30j"></script>
 <script>
 (() => {
 'use strict';
@@ -921,6 +929,8 @@ let screen = 'home';
 let local = {key: null};
 let hostT = {key: null, t: null, busy: false};
 
+// the lobby repeats the homepage's how-to-play, for players who joined straight from an invite link
+{ const h = $('#howto').cloneNode(true); h.removeAttribute('id'); $('#lb-howto').replaceWith(h); }
 function show(name) {
   if (screen !== name) window.scrollTo(0, 0);
   screen = name;
