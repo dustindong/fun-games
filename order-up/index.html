@@ -276,8 +276,12 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .emo{font:22px/1 var(--emoji);width:28px;text-align:center}
 .sorter:not(.flags) .emo{display:none}
 .sorter:not(.flags) .row{grid-template-columns:minmax(0,1fr) auto}
-/* no rank numbers on the cards; the reveal says where you placed each one */
+/* no rank numbers while sorting; in the reveal each card's real spot shows up as its answer does */
 .row .pos{display:none}
+.sorter.numbered .row{padding-left:0;grid-template-columns:44px auto minmax(0,1fr) auto}
+.sorter.numbered:not(.flags) .row{grid-template-columns:44px minmax(0,1fr) auto}
+.sorter.numbered .row .pos{display:grid}
+.pos.blank{visibility:hidden}
 .row .lbl{display:grid;gap:1px;min-width:0}
 .row .lbl b{font-weight:700;font-size:17px;line-height:1.2;overflow-wrap:anywhere}
 .row .lbl small{font-size:12px;color:var(--muted);line-height:1.2}
@@ -541,6 +545,12 @@ input[type=text]{font-size:16px}
   .sorter.answers .ans{grid-column:1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 8px;padding-bottom:2px}
   .sorter.answers .ans .val{grid-column:1/-1;justify-self:start;min-height:1.2em}
   .sorter.answers .ans .ptstamp{grid-column:3}
+  .sorter.numbered .row{grid-template-columns:36px auto minmax(0,1fr) auto}
+  .sorter.numbered:not(.flags) .row{grid-template-columns:36px minmax(0,1fr) auto}
+  .sorter.numbered.answers .row,.sorter.numbered.answers:not(.flags) .row{grid-template-columns:36px minmax(0,1fr)}
+  .sorter.numbered.answers .ans{grid-column:2}
+  .sorter.numbered.answers.flags .row{grid-template-columns:36px auto minmax(0,1fr)}
+  .sorter.numbered.answers.flags .ans{grid-column:2/-1}
   .ans .val{font-size:12px}
   .lobby-foot{flex-direction:column;align-items:stretch}
   .lobby-foot > div:last-child{justify-items:stretch !important}
@@ -769,24 +779,24 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-30f"></script>
-<script src="data/countries.js?v=2026-09-30f"></script>
-<script src="data/songs.js?v=2026-09-30f"></script>
-<script src="data/movies.js?v=2026-09-30f"></script>
-<script src="data/tv.js?v=2026-09-30f"></script>
-<script src="data/games.js?v=2026-09-30f"></script>
-<script src="data/pokemon.js?v=2026-09-30f"></script>
-<script src="data/tech.js?v=2026-09-30f"></script>
-<script src="data/nostalgia.js?v=2026-09-30f"></script>
-<script src="data/people.js?v=2026-09-30f"></script>
-<script src="data/animals.js?v=2026-09-30f"></script>
-<script src="data/dogs.js?v=2026-09-30f"></script>
-<script src="data/cars.js?v=2026-09-30f"></script>
-<script src="data/food.js?v=2026-09-30f"></script>
-<script src="data/drinks.js?v=2026-09-30f"></script>
-<script src="data/stuff.js?v=2026-09-30f"></script>
-<script src="data/sequences.js?v=2026-09-30f"></script>
-<script src="engine.js?v=2026-09-30f"></script>
+<script src="data/states.js?v=2026-09-30g"></script>
+<script src="data/countries.js?v=2026-09-30g"></script>
+<script src="data/songs.js?v=2026-09-30g"></script>
+<script src="data/movies.js?v=2026-09-30g"></script>
+<script src="data/tv.js?v=2026-09-30g"></script>
+<script src="data/games.js?v=2026-09-30g"></script>
+<script src="data/pokemon.js?v=2026-09-30g"></script>
+<script src="data/tech.js?v=2026-09-30g"></script>
+<script src="data/nostalgia.js?v=2026-09-30g"></script>
+<script src="data/people.js?v=2026-09-30g"></script>
+<script src="data/animals.js?v=2026-09-30g"></script>
+<script src="data/dogs.js?v=2026-09-30g"></script>
+<script src="data/cars.js?v=2026-09-30g"></script>
+<script src="data/food.js?v=2026-09-30g"></script>
+<script src="data/drinks.js?v=2026-09-30g"></script>
+<script src="data/stuff.js?v=2026-09-30g"></script>
+<script src="data/sequences.js?v=2026-09-30g"></script>
+<script src="engine.js?v=2026-09-30g"></script>
 <script>
 (() => {
 'use strict';
@@ -1385,7 +1395,8 @@ function paintRows() {
   const placed = room?.phase === 'reveal' && local.mineAtReveal;
   rows.forEach((li, i) => {
     const landed = local.revealDone || local.landed?.has(li.dataset.id);
-    li.querySelector('.pos').textContent = placed && !landed ? placed.indexOf(li.dataset.id) + 1 : i + 1;
+    const pos = li.querySelector('.pos');
+    pos.textContent = i + 1; pos.classList.toggle('blank', !!placed && !landed);
     const [up, dn] = li.querySelectorAll('.mv');
     up.disabled = i === 0 || local.locked; dn.disabled = i === rows.length - 1 || local.locked;
   });
@@ -1660,7 +1671,7 @@ function renderRound() {
       startReveal(right);
     }
     sorterEl.classList.toggle('revealing', !local.revealDone);
-    sorterEl.classList.add('answers');
+    sorterEl.classList.add('answers', 'numbered');
     // everyone's picks under each row: a dot per player with the spot they chose (a count for big groups)
     const take = mode === 'solo' ? {rows: [], notes: []} : roomTake(room.round), many = take.rows.length > 6;
     [...sorterEl.children].forEach((li, i) => {
@@ -1675,7 +1686,8 @@ function renderRound() {
       const was = li.querySelector('.was');
       was.hidden = at < 0; was.textContent = at < 0 ? '' : `You placed this #${at + 1}`;
       was.classList.toggle('blank', !done);
-      li.querySelector('.pos').textContent = done ? i + 1 : at >= 0 ? at + 1 : i + 1;
+      const pos = li.querySelector('.pos');
+      pos.textContent = i + 1; pos.classList.toggle('blank', !done);
       const picks = li.querySelector('.picks');
       picks.hidden = take.rows.length < 2;
       picks.classList.toggle('blank', !done);
@@ -1749,7 +1761,7 @@ function renderRound() {
     clearTimeout(local.revealT);
     $('#reveal').classList.remove('pop');
     $('#rv-main').classList.remove('perfect');
-    sorterEl.classList.remove('revealing', 'perfect', 'answers');
+    sorterEl.classList.remove('revealing', 'perfect', 'answers', 'numbered');
     document.querySelectorAll('.board-wrap .stamp, .board-wrap .scraps').forEach(x => x.remove());
     for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far', 'pending', 'landed', 'lit'); li.querySelector('.ans').hidden = true; li.querySelector('.picks').hidden = true; }
     $('#rv-room').hidden = true;
@@ -1982,6 +1994,7 @@ const demo = (() => {
     [...el.children].forEach((li, i) => {
       const id = li.dataset.id;
       li.querySelector('.pos').textContent = i + 1;
+      el.classList.toggle('numbered', checked);
       const was = li.querySelector('.was');
       was.hidden = !checked; was.textContent = checked ? `You placed this #${+li.dataset.was + 1}` : '';
       const [up, dn] = li.querySelectorAll('.mv');
