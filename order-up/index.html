@@ -297,20 +297,8 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .row.far .you{color:var(--red);background:var(--red-bg);border-color:var(--red)}
 .row.exact .pos{color:var(--green)}.row.near .pos{color:var(--amber)}
 .row.exact{box-shadow:0 3px 0 var(--green)}
-/* reveal steps: the card being scored stands out, the others step back; its slide is slower than a drag */
-.row.dim{opacity:.45}
-.row.active{border-color:var(--ink);z-index:4;box-shadow:0 3px 0 var(--ink),0 14px 26px -14px rgba(20,33,44,.45)}
 .row{transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .15s ease,border-color .15s,opacity .2s ease}
-.sorter.sliding .row{transition:transform .6s cubic-bezier(.35,0,.25,1),opacity .2s ease}
-.evaltag{position:absolute;right:8px;top:calc(100% - 12px);z-index:8;display:grid;gap:3px;justify-items:end;padding:7px 10px;border-radius:7px;background:var(--surface);
-  border:2px solid var(--ink);box-shadow:0 3px 0 var(--ink);transform:rotate(-1.5deg);animation:tag-in .22s cubic-bezier(.2,1.4,.4,1) both;pointer-events:none}
-.evaltag b{font:900 20px/1 var(--display);text-transform:uppercase;letter-spacing:.02em;white-space:nowrap}
-.evaltag b i{font-style:normal;color:var(--accent)}
-.evaltag small{font:700 12px/1 var(--mono);text-transform:uppercase;letter-spacing:.04em}
-.evaltag.exact{border-color:var(--green);box-shadow:0 3px 0 var(--green)}.evaltag.exact small{color:var(--green)}
-.evaltag.near{border-color:var(--amber);box-shadow:0 3px 0 var(--amber)}.evaltag.near small{color:var(--amber)}
-.evaltag.far{border-color:var(--red);box-shadow:0 3px 0 var(--red)}.evaltag.far small{color:var(--red)}
-@keyframes tag-in{from{opacity:0;transform:translateY(-6px) scale(.8) rotate(-4deg)}to{opacity:1;transform:rotate(-1.5deg)}}
+.sorter.gliding .row{transition:transform .95s cubic-bezier(.45,0,.2,1)}
 .tally{display:flex;align-items:baseline;justify-content:flex-end;gap:10px;padding:6px 6px 0}
 .tally b{font:900 34px/1 var(--display);font-variant-numeric:tabular-nums;min-width:2.2ch;text-align:right}
 .tally b.bump{animation:bump .3s cubic-bezier(.3,1.6,.5,1);display:inline-block}
@@ -539,7 +527,6 @@ input[type=text]{font-size:16px}
   .ans{flex-direction:column;align-items:flex-end;gap:4px}
   .sorter.answers .row{grid-template-columns:36px minmax(0,1fr);row-gap:4px}
   .sorter.answers .ans{grid-column:2;flex-direction:row;justify-content:space-between;align-items:center;flex-wrap:wrap;padding-bottom:2px}
-  .evaltag b{font-size:17px}
   .ans .val{font-size:12px}
   .lobby-foot{flex-direction:column;align-items:stretch}
   .lobby-foot > div:last-child{justify-items:stretch !important}
@@ -769,23 +756,23 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-28b"></script>
-<script src="data/songs.js?v=2026-09-28b"></script>
-<script src="data/movies.js?v=2026-09-28b"></script>
-<script src="data/tv.js?v=2026-09-28b"></script>
-<script src="data/games.js?v=2026-09-28b"></script>
-<script src="data/pokemon.js?v=2026-09-28b"></script>
-<script src="data/tech.js?v=2026-09-28b"></script>
-<script src="data/nostalgia.js?v=2026-09-28b"></script>
-<script src="data/people.js?v=2026-09-28b"></script>
-<script src="data/animals.js?v=2026-09-28b"></script>
-<script src="data/dogs.js?v=2026-09-28b"></script>
-<script src="data/cars.js?v=2026-09-28b"></script>
-<script src="data/food.js?v=2026-09-28b"></script>
-<script src="data/drinks.js?v=2026-09-28b"></script>
-<script src="data/stuff.js?v=2026-09-28b"></script>
-<script src="data/sequences.js?v=2026-09-28b"></script>
-<script src="engine.js?v=2026-09-28b"></script>
+<script src="data/states.js?v=2026-09-28c"></script>
+<script src="data/songs.js?v=2026-09-28c"></script>
+<script src="data/movies.js?v=2026-09-28c"></script>
+<script src="data/tv.js?v=2026-09-28c"></script>
+<script src="data/games.js?v=2026-09-28c"></script>
+<script src="data/pokemon.js?v=2026-09-28c"></script>
+<script src="data/tech.js?v=2026-09-28c"></script>
+<script src="data/nostalgia.js?v=2026-09-28c"></script>
+<script src="data/people.js?v=2026-09-28c"></script>
+<script src="data/animals.js?v=2026-09-28c"></script>
+<script src="data/dogs.js?v=2026-09-28c"></script>
+<script src="data/cars.js?v=2026-09-28c"></script>
+<script src="data/food.js?v=2026-09-28c"></script>
+<script src="data/drinks.js?v=2026-09-28c"></script>
+<script src="data/stuff.js?v=2026-09-28c"></script>
+<script src="data/sequences.js?v=2026-09-28c"></script>
+<script src="engine.js?v=2026-09-28c"></script>
 <script>
 (() => {
 'use strict';
@@ -1394,56 +1381,44 @@ function moveItem(id, delta, keepFocus) {
   if (keepFocus) sorterEl.querySelector(`[data-id="${id}"]`)?.focus({preventScroll: true});
 }
 
-/* the reveal: rows slide into the right order one at a time, last place first, so 1st lands last */
-/* the reveal, one item at a time, top to bottom, so every result can be read:
-   hold the order you submitted, then for each spot: highlight the card that belongs there (the rest dim),
-   label it "you #2 → actual #4", slide it into place, then show its points and add them to the round score.
-   After all five, a short pause, then a Perfect Order bonus if you earned one, then the results panel.
-   With reduced motion the same steps and pauses happen, just without the sliding. */
-// per card: highlight + label, a short pause, the slide, then points once it has landed, then a hold (~1.1–1.5 s)
-const REVEAL = {hold: 700, focus: 350, exactBeat: 250, move: 620, points: 500, pause: 550, bonus: 1400};
+/* the reveal: hold the order you submitted, then the whole list glides into the right order in one smooth
+   move, and only once it has settled do the results show: right / 1 off / wrong, "you #2 → actual #4", each
+   card's points and the round score. A Perfect Order bonus comes last. With reduced motion the list simply
+   switches, with the same pauses. */
+const REVEAL = {hold: 700, move: 950, results: 350, pause: 450, bonus: 1400};
 async function startReveal(right, mine) {
   clearTimeout(local.revealT);
   const key = local.key, alive = () => local.key === key && room?.phase === 'reveal';
   const wait = ms => new Promise(r => { local.revealT = setTimeout(r, ms); });
-  local.landed = new Set(); local.revealDone = false; local.active = null; local.tally = 0;
+  local.landed = new Set(); local.revealDone = false; local.tally = 0;
   const tally = $('#tally-n');
   $('#tally').hidden = !mine; $('#tally-bonus').textContent = ''; tally.textContent = '0';
-  // the order you locked in, untouched, for a moment
+  // your order, untouched, for a moment
   await wait(REVEAL.hold); if (!alive()) return;
-  for (let k = 0; k < right.length; k++) {
-    const id = right[k], at = mine ? mine.indexOf(id) : -1, d = Math.abs(at - k), pts = at < 0 ? 0 : d === 0 ? 20 : d === 1 ? 10 : 0;
-    const li = [...sorterEl.children].find(x => x.dataset.id === id);
-    // highlight the card where it sits now, labeled you #2 → actual #4, and pause before it moves
-    local.active = id; renderRound();
-    if (mine) li.insertAdjacentHTML('beforeend', `<span class="evaltag ${d === 0 ? 'exact' : d === 1 ? 'near' : 'far'}" aria-hidden="true">
-        <b>You #${at + 1} <i>→</i> Actual #${k + 1}</b><small>${d === 0 ? '✓ Correct' : d === 1 ? '↕ 1 spot off' : `✗ ${d} spots off`}</small></span>`);
-    await wait(mine ? REVEAL.focus : 200); if (!alive()) return;
-    // slide it into its spot (only this card and the ones it passes move)
-    local.order.splice(local.order.indexOf(id), 1);
-    local.order.splice(k, 0, id);
-    sorterEl.classList.add('sliding');
-    placeRows(local.order);
-    local.landed.add(id);
-    renderRound();
-    // let the slide finish completely before any points show (a card already in its spot just gets a short beat)
-    const moves = !mine || at !== k;
-    await wait(!moves ? REVEAL.exactBeat : REDUCED ? 250 : REVEAL.move); if (!alive()) return;
-    sorterEl.classList.remove('sliding');
-    if (!REDUCED) { li.classList.remove('landed'); void li.offsetWidth; li.classList.add('landed'); }
-    // its points, then into the round score
-    if (mine) {
-      popPoints(li, pts);
-      const from = local.tally; local.tally += pts;
-      if (pts) { bump(tally); countUp(tally, from, local.tally, 450, v => String(v)); }
-      await wait(REVEAL.points); if (!alive()) return;
-    } else await wait(250);
-    li.querySelector('.evaltag')?.remove();
+  // one coordinated reorder: every card slides from where you put it to where it belongs, together
+  local.order = right.slice();
+  sorterEl.classList.add('gliding');
+  placeRows(local.order);
+  await wait(REDUCED ? 200 : REVEAL.move); if (!alive()) return;
+  sorterEl.classList.remove('gliding');
+  // then the results, all at once: states, points, and the round score adding up
+  right.forEach(id => local.landed.add(id));
+  renderRound();
+  if (mine) {
+    let sum = 0;
+    right.forEach((id, k) => {
+      const d = Math.abs(mine.indexOf(id) - k), pts = d === 0 ? 20 : d === 1 ? 10 : 0;
+      sum += pts;
+      const li = sorterEl.querySelector(`[data-id="${id}"]`);
+      setTimeout(() => { if (alive()) popPoints(li, pts); }, k * 70);
+    });
+    local.tally = sum;
+    if (sum) { bump(tally); countUp(tally, 0, sum, 900, v => String(v)); }
   }
-  local.active = null; renderRound();
-  await wait(REVEAL.pause); if (!alive()) return;
+  await wait(REVEAL.results + (mine ? 900 : 0)); if (!alive()) return;
   // the bonus comes last, on its own, so it reads as a bonus
   if (mine && isPerfect(scoreOrder(mine, {t: roundOf(room.round).t, ids: mine}))) {
+    await wait(REVEAL.pause); if (!alive()) return;
     const wrap = $('.board-wrap');
     wrap.insertAdjacentHTML('beforeend', `<div class="stamp" aria-hidden="true">Perfect order!<small>+${PERFECT_BONUS} bonus</small></div>`);
     scraps(wrap);
@@ -1697,8 +1672,6 @@ function renderRound() {
     [...sorterEl.children].forEach((li, i) => {
       const id = li.dataset.id, it = t.byId[id], done = local.landed.has(id);
       const at = mineO ? mineO.indexOf(id) : -1, d = at < 0 ? -1 : Math.abs(at - i);
-      li.classList.toggle('active', local.active === id);
-      li.classList.toggle('dim', !!local.active && local.active !== id);
       li.classList.remove('exact', 'near', 'far');
       li.classList.toggle('pending', !done);
       const ans = li.querySelector('.ans'); ans.hidden = !done;
@@ -1764,7 +1737,7 @@ function renderRound() {
     sorterEl.classList.remove('revealing', 'perfect', 'answers');
     document.querySelectorAll('.board-wrap .stamp, .board-wrap .scraps').forEach(x => x.remove());
     $('#tally').hidden = true;
-    for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far', 'pending', 'landed', 'active', 'dim'); li.querySelector('.evaltag')?.remove(); li.querySelector('.ans').hidden = true; li.querySelector('.picks').hidden = true; }
+    for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far', 'pending', 'landed'); li.querySelector('.ans').hidden = true; li.querySelector('.picks').hidden = true; }
     $('#rv-room').hidden = true;
   }
 }
