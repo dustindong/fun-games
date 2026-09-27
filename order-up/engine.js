@@ -333,9 +333,12 @@ function makeRounds(n, cats, hist = newHistory()) {
   // curated sequences are a side dish: at most about one round in five
   const seqCap = Math.max(1, Math.round(n * SEQ_SHARE)), specialCap = Math.max(1, Math.round(n * SPECIAL_SHARE));
   const arc = n >= 6; // pacing only makes sense for a full-length game
+  // a per-game nudge per category, so the ones that usually lose (US States in Everything) still get their games
+  const jitter = Object.fromEntries(cats.map(c => [c, Math.random() * 60]));
   const score = (v, r) => {
     let s = Math.random() * 12;
     if (!pass.includes(v.cat.id)) s += 170;
+    s += jitter[v.cat.id] || 0;
     if (v.cat.pillar) s -= 30; // pop culture, nostalgia and chronology are the heart of the game
     if (prev && v.set === prev.set) s += 200;
     if (prev && v.type === prev.type) s += 120;
