@@ -2914,10 +2914,9 @@ for (const [id, e, a, h, note, name] of RAW5) {
   OBJ.push(o); BY[id] = o;
 }
 // never used in a round: objects whose "height" only exists lying down, on edge or stood on end,
-// and objects whose picture isn't the whole thing standing up (the moose emoji is only a head)
-const NOT_UPRIGHT = new Set(['egg', 'moose', 'titanic', 'a380', 'b747', 'b737', 'an225', 'cessna', 'f35', 'b2', 'sr71', 'chinook', 'blimp', 'hindenburg',
+const NOT_UPRIGHT = new Set(['egg', 'titanic', 'a380', 'b747', 'b737', 'an225', 'cessna', 'f35', 'b2', 'sr71', 'chinook', 'blimp', 'hindenburg',
   'wrightflyer', 'orbiter', 'quarter', 'dime', 'nickel', 'creditcard', 'cd', 'paper', 'pencil', 'crayon', 'card', 'puck', 'stickynote',
-  'ruler', 'bat', 'racket', 'container', 'cube', 'clockface']);
+  'ruler', 'bat', 'racket', 'cube', 'clockface']);
 const artOf = o => ART[o.art || o.id];
 
 Object.assign(ART, {
@@ -2966,25 +2965,220 @@ Object.assign(ART, {
   }},
 });
 
+/* ---------------- art for the standardized items ---------------- */
+function bearArt(fur, dark, muzzle) { return {aspect: 0.56, shade: null, draw(c, w, h) {
+  const line = 'rgba(40,50,60,.35)';
+  E(c, w, h, 0.22, 0.64, 0.13, 0.2, dark, line); E(c, w, h, 0.78, 0.64, 0.13, 0.2, dark, line);
+  E(c, w, h, 0.5, 0.56, 0.4, 0.34, fur, line);
+  E(c, w, h, 0.24, 0.93, 0.16, 0.07, fur, line); E(c, w, h, 0.76, 0.93, 0.16, 0.07, fur, line);
+  E(c, w, h, 0.1, 0.33, 0.1, 0.16, fur, line); E(c, w, h, 0.9, 0.33, 0.1, 0.16, fur, line);
+  E(c, w, h, 0.25, 0.07, 0.08, 0.05, fur, line); E(c, w, h, 0.75, 0.07, 0.08, 0.05, fur, line);
+  E(c, w, h, 0.5, 0.17, 0.26, 0.15, fur, line);
+  E(c, w, h, 0.5, 0.22, 0.12, 0.07, muzzle, line);
+  E(c, w, h, 0.5, 0.2, 0.04, 0.025, '#1C2530'); E(c, w, h, 0.39, 0.13, 0.025, 0.018, '#1C2530'); E(c, w, h, 0.61, 0.13, 0.025, 0.018, '#1C2530');
+  E(c, w, h, 0.5, 0.62, 0.22, 0.2, 'rgba(255,255,255,.18)');
+}}; }
+const LIB_EMOJI = {id: '__liberty_statue', e: '🗽'};
+Object.assign(ART, {
+  grizzly: bearArt('#8A5A34', '#6E4527', '#C49A6C'),
+  // the Statue of Liberty with its pedestal: the statue is about half the total height
+  libertyfull: {aspect: 0.42, shade: null, draw(c, w, h) {
+    fillP(c, w, h, [[0, 1], [0.06, 0.9], [0.94, 0.9], [1, 1]], '#9C9A8E', EDGE);                          // star fort
+    fillP(c, w, h, [[0.2, 0.9], [0.24, 0.62], [0.76, 0.62], [0.8, 0.9]], '#C9BFA6', EDGE);                 // pedestal
+    fillP(c, w, h, [[0.26, 0.62], [0.3, 0.5], [0.7, 0.5], [0.74, 0.62]], '#D8CFB8', EDGE);
+    for (const v of [0.66, 0.74, 0.82]) R(c, w, h, 0.26, v, 0.74, v + 0.008, 'rgba(60,50,30,.25)');
+    const m = meas(LIB_EMOJI), top = 0.5 * h, fs = top / m.h;                                              // the statue on top
+    c.save(); c.font = `${fs}px ${EMOJI_FONT}`; c.textBaseline = 'top'; c.textAlign = 'left';
+    c.fillText('🗽', 0.5 * w - (m.ox + m.w / 2) * fs, 0 - m.oy * fs); c.restore();
+  }},
+  atm: {aspect: 0.45, shade: 0.6, draw(c, w, h) {
+    c.fillStyle = '#5E6E7E'; c.beginPath(); c.roundRect(0, 0, w, h, w * 0.06); c.fill();
+    R(c, w, h, 0, 0, 1, 0.14, '#2F6FB5'); R(c, w, h, 0.12, 0.2, 0.88, 0.44, '#1F2A33'); R(c, w, h, 0.16, 0.23, 0.84, 0.41, '#58A0C8');
+    fillP(c, w, h, [[0.06, 0.5], [0.94, 0.5], [1, 0.62], [0, 0.62]], '#4A5866');
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) R(c, w, h, 0.2 + i * 0.12, 0.52 + j * 0.03, 0.29 + i * 0.12, 0.545 + j * 0.03, '#CFD6DC');
+    R(c, w, h, 0.66, 0.53, 0.84, 0.545, '#111'); R(c, w, h, 0.3, 0.7, 0.7, 0.72, '#111');
+  }},
+  portapotty: {aspect: 0.52, shade: 0.6, draw(c, w, h) {
+    fillP(c, w, h, [[0, 0.1], [0.08, 0], [0.92, 0], [1, 0.1]], '#E8ECEF', EDGE);
+    R(c, w, h, 0.04, 0.1, 0.96, 1, '#2F7FC1');
+    R(c, w, h, 0.14, 0.18, 0.86, 0.97, '#3B8FD3'); R(c, w, h, 0.72, 0.5, 0.78, 0.58, '#D9DEE3');
+    R(c, w, h, 0.3, 0.26, 0.7, 0.3, '#E8ECEF'); R(c, w, h, 0.4, 0.3, 0.6, 0.34, '#6BBF59');
+  }},
+  schoolbus: {aspect: 3.8, shade: null, draw(c, w, h) {
+    c.fillStyle = '#F7B500'; c.beginPath(); c.roundRect(0.01 * w, 0, 0.83 * w, 0.86 * h, 0.05 * h); c.fill();   // body
+    c.strokeStyle = EDGE; c.lineWidth = 1; c.stroke();
+    fillP(c, w, h, [[0.83, 0.42], [0.96, 0.46], [0.995, 0.54], [0.995, 0.86], [0.83, 0.86]], '#F7B500', EDGE);   // hood
+    R(c, w, h, 0.03, 0.1, 0.8, 0.36, '#2A2F36'); for (let i = 0; i < 9; i++) R(c, w, h, 0.045 + i * 0.083, 0.12, 0.115 + i * 0.083, 0.34, '#9BC4DE');
+    R(c, w, h, 0.01, 0.5, 0.995, 0.525, '#1B1B1B'); R(c, w, h, 0.01, 0.62, 0.995, 0.645, '#1B1B1B');
+    R(c, w, h, 0.01, 0.8, 0.995, 0.86, '#2A2F36');
+    for (const u of [0.2, 0.76]) { E(c, w, h, u, 0.86, 0.045, 0.14, '#222'); E(c, w, h, u, 0.86, 0.02, 0.07, '#9AA0A6'); }
+    R(c, w, h, 0.84, 0.22, 0.9, 0.3, '#D93A2B');
+  }},
+  monstertruck: {aspect: 1.3, shade: null, draw(c, w, h) {
+    for (const u of [0.22, 0.78]) { E(c, w, h, u, 0.72, 0.21, 0.28, '#1D1F22'); E(c, w, h, u, 0.72, 0.1, 0.13, '#8A9199'); E(c, w, h, u, 0.72, 0.04, 0.05, '#3A3F46'); }
+    R(c, w, h, 0.34, 0.5, 0.66, 0.6, '#3A3F46');
+    fillP(c, w, h, [[0.05, 0.5], [0.06, 0.32], [0.3, 0.3], [0.38, 0.06], [0.7, 0.06], [0.78, 0.3], [0.95, 0.32], [0.96, 0.5]], '#2E8B57', EDGE);
+    fillP(c, w, h, [[0.42, 0.1], [0.66, 0.1], [0.72, 0.29], [0.42, 0.29]], '#9BC4DE');
+    R(c, w, h, 0.05, 0.4, 0.96, 0.43, '#F2C80F');
+  }},
+  lion: {aspect: 1.5, shade: null, draw(c, w, h) {
+    const fur = '#D9A45B', dk = '#B98040', mane = '#9A5B2A';
+    for (const u of [0.36, 0.44, 0.72, 0.8]) R(c, w, h, u, 0.5, u + 0.07, 0.97, u === 0.44 || u === 0.8 ? dk : fur);
+    for (const u of [0.36, 0.44, 0.72, 0.8]) E(c, w, h, u + 0.04, 0.975, 0.05, 0.03, dk);
+    c.beginPath(); c.roundRect(0.34 * w, 0.3 * h, 0.56 * w, 0.32 * h, 0.1 * h); c.fillStyle = fur; c.fill();
+    L(c, w, h, [[0.9, 0.36], [0.97, 0.5], [0.96, 0.62]], fur, Math.max(1, h * 0.035)); E(c, w, h, 0.96, 0.63, 0.025, 0.04, mane);
+    E(c, w, h, 0.26, 0.26, 0.2, 0.26, mane, 'rgba(40,30,20,.3)');                       // mane
+    E(c, w, h, 0.2, 0.3, 0.12, 0.15, fur); E(c, w, h, 0.12, 0.36, 0.07, 0.06, '#EBC48A');
+    E(c, w, h, 0.07, 0.34, 0.025, 0.02, '#2A1D14'); E(c, w, h, 0.2, 0.25, 0.018, 0.02, '#2A1D14');
+  }},
+  moose: {aspect: 1.25, shade: null, draw(c, w, h) {
+    const fur = '#5B3B28', dk = '#43291B', ant = '#D8C9A8';
+    for (const u of [0.3, 0.38, 0.72, 0.8]) R(c, w, h, u, 0.55, u + 0.06, 0.97, u === 0.38 || u === 0.8 ? dk : fur);
+    for (const u of [0.3, 0.38, 0.72, 0.8]) R(c, w, h, u - 0.005, 0.95, u + 0.065, 1, '#2A1B12');
+    fillP(c, w, h, [[0.26, 0.33], [0.36, 0.3], [0.5, 0.36], [0.9, 0.38], [0.94, 0.5], [0.9, 0.62], [0.28, 0.62], [0.24, 0.48]], fur);
+    fillP(c, w, h, [[0.26, 0.36], [0.2, 0.3], [0.1, 0.34], [0.02, 0.44], [0.04, 0.52], [0.14, 0.5], [0.22, 0.48]], fur);        // head and neck
+    fillP(c, w, h, [[0.12, 0.5], [0.16, 0.6], [0.2, 0.5]], dk);                                                                    // bell
+    E(c, w, h, 0.13, 0.36, 0.015, 0.015, '#111');
+    for (const s of [0, 1]) fillP(c, w, h, s ? [[0.2, 0.3], [0.3, 0.14], [0.34, 0.02], [0.37, 0.14], [0.42, 0.04], [0.43, 0.18], [0.3, 0.3]]
+      : [[0.16, 0.3], [0.08, 0.12], [0.04, 0.0], [0.1, 0.1], [0.14, 0.02], [0.18, 0.14], [0.22, 0.3]], ant, 'rgba(60,50,30,.4)');
+  }},
+  triceratops: {aspect: 2.6, shade: null, draw(c, w, h) {
+    const sk = '#7C9A5A', dk = '#5E7A42';
+    for (const u of [0.32, 0.4, 0.66, 0.74]) R(c, w, h, u, 0.55, u + 0.06, 1, u === 0.4 || u === 0.74 ? dk : sk);
+    fillP(c, w, h, [[0.28, 0.3], [0.45, 0.02], [0.7, 0.0], [0.86, 0.2], [0.99, 0.5], [0.86, 0.46], [0.8, 0.66], [0.3, 0.66]], sk, 'rgba(30,50,20,.4)');
+    fillP(c, w, h, [[0.3, 0.06], [0.22, 0.02], [0.14, 0.2], [0.18, 0.46], [0.32, 0.5]], '#C98B4A', 'rgba(60,40,20,.4)');            // frill
+    fillP(c, w, h, [[0.26, 0.3], [0.06, 0.4], [0.02, 0.6], [0.14, 0.66], [0.3, 0.56]], sk, 'rgba(30,50,20,.4)');                   // head
+    fillP(c, w, h, [[0.12, 0.34], [0.0, 0.18], [0.16, 0.38]], '#F2EAD8'); fillP(c, w, h, [[0.2, 0.32], [0.1, 0.12], [0.24, 0.34]], '#F2EAD8');
+    fillP(c, w, h, [[0.04, 0.5], [0.0, 0.42], [0.07, 0.48]], '#F2EAD8');
+    E(c, w, h, 0.14, 0.44, 0.012, 0.03, '#111');
+  }},
+  stegosaurus: {aspect: 2.1, shade: null, draw(c, w, h) {
+    const sk = '#8FA36B', dk = '#6E824E';
+    for (const u of [0.3, 0.38, 0.62, 0.7]) R(c, w, h, u, 0.62, u + 0.07, 1, u === 0.38 || u === 0.7 ? dk : sk);
+    for (let i = 0; i < 7; i++) { const u = 0.26 + i * 0.075, t = i === 3 ? 0 : i === 2 || i === 4 ? 0.05 : 0.14 + Math.abs(i - 3) * 0.03;
+      fillP(c, w, h, [[u - 0.045, 0.4], [u, t], [u + 0.045, 0.4]], '#C9573A', 'rgba(80,30,20,.4)'); }
+    fillP(c, w, h, [[0.12, 0.62], [0.24, 0.4], [0.5, 0.28], [0.78, 0.38], [0.98, 0.56], [0.9, 0.62], [0.78, 0.74], [0.24, 0.74]], sk, 'rgba(30,50,20,.4)');
+    fillP(c, w, h, [[0.14, 0.62], [0.02, 0.66], [0.0, 0.72], [0.12, 0.74], [0.24, 0.72]], sk, 'rgba(30,50,20,.4)');
+    for (const [u, v] of [[0.94, 0.5], [0.97, 0.54]]) fillP(c, w, h, [[u, v], [u + 0.03, v - 0.08], [u + 0.02, v + 0.02]], '#E8DCC4');
+    E(c, w, h, 0.05, 0.68, 0.01, 0.015, '#111');
+  }},
+  celltower: {aspect: 0.14, shade: null, draw(c, w, h) {
+    const col = '#8E979F';
+    L(c, w, h, [[0.12, 1], [0.38, 0.08]], col, Math.max(1, w * 0.06)); L(c, w, h, [[0.88, 1], [0.62, 0.08]], col, Math.max(1, w * 0.06));
+    for (let i = 0; i < 14; i++) { const v0 = 0.08 + i * 0.066, v1 = v0 + 0.066, a = t => 0.12 + (0.38 - 0.12) * (1 - t) ;
+      const x0 = (v) => 0.12 + (0.38 - 0.12) * (1 - v) / 0.92, x1 = v => 1 - x0(v);
+      L(c, w, h, [[x0(v0), v0], [x1(v1), v1]], col, 1); L(c, w, h, [[x1(v0), v0], [x0(v1), v1]], col, 1); }
+    R(c, w, h, 0.47, 0, 0.53, 0.1, col);
+    for (const u of [0.18, 0.46, 0.74]) R(c, w, h, u, 0.06, u + 0.1, 0.12, '#E7EAEE');
+  }},
+  watertower: {aspect: 0.5, shade: 0.55, draw(c, w, h) {
+    for (const u of [0.18, 0.4, 0.6, 0.82]) L(c, w, h, [[u < 0.5 ? u - 0.12 : u + 0.12, 1], [u, 0.45]], '#6F7880', Math.max(1, w * 0.035));
+    L(c, w, h, [[0.12, 0.72], [0.88, 0.72]], '#6F7880', Math.max(1, w * 0.02));
+    fillP(c, w, h, [[0.1, 0.22], [0.9, 0.22], [0.9, 0.46], [0.5, 0.52], [0.1, 0.46]], '#8FC2D9', EDGE);
+    fillP(c, w, h, [[0.06, 0.22], [0.5, 0.02], [0.94, 0.22]], '#6FA5BE', EDGE);
+    R(c, w, h, 0.47, 0, 0.53, 0.04, '#6F7880');
+  }},
+});
+
+/* ---------------- standardized items ----------------
+   One representative height per thing, in feet, with how it's measured. These values are for gameplay, not
+   universal truths: animals vary, so each row names the convention (shoulder height, standing height, ...).
+   Row: [id, picture (emoji, null = drawn art under the same id, 'art:key' = reuse drawn art), phrase, height in ft,
+         measurement, name, category, familiarity 1-10, measured point as a share of the picture's height]
+   The last column is for pictures that rise above the measured point: an elephant's head above its shoulder, the
+   Empire State Building's antenna above its roof. The measuring line stops at the measured point. */
+const FT = 0.3048;
+const STD = [
+  // everyday
+  ['person', '🧍', 'a 6-foot person', 6.0, 'standing height', '6-Foot Person', 'everyday', 10],
+  ['door', '🚪', 'a door', 6.67, 'a standard door, floor to the top of the frame', 'Standard Door', 'everyday', 10],
+  ['fridge', null, 'a refrigerator', 5.8, 'overall height of a standard fridge', 'Refrigerator', 'everyday', 10],
+  ['vending', null, 'a vending machine', 6.0, 'overall height', 'Vending Machine', 'everyday', 9],
+  ['hoop', null, 'a basketball hoop', 10.0, 'rim height (the backboard rises above it)', 'Basketball Hoop', 'everyday', 10, 0.77],
+  ['atm', null, 'an ATM', 5.0, 'overall height of a walk-up machine', 'ATM', 'everyday', 8],
+  ['portapotty', null, 'a portable toilet', 7.5, 'overall height', 'Portable Toilet', 'everyday', 8],
+  ['container', null, 'a shipping container', 8.5, 'standard container sitting on the ground', 'Shipping Container', 'everyday', 8],
+  // animals
+  ['giraffe', '🦒', 'a giraffe', 18.0, 'adult male standing height, to the top of its head', 'Giraffe', 'animals', 10],
+  ['ostrich', null, 'an ostrich', 9.0, 'adult male standing height', 'Ostrich', 'animals', 9],
+  ['elephant', '🐘', 'an African elephant', 10.5, 'adult bull, shoulder height', 'African Elephant', 'animals', 10, 0.85],
+  ['moose', null, 'a moose', 6.5, 'adult bull, shoulder height (antlers above)', 'Moose', 'animals', 8, 0.7],
+  ['horse', '🐎', 'a horse', 5.3, 'height at the withers (base of the neck)', 'Horse', 'animals', 10, 0.62],
+  ['camel', '🐪', 'a camel', 6.5, 'to the top of the hump', 'Camel', 'animals', 9],
+  ['bison', '🦬', 'an American bison', 6.0, 'adult bull, to the top of the hump', 'American Bison', 'animals', 8],
+  ['gorilla', '🦍', 'a gorilla', 5.5, 'silverback standing upright', 'Gorilla', 'animals', 9],
+  ['polarbear', null, 'a polar bear', 9.5, 'adult male standing on its hind legs', 'Polar Bear', 'animals', 9],
+  ['grizzly', null, 'a grizzly bear', 8.0, 'adult male standing on its hind legs', 'Grizzly Bear', 'animals', 8],
+  ['kangaroo', '🦘', 'a red kangaroo', 6.0, 'adult male standing tall', 'Red Kangaroo', 'animals', 8],
+  ['penguin', '🐧', 'an emperor penguin', 4.0, 'adult standing height', 'Emperor Penguin', 'animals', 8],
+  ['lion', null, 'a lion', 4.0, 'adult male, shoulder height (mane above)', 'Lion', 'animals', 10, 0.7],
+  ['tiger', '🐅', 'a tiger', 3.5, 'shoulder height (head raised above)', 'Tiger', 'animals', 9, 0.62],
+  ['greatdane', null, 'a Great Dane', 2.8, 'male, shoulder height', 'Great Dane', 'animals', 7, 0.78],
+  ['flamingo', '🦩', 'a flamingo', 4.5, 'standing height', 'Flamingo', 'animals', 8],
+  // vehicles
+  ['car', '🚗', 'a sedan', 4.8, 'overall vehicle height', 'Sedan', 'vehicles', 10],
+  ['suv', '🚙', 'an SUV', 6.2, 'overall vehicle height', 'SUV', 'vehicles', 10],
+  ['pickup', '🛻', 'a pickup truck', 6.4, 'overall vehicle height', 'Pickup Truck', 'vehicles', 10],
+  ['bus', 'art:schoolbus', 'a school bus', 10.5, 'overall vehicle height', 'School Bus', 'vehicles', 10],
+  ['semitruck', '🚛', 'a semi truck', 13.5, 'overall height with the trailer', 'Semi Truck', 'vehicles', 9],
+  ['routemaster', null, 'a double-decker bus', 14.4, 'overall vehicle height', 'Double-Decker Bus', 'vehicles', 9],
+  ['monstertruck', null, 'a monster truck', 12.0, 'overall vehicle height', 'Monster Truck', 'vehicles', 8],
+  ['ambulance', '🚑', 'an ambulance', 9.0, 'overall height, lights included', 'Ambulance', 'vehicles', 9],
+  ['firetruck', '🚒', 'a fire truck', 10.5, 'overall vehicle height', 'Fire Truck', 'vehicles', 9],
+  // landmarks
+  ['liberty', 'art:libertyfull', 'the Statue of Liberty', 305, 'ground to torch, including the pedestal', 'Statue of Liberty', 'landmarks', 10],
+  ['bigben', null, 'Big Ben', 316, 'the Elizabeth Tower, to the top of its spire', 'Big Ben', 'landmarks', 10],
+  ['spaceneedle', null, 'the Space Needle', 605, 'total height', 'Space Needle', 'landmarks', 9],
+  ['arch', null, 'the Gateway Arch', 630, 'total height', 'Gateway Arch', 'landmarks', 8],
+  ['goldengate', null, 'a Golden Gate Bridge tower', 746, 'tower height above the water', 'Golden Gate Tower', 'landmarks', 9],
+  ['eiffel', null, 'the Eiffel Tower', 1083, 'total height, antennas included', 'Eiffel Tower', 'landmarks', 10],
+  ['empire', null, 'the Empire State Building', 1250, 'architectural height to the roof (the antenna rises above)', 'Empire State Building', 'landmarks', 10, 0.86],
+  ['onewtc', null, 'One World Trade Center', 1776, 'architectural height, spire included', 'One World Trade Center', 'landmarks', 9],
+  ['burj', null, 'the Burj Khalifa', 2717, 'architectural height', 'Burj Khalifa', 'landmarks', 9],
+  ['washington', null, 'the Washington Monument', 555, 'total height', 'Washington Monument', 'landmarks', 9],
+  ['christ', null, 'Christ the Redeemer', 125, 'statue and pedestal', 'Christ the Redeemer', 'landmarks', 9],
+  // structures and rides
+  ['ferriswheel', '🎡', 'a Ferris wheel', 150, 'a typical big fairground wheel', 'Ferris Wheel', 'rides', 9],
+  ['londoneye', '🎡', 'the London Eye', 443, 'total height', 'London Eye', 'rides', 8],
+  ['kingdaka', 'art:topthrill', 'the Kingda Ka roller coaster', 456, 'top of the tower (the ride ran 2005-2024)', 'Kingda Ka', 'rides', 7],
+  ['fury325', null, 'the Fury 325 roller coaster', 325, 'top of the lift hill', 'Fury 325', 'rides', 6],
+  ['celltower', null, 'a cell tower', 150, 'a typical lattice tower', 'Cell Tower', 'rides', 8],
+  ['watertower', null, 'a water tower', 130, 'a typical town water tower', 'Water Tower', 'rides', 8],
+  // prehistoric
+  ['trex', '🦖', 'a T. rex', 12, 'standing height, to the top of its head', 'T. rex', 'dinos', 10],
+  ['raptor', '🦖', 'a Velociraptor', 3, 'standing height, to the top of its head', 'Velociraptor', 'dinos', 8],
+  ['triceratops', null, 'a Triceratops', 10, 'hip height', 'Triceratops', 'dinos', 9],
+  ['stegosaurus', null, 'a Stegosaurus', 14, 'to the top of its back plates', 'Stegosaurus', 'dinos', 9],
+];
+for (const [id, pic, a, ft, measure, name, cat, fam, mfrac] of STD) {
+  const o = BY[id] || {id};
+  const noun = a.replace(/^(an?|the) /, '');
+  Object.assign(o, {a, noun, name, label: name, height: ft * FT, heightFt: ft, unit: 'm', note: measure, measure, cat, fam, mfrac: mfrac || 1});
+  if (pic === null) { if (ART[id]) o.e = null; }   // drawn art replaces an old emoji
+  else if (pic.startsWith('art:')) { o.art = pic.slice(4); o.e = null; }
+  else { o.e = pic; delete o.art; }
+  if (!BY[id]) { OBJ.push(o); BY[id] = o; }
+}
+
 /* ---------------- curated comparisons ----------------
    Pairs are chosen by hand, not by ratio: both things should be familiar, both should stand upright, and the height
    should be guessable. Row: [reference (left), resized (right), theme, level 1 easy .. 3 harder, tags]
    tags: star = memorable enough for the last round; giant / tiny / close = special rounds (see PAIR_RULES). */
-const THEMES = {animals: 'Animals', dinos: 'Dinosaurs', everyday: 'Everyday stuff', tech: 'Tech', landmarks: 'Landmarks',
-  rockets: 'Rockets', people: 'People', sports: 'Sports'};
+const THEMES = {animals: 'Animals', dinos: 'Prehistoric', everyday: 'Everyday stuff', vehicles: 'Vehicles', tech: 'Tech', landmarks: 'Landmarks',
+  rides: 'Structures & rides', rockets: 'Rockets', people: 'People', sports: 'Sports'};
 const PAIRS_RAW = [
   // animals
   ['person','giraffe','animals',1,'star'], ['person','polarbear','animals',1,'star'], ['hoop','giraffe','animals',2,''],
   ['fridge','gorilla','animals',0,'close'], ['car','elephant','animals',1,''], ['person','ostrich','animals',2,''],
-  ['person','camel','animals',2,''], ['person','penguin','animals',2,''], ['door','giraffe','animals',1,'star'],
+  ['person','camel','animals',0,'close'], ['person','penguin','animals',2,''], ['door','giraffe','animals',1,'star'],
   ['person','kangaroo','animals',0,'close'], ['cow','elephant','animals',2,''], ['labrador','person','animals',1,''],
-  ['greatdane','person','animals',2,''], ['cat','labrador','animals',1,'star'], ['person','horse','animals',2,''],
+  ['greatdane','person','animals',2,''], ['cat','labrador','animals',1,'star'], ['person','horse','animals',0,'close'],
   ['elephant','giraffe','animals',2,'star'], ['elephant','mammoth','animals',0,'close'], ['hippo','rhino','animals',3,''],
   ['tiger','person','animals',2,''], ['chihuahua','cat','animals',0,'close'], ['polarbear','giraffe','animals',2,''],
   ['gorilla','polarbear','animals',2,''], ['flamingo','person','animals',3,''], ['fridge','polarbear','animals',2,'star'],
   ['person','bison','animals',0,'close'], ['bike','kangaroo','animals',3,''], ['door','polarbear','animals',2,''],
   ['kangaroo','giraffe','animals',2,''], ['penguin','polarbear','animals',2,''], ['ostrich','giraffe','animals',2,''],
-  ['flamingo','giraffe','animals',3,''], ['door','ostrich','animals',0,'close'], ['bus','elephant','animals',0,'close'],
+  ['flamingo','giraffe','animals',3,''], ['door','ostrich','animals',1,'star'], ['bus','elephant','animals',0,'close'],
   ['suv','elephant','animals',2,''], ['horse','giraffe','animals',2,''],
   // dinosaurs
   ['person','trex','dinos',1,'star'], ['elephant','trex','dinos',0,'close'], ['giraffe','trex','dinos',2,''],
@@ -2999,23 +3193,23 @@ const PAIRS_RAW = [
   ['bus','house','everyday',3,''], ['chair','door','everyday',2,''], ['toilet','person','everyday',1,''],
   ['bike','door','everyday',2,''], ['xmastree','house','everyday',3,''], ['person','fridge','everyday',0,'close'],
   ['person','vending','everyday',0,'close'], ['person','suv','everyday',0,'close'], ['person','semitruck','everyday',2,''],
-  ['semitruck','giraffe','everyday',2,''], ['elephant','semitruck','everyday',3,''], ['hoop','semitruck','everyday',0,'close'],
+  ['semitruck','giraffe','everyday',2,''], ['elephant','semitruck','everyday',3,''], ['hoop','semitruck','vehicles',2,''],
   ['person','routemaster','everyday',2,''], ['suv','bus','everyday',2,''],
   // tech
   ['phone','gameboy','tech',0,'close'], ['ipod','phone','tech',2,''], ['gameboy','ipod','tech',3,''], ['sodacan','phone','tech',0,'close'],
   // landmarks
-  ['liberty','bigben','landmarks',1,'star'], ['bigben','eiffel','landmarks',2,''], ['liberty','eiffel','landmarks',0,'giant'],
+  ['liberty','bigben','landmarks',0,'close'], ['bigben','eiffel','landmarks',2,''], ['liberty','eiffel','landmarks',2,''],
   ['eiffel','empire','landmarks',2,''], ['empire','burj','landmarks',2,'star'], ['pyramid','eiffel','landmarks',2,'star'],
-  ['colosseum','liberty','landmarks',0,'close'], ['taj','bigben','landmarks',3,''], ['washington','pyramid','landmarks',0,'close'],
-  ['spaceneedle','eiffel','landmarks',2,''], ['pisa','bigben','landmarks',2,''], ['christ','liberty','landmarks',0,'close'],
+  ['colosseum','liberty','landmarks',2,''], ['taj','bigben','landmarks',3,''], ['washington','pyramid','landmarks',0,'close'],
+  ['spaceneedle','eiffel','landmarks',2,''], ['pisa','bigben','landmarks',2,''], ['christ','liberty','landmarks',2,''],
   ['londoneye','pyramid','landmarks',0,'close'], ['arch','washington','landmarks',0,'close'], ['sphinx','pyramid','landmarks',0,'giant'],
-  ['empire','cntower','landmarks',0,'close'], ['house','hollywood','landmarks',3,''], ['giraffe','stonehenge','landmarks',3,''],
+  ['empire','cntower','landmarks',2,''], ['house','hollywood','landmarks',3,''], ['giraffe','stonehenge','landmarks',3,''],
   ['eiffel','burj','landmarks',2,''], ['burj','everest','landmarks',0,'giant'], ['fuji','everest','landmarks',3,''],
-  ['burj','fuji','landmarks',0,'giant'], ['liberty','hyperion','landmarks',2,''], ['person','liberty','landmarks',0,'giant'],
+  ['burj','fuji','landmarks',0,'giant'], ['liberty','hyperion','landmarks',2,''],
   ['house','liberty','landmarks',0,'giant'], ['bigben','pyramid','landmarks',2,''], ['giraffe','liberty','landmarks',0,'giant'],
   ['house','bigben','landmarks',0,'giant'], ['elephant','liberty','landmarks',0,'giant'], ['giraffe','bigben','landmarks',0,'giant'],
   // rockets, standing on the launch pad
-  ['liberty','shuttle','rockets',0,'close'], ['bigben','saturnv','rockets',0,'close'], ['liberty','saturnv','rockets',2,'star'],
+  ['shuttle','liberty','rockets',2,''], ['londoneye','kingdaka','rides',0,'close'], ['bigben','saturnv','rockets',0,'close'], ['liberty','saturnv','rockets',2,'star'],
   ['shuttle','saturnv','rockets',2,'star'], ['falcon9','saturnv','rockets',3,''], ['liberty','falcon9','rockets',2,''],
   ['bigben','sls','rockets',0,'close'], ['house','shuttle','rockets',0,'giant'],
   // people
@@ -3032,13 +3226,35 @@ const PAIRS_RAW = [
 ];
 // what each kind of round allows (ratio = the taller height over the shorter one)
 const PAIR_RULES = {
-  normal: {min: 1.25, max: 4, label: ''},
+  normal: {min: 1.15, max: 4, label: ''},
   close: {min: 1, max: 1.25, label: 'Close call'},
   tiny: {min: 1.25, max: 4, maxSize: 0.3, label: 'Tiny mode'},
   giant: {min: 4, max: 30, label: 'Giant mode'},
 };
 const kindOf = tags => tags.includes('giant') ? 'giant' : tags.includes('tiny') ? 'tiny' : tags.includes('close') ? 'close' : 'normal';
-const PAIRS = PAIRS_RAW.map(([ref, tgt, theme, lvl, tags]) => ({key: `${ref}|${tgt}`, ref, tgt, theme, lvl, star: tags.includes('star'), kind: kindOf(tags)}));
+/* Beyond the hand-picked list, the standardized items pair themselves up when the match is guessable:
+   both familiar (6+ of 10), different pictures, and close enough in height (1.15-2.5x apart; closer than that is a
+   close call). The more familiar thing is the reference on the left. Round picking then prefers ratios up to 1.8x. */
+function genPairs() {
+  const have = new Set(PAIRS_RAW.flatMap(([a, b]) => [`${a}|${b}`, `${b}|${a}`])), out = [];
+  const items = STD.map(r => BY[r[0]]);
+  for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
+    const a = items[i], b = items[j];
+    if (a.e && a.e === b.e) continue;
+    const q = Math.max(a.height, b.height) / Math.min(a.height, b.height), minF = Math.min(a.fam, b.fam);
+    let kind = null, lvl = 0;
+    if (q >= 1.15 && q <= 2.5 && minF >= 6) { kind = 'normal'; lvl = minF >= 9 && q >= 1.3 ? 1 : minF >= 8 ? 2 : 3; }
+    else if (q < 1.15 && minF >= 8) kind = 'close';
+    if (!kind) continue;
+    const [ref, tgt] = a.fam > b.fam || (a.fam === b.fam && a.height <= b.height) ? [a, b] : [b, a];
+    if (have.has(`${ref.id}|${tgt.id}`)) continue;
+    const star = kind === 'normal' && a.fam === 10 && b.fam === 10 && q >= 1.3 && q <= 2.2;
+    out.push({key: `${ref.id}|${tgt.id}`, ref: ref.id, tgt: tgt.id, theme: tgt.cat, lvl, star, kind, gen: true});
+  }
+  return out;
+}
+const PAIRS = PAIRS_RAW.map(([ref, tgt, theme, lvl, tags]) => ({key: `${ref}|${tgt}`, ref, tgt, theme, lvl, star: tags.includes('star'), kind: kindOf(tags)}))
+  .concat(genPairs());
 // the quality gate: every pair is checked here; a pair with problems never reaches a game
 function auditPair(p) {
   const a = BY[p.ref], b = BY[p.tgt], issues = [];
@@ -3046,6 +3262,7 @@ function auditPair(p) {
   for (const o of [a, b]) {
     if (!artOf(o) && !o.e) issues.push(`${o.id} has no picture`);
     if (!(o.height > 0) || o.unit !== 'm') issues.push(`${o.id} has no height`);
+    if (o.fam != null && !(o.fam >= 1 && o.fam <= 10 && o.cat && o.measure && o.mfrac > 0 && o.mfrac <= 1)) issues.push(`${o.id} has incomplete standard fields`);
     if (NOT_UPRIGHT.has(o.id)) issues.push(`${o.id} doesn't stand upright`);
   }
   const q = Math.max(a.height, b.height) / Math.min(a.height, b.height), rule = PAIR_RULES[p.kind];
@@ -3261,7 +3478,8 @@ function label(c, x, y, align, lines, maxW) {
   c.restore();
 }
 // an object's drawn shape in units of its measured size (so measured side = 1)
-function shapeOf(o) { const m = meas(o); return {m, w: m.w / m.h, h: 1}; }
+// an object's picture in units of its measured height: h > 1 when the picture rises above the measured point
+function shapeOf(o) { const m = meas(o), f = o.mfrac || 1; return {m, w: m.w / m.h / f, h: 1 / f}; }
 /* s: {ref, tgt, g (target size drawn, as a multiple of the reference), fit (largest target size to make room for),
        ghosts [{g, color, text, mine, alpha}], refLines, tgtLines, tgtColor, tagR, handle, actual (label on the true size)} */
 function drawStage(cv, s) {
@@ -3304,7 +3522,7 @@ function drawStage(cv, s) {
 
   // reference
   drawEmoji(c, s.ref, R0.m, k * R0.h, x0, ground, 1);
-  measureLine(c, x0, lw, k * R0.h, ground, 'left', T.ink, false);
+  measureLine(c, x0, lw, k, ground, 'left', T.ink, false);
   // guesses: my ghost as a see-through silhouette, everyone's as a dashed line with a name tag
   const tagged = [];
   ghosts.forEach((gh, i) => {
@@ -3312,18 +3530,19 @@ function drawStage(cv, s) {
     const gg = Math.min(gh.g, s.fit * 1.06);
     if (gh.mine && gh.g <= s.fit * 1.02) drawGhost(c, s.tgt, T0, k * gg, x1, ground, gh.color, 0.26 * gh.alpha);
     c.save(); c.globalAlpha = gh.alpha;
-    const end = measureLine(c, x1, T0.w * k * gg, T0.h * k * gg, ground, 'right', gh.color, true, 14 + i * 7);
+    const end = measureLine(c, x1, T0.w * k * gg, k * gg, ground, 'right', gh.color, true, 14 + i * 7);
     c.restore();
     if (gh.text) tagged.push({end, gh});
   });
   // the object being resized (during the reveal: growing or shrinking to its true size)
   drawEmoji(c, s.tgt, T0.m, k * s.g * T0.h, x1, ground, 1);
   const tc = T[s.tgtColor || 'measure'];
-  const tEnd = measureLine(c, x1, T0.w * k * s.g, T0.h * k * s.g, ground, 'right', tc, false, 0, s.actual ? 2.5 : 1.5);
-  cv.drawn = {ground, refH: k * R0.h, tgtH: k * s.g * T0.h, refX: x0, tgtX: x1};
+  const tEnd = measureLine(c, x1, T0.w * k * s.g, k * s.g, ground, 'right', tc, false, 0, s.actual ? 2.5 : 1.5);
+  // what was drawn: measured heights (refH, tgtH) and picture heights, for tests
+  cv.drawn = {ground, refH: k, tgtH: k * s.g, refPic: k * R0.h, tgtPic: k * s.g * T0.h, refX: x0, tgtX: x1};
   if (s.handle) {
     // a grab handle on the corner that grows, so it reads as something to pull
-    const hx = x1 + T0.w * k * s.g, hy = ground - T0.h * k * s.g;
+    const hx = x1 + T0.w * k * s.g, hy = ground - T0.h * k * s.g;  // on the picture's top corner
     c.save(); c.fillStyle = T.measure; c.strokeStyle = T.stage; c.lineWidth = 2.5;
     c.beginPath(); c.arc(hx, hy, 9, 0, Math.PI * 2); c.fill(); c.stroke();
     c.strokeStyle = '#fff'; c.lineWidth = 1.6; c.beginPath();
@@ -3370,14 +3589,14 @@ function drawStage(cv, s) {
     const hz = Math.min(bh - 42, (bw - 34) * sh.h / sh.w), z = hz / (zoom.unit * sh.h), left = bx + (bw - sh.w * zoom.unit * z) / 2;
     if (isRef) {
       drawEmoji(c, o, sh.m, k * z * sh.h, left, gy, 1);
-      measureLine(c, left, sh.w * k * z, sh.h * k * z, gy, 'left', T.ink, false);
+      measureLine(c, left, sh.w * k * z, k * z, gy, 'left', T.ink, false);
     } else {
       for (const gh of ghosts) if (gh.mine && gh.alpha > 0) {
         drawGhost(c, o, sh, k * gh.g * z, left, gy, gh.color, 0.26 * gh.alpha);
-        measureLine(c, left, sh.w * k * gh.g * z, sh.h * k * gh.g * z, gy, 'right', gh.color, true, 6);
+        measureLine(c, left, sh.w * k * gh.g * z, k * gh.g * z, gy, 'right', gh.color, true, 6);
       }
       drawEmoji(c, o, sh.m, k * s.g * z * sh.h, left, gy, 1);
-      measureLine(c, left, sh.w * k * s.g * z, sh.h * k * s.g * z, gy, 'right', tc, false);
+      measureLine(c, left, sh.w * k * s.g * z, k * s.g * z, gy, 'right', tc, false);
     }
     c.font = '500 10px "IBM Plex Mono", ui-monospace, monospace'; c.fillStyle = T.muted; c.textBaseline = 'top';
     c.fillText(`zoom ×${fmtNum(z)}`, bx + 8, by + 7);
@@ -3477,6 +3696,10 @@ function wpick(items, weight) {
   for (let i = 0; i < items.length; i++) if ((x -= ws[i]) < 0) return items[i];
   return items[items.length - 1];
 }
+// normal rounds lean toward heights that are close enough to be uncertain (about 0.6x-1.8x)
+const ratioPref = p => { const q = Math.max(p.ratio, 1 / p.ratio); return q <= 1.8 ? 1 : q <= 2.5 ? 0.5 : 0.2; };
+// and toward things people know well (hand-picked objects without a score count as a 7)
+const famPref = p => { const f = (BY[p.ref].fam || 7) + (BY[p.tgt].fam || 7); return (f / 20) ** 2; };
 function makeRounds(n, hist = recentPairs) {
   const nSpecial = n >= 6 ? (Math.random() < 0.5 ? 2 : 1) : 0;
   const slots = new Set();
@@ -3510,7 +3733,7 @@ function makeRounds(n, hist = recentPairs) {
     if (!cands.length) cands = POOL.filter(p => p.kind === 'normal' && !keys.has(p.key) && pairOk(p));
     if (!cands.length) continue;
     const lv = wantLvl(i);
-    const p = wpick(cands, c => (kind === 'normal' ? lv.filter(x => x === c.lvl).length : 1) * (c.star && !last ? 0.8 : 1) / (1 + (themeN[c.theme] || 0)));
+    const p = wpick(cands, c => (kind === 'normal' ? lv.filter(x => x === c.lvl).length * ratioPref(c) : 1) * famPref(c) * (c.star && !last ? 0.8 : 1) / (1 + (themeN[c.theme] || 0)));
     keys.add(p.key);
     for (const id of [p.ref, p.tgt]) { uses[id] = (uses[id] || 0) + 1; if (BY[id].e) emo.add(BY[id].e); }
     asTgt.add(p.tgt);
@@ -4197,7 +4420,7 @@ if (DEBUG) {
    and reports what came out. Nothing here changes how games are made. */
 function simulate(games, session) {
   const st = {games, rounds: 0, short: 0, pair: {}, theme: {}, kind: {}, ratio: {}, lvlPos: Array.from({length: ROUNDS}, () => ({n: 0, sum: 0, special: 0})),
-    specialsPer: {}, overNormal: 0, sessionRepeats: 0, objRepeats: 0, themeRuns: 0, missingFinal: 0};
+    specialsPer: {}, overNormal: 0, sessionRepeats: 0, objRepeats: 0, themeRuns: 0, missingFinal: 0, normal: 0, sweet: 0, famSum: 0, gen: 0, themesPerGame: 0, cat: {}};
   const bucket = q => q <= 1.25 ? '≤1.25×' : q <= 1.5 ? '1.25–1.5×' : q <= 2 ? '1.5–2×' : q <= 3 ? '2–3×' : q <= 4 ? '3–4×' : q <= 10 ? '4–10×' : '>10×';
   let hist = [], seen = new Set();
   for (let g = 0; g < games; g++) {
@@ -4212,6 +4435,9 @@ function simulate(games, session) {
       st.pair[p.key] = (st.pair[p.key] || 0) + 1; st.theme[p.theme] = (st.theme[p.theme] || 0) + 1; st.kind[p.kind] = (st.kind[p.kind] || 0) + 1;
       const bk = (p.kind === 'normal' ? 'normal ' : 'special ') + bucket(q); st.ratio[bk] = (st.ratio[bk] || 0) + 1;
       if (p.kind === 'normal' && (q < PAIR_RULES.normal.min || q > PAIR_RULES.normal.max)) st.overNormal++;
+      if (p.kind === 'normal') { st.normal++; if (q <= 1.8) st.sweet++; }
+      st.famSum += ((BY[a].fam || 7) + (BY[b].fam || 7)) / 2; if (p.gen) st.gen++;
+      for (const id of [a, b]) { const c = BY[id].cat || 'other'; st.cat[c] = (st.cat[c] || 0) + 1; }
       if (p.kind !== 'normal') { nSp++; st.lvlPos[i].special++; } else { st.lvlPos[i].n++; st.lvlPos[i].sum += p.lvl; }
       if (seen.has(p.key)) st.sessionRepeats++; seen.add(p.key);
       for (const id of [a, b]) { uses[id] = (uses[id] || 0) + 1; if (uses[id] > (ANCHORS.has(id) ? 2 : 1)) st.objRepeats++; }
@@ -4220,6 +4446,7 @@ function simulate(games, session) {
       if (i === rs.length - 1 && !(flag === 'final' && p.star)) st.missingFinal++;
     });
     st.specialsPer[nSp] = (st.specialsPer[nSp] || 0) + 1;
+    st.themesPerGame += new Set(rs.map(r => PBY[r.split('|').slice(0, 2).join('|')].theme)).size;
   }
   return st;
 }
@@ -4241,6 +4468,10 @@ function mountDebug() {
     $('#dbg-out').innerHTML = `<p><b>${st.games}</b> games, ${R} rounds in ${ms} ms. Short or failed games: <b>${st.short}</b>.</p>
       <h3>Checks</h3><table>
         <tr><td>Normal rounds outside ${PAIR_RULES.normal.min}–${PAIR_RULES.normal.max}×</td><td>${st.overNormal}</td></tr>
+        <tr><td>Normal rounds within 1.8× (0.6–1.8×)</td><td>${st.sweet}</td><td>${pct(st.sweet, st.normal)}</td></tr>
+        <tr><td>Average familiarity of the two things</td><td>${(st.famSum / R).toFixed(1)} / 10</td></tr>
+        <tr><td>Rounds from generated pairs</td><td>${st.gen}</td><td>${pct(st.gen, R)}</td></tr>
+        <tr><td>Different themes per game</td><td>${(st.themesPerGame / st.games).toFixed(1)}</td></tr>
         <tr><td>Same pair twice in a session</td><td>${st.sessionRepeats}</td><td>${pct(st.sessionRepeats, R)}</td></tr>
         <tr><td>Object used more than allowed in a game</td><td>${st.objRepeats}</td></tr>
         <tr><td>Same theme back to back</td><td>${st.themeRuns}</td><td>${pct(st.themeRuns, R)}</td></tr>
@@ -4248,7 +4479,7 @@ function mountDebug() {
         <tr><td>Pairs never used</td><td>${never.length}</td><td>${never.map(name).map(esc).join(', ') || '—'}</td></tr></table>
       <h3>Difficulty by round</h3><table><tr>${st.lvlPos.map((x, i) => `<td>R${i + 1}<br><b>${x.n ? (x.sum / x.n).toFixed(2) : '–'}</b><br><small>${pct(x.special, st.games)} special</small></td>`).join('')}</tr></table>
       <div class="dbg-cols">${table('Round kinds', st.kind, R)}${table('Special rounds per game', st.specialsPer, st.games)}</div>
-      <div class="dbg-cols">${table('Themes', st.theme, R)}${table('Size ratios', st.ratio, R)}</div>
+      <div class="dbg-cols">${table('Themes', st.theme, R)}${table('Size ratios', st.ratio, R)}${table('Object categories', st.cat, R * 2)}</div>
       <h3>Most and least used pairs</h3><table>${[...freq.slice(0, 12), ['…', ''], ...freq.slice(-12)].map(([k, v]) => `<tr><td>${k === '…' ? '…' : esc(name(k))}</td><td>${v}</td><td>${v === '' ? '' : pct(v, R)}</td></tr>`).join('')}</table>
       <h3>Quality check</h3>${PAIR_ISSUES.length ? `<table>${PAIR_ISSUES.map(x => `<tr><td>${esc(x.p.key)}</td><td>${esc(x.issues.join('; '))}</td></tr>`).join('')}</table>` : '<p class="muted">Every pair passes.</p>'}`;
   });
