@@ -198,7 +198,11 @@ input[type=range]:disabled{opacity:.5;cursor:not-allowed}
 /* reveal panel: the guess next to the truth first, then how far off, then the points */
 .rv-cmp{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
 .rv-cmp div{display:grid;gap:2px}
-.rv-cmp b{font:900 40px/.95 var(--display);font-variant-numeric:tabular-nums}
+.rv-cmp b{font:900 clamp(26px,5vw,36px)/.95 var(--display);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rv-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.rv-head b{font:900 24px/1 var(--display);text-transform:uppercase}
+.rv-head span{font:600 14px/1 var(--mono);color:var(--green)}
+.dim-chip{font:800 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;padding:4px 6px;border-radius:4px;background:var(--ink);color:var(--paper);margin-right:8px}
 .rv-cmp small{font:500 12px/1.2 var(--mono);color:var(--muted)}
 .rv-you b{color:var(--red)}.rv-act b{color:var(--green)}
 .rv-arrow{font:800 26px/1 var(--display);color:var(--muted)}
@@ -381,7 +385,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
     <div class="hero">
       <h1 class="title"><img src="logo.svg?v=1" alt="How Big?" width="1374" height="814"></h1>
       <div class="tape-strip" aria-hidden="true" id="tape-strip"></div>
-      <p class="tagline">You know both of these things. So how big is one next to the other? Resize the one on the right, lock it in, and watch the truth grow into place.</p>
+      <p class="tagline">Make the thing on the right as tall as you think it really is compared to the thing on the left. Lock it in, and watch the real height grow into place.</p>
     </div>
 
     <div class="home-grid">
@@ -483,6 +487,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
 
     <div class="reveal" id="reveal" hidden>
       <div class="card rv-main" aria-live="polite">
+        <div class="rv-head" id="rv-head"></div>
         <div class="rv-cmp" id="rv-cmp"></div>
         <div class="rv-score"><span class="rv-pct" id="rv-pct"></span><span class="rv-band" id="rv-verdict"></span><b class="rv-pts" id="rv-pts">+0</b></div>
         <p class="rv-special" id="rv-special" hidden></p>
@@ -541,7 +546,7 @@ const RAW = [
   ['stopsign','🛑','a stop sign',0.76,'the sign itself',''],
   ['drum','🛢️','a 55-gallon drum',0.88,'','Oil drum'],
   ['chair','🪑','a dining chair',0.9,'',''],
-  ['tiger','🐅','a Bengal tiger',1.0,'at the shoulder','Tiger'],
+  ['tiger','🐅','a Bengal tiger',1.0,'at the shoulder; its head is level with its back','Tiger'],
   ['penguin','🐧','an emperor penguin',1.0,'standing','Emperor penguin'],
   ['bike','🚲','a bicycle',1.0,'',''],
   ['trafficlight','🚦','a traffic light',1.07,'the signal itself',''],
@@ -550,7 +555,7 @@ const RAW = [
   ['hippo','🦛','a hippo',1.4,'at the shoulder',''],
   ['car','🚗','a compact car',1.44,'',''],
   ['cow','🐄','a Holstein cow',1.5,'at the shoulder','Cow'],
-  ['horse','🐎','a horse',1.6,'at the withers',''],
+  ['horse','🐎','a horse',2.2,'head up, to the top of its head (about 5 ft 3 in at the withers)',''],
   ['person','🧍','an adult person',1.7,'',''],
   ['llama','🦙','a llama',1.75,'to the top of its head',''],
   ['minivan','🚐','a minivan',1.77,'',''],
@@ -562,7 +567,7 @@ const RAW = [
   ['xmastree','🎄','a 7.5-foot Christmas tree',2.29,'','Christmas tree'],
   ['goal','🥅','a soccer goal',2.44,'',''],
   ['mammoth','🦣','a woolly mammoth',3.0,'at the shoulder',''],
-  ['elephant','🐘','an African elephant',3.2,'at the shoulder','Elephant'],
+  ['elephant','🐘','an African elephant',3.2,'a bull, at the shoulder, about level with its head','Elephant'],
   ['bus','🚌','a city bus',3.2,'',''],
   ['moai','🗿','a moai statue',4.0,'average height','Moai'],
   ['giraffe','🦒','a male giraffe',5.2,'','Giraffe'],
@@ -1016,14 +1021,14 @@ const RAW2 = [
   ['elfowl','🦉','an elf owl',0.135,'the smallest owl, perched upright','Elf owl'],
   ['sodacan',null,'a 12-ounce soda can',0.122,'','Soda can'],
   ['pencil',null,'a pencil',0.19,'unsharpened',''],
-  ['chihuahua',null,'a Chihuahua',0.2,'at the shoulder',''],
+  ['chihuahua',null,'a Chihuahua',0.28,'standing, to the top of its head',''],
   ['paper',null,'a sheet of letter paper',0.279,'standing on its short edge','Letter paper'],
   ['winebottle',null,'a wine bottle',0.3,'standard 750 ml bottle','Wine bottle'],
   ['ruler',null,'a 12-inch ruler',0.305,'standing on end','Ruler'],
   ['bowlingpin',null,'a bowling pin',0.381,'',''],
   ['hornedowl','🦉','a great horned owl',0.55,'average length, perched upright','Great horned owl'],
   ['suitcase',null,'a carry-on suitcase',0.56,'common airline size limit','Carry-on suitcase'],
-  ['labrador','🦮','a Labrador retriever',0.57,'at the shoulder','Labrador'],
+  ['labrador','🦮','a Labrador retriever',0.75,'standing, to the top of its head (about 22 in at the shoulder)','Labrador'],
   ['gshepherd','🐕‍🦺','a German shepherd',0.63,'at the shoulder','German shepherd'],
   ['cone',null,'a highway traffic cone',0.71,'','Traffic cone'],
   ['macaw',null,'a scarlet macaw',0.84,'including its long tail','Scarlet macaw'],
@@ -1735,7 +1740,7 @@ const RAW3 = [
   ['ostrichegg',null,'an ostrich egg',0.15,'standing on end',''],
   ['paperback',null,'a paperback book',0.175,'mass-market size, standing up','Paperback book'],
   ['bowlingball',null,'a bowling ball',0.218,'',''],
-  ['cat','🐈','a house cat',0.24,'at the shoulder','House cat'],
+  ['cat','🐈','a house cat',0.3,'standing, to the top of its head','House cat'],
   ['racket',null,'a tennis racket',0.686,'standing on end, standard length','Tennis racket'],
   ['desk',null,'an office desk',0.74,'standard height','Desk'],
   ['washer',null,'a washing machine',0.85,'typical front-loader','Washing machine'],
@@ -2233,7 +2238,7 @@ const RAW4 = [
   ['sputnik',null,'Sputnik 1',0.58,'body only, not the antennas','Sputnik 1'],
   ['stumps',null,'a set of cricket stumps',0.711,'standard 28 inches','Cricket stumps'],
   ['ttable',null,'a ping-pong table',0.76,'playing surface, net not included','Ping-pong table'],
-  ['greatdane',null,'a Great Dane',0.79,'male, at the shoulder','Great Dane'],
+  ['greatdane',null,'a Great Dane',1.0,'male, standing, to the top of its head (about 31 in at the shoulder)','Great Dane'],
   ['cheetah','🐆','a cheetah',0.8,'at the shoulder',''],
   ['pygmyhippo','🦛','a pygmy hippo',0.85,'at the shoulder','Pygmy hippo'],
   ['kingpenguin','🐧','a king penguin',0.85,'standing','King penguin'],
@@ -2899,6 +2904,7 @@ const RAW5 = [
   ['fridge',null,'a refrigerator',1.78,'a standard 70-inch fridge','Refrigerator'],
   ['hoop',null,'a basketball hoop',3.96,'to the top of the backboard; the rim is at 10 ft','Basketball hoop'],
   ['house','🏠','a house',6,'a one-story house, ground to roof peak','House'],
+  ['suv','🚙','an SUV',1.8,'a midsize SUV, to the roof','SUV'],
   ['gameboy',null,'an original Game Boy',0.148,'1989 model, standing up','Game Boy'],
   ['ipod',null,'an iPod classic',0.104,'standing up','iPod classic'],
 ];
@@ -2907,8 +2913,9 @@ for (const [id, e, a, h, note, name] of RAW5) {
   const o = {id, e, a, name: name || cap0(noun), height: h, unit: 'm', note, noun, label: name || cap0(noun)};
   OBJ.push(o); BY[id] = o;
 }
-// objects whose "height" only exists lying down, on edge or stood on end: never used in a round
-const NOT_UPRIGHT = new Set(['titanic', 'a380', 'b747', 'b737', 'an225', 'cessna', 'f35', 'b2', 'sr71', 'chinook', 'blimp', 'hindenburg',
+// never used in a round: objects whose "height" only exists lying down, on edge or stood on end,
+// and objects whose picture isn't the whole thing standing up (the moose emoji is only a head)
+const NOT_UPRIGHT = new Set(['egg', 'moose', 'titanic', 'a380', 'b747', 'b737', 'an225', 'cessna', 'f35', 'b2', 'sr71', 'chinook', 'blimp', 'hindenburg',
   'wrightflyer', 'orbiter', 'quarter', 'dime', 'nickel', 'creditcard', 'cd', 'paper', 'pencil', 'crayon', 'card', 'puck', 'stickynote',
   'ruler', 'bat', 'racket', 'container', 'cube', 'clockface']);
 const artOf = o => ART[o.art || o.id];
@@ -2971,13 +2978,14 @@ const PAIRS_RAW = [
   ['fridge','gorilla','animals',0,'close'], ['car','elephant','animals',1,''], ['person','ostrich','animals',2,''],
   ['person','camel','animals',2,''], ['person','penguin','animals',2,''], ['door','giraffe','animals',1,'star'],
   ['person','kangaroo','animals',0,'close'], ['cow','elephant','animals',2,''], ['labrador','person','animals',1,''],
-  ['greatdane','person','animals',2,''], ['cat','labrador','animals',1,'star'], ['person','horse','animals',0,'close'],
+  ['greatdane','person','animals',2,''], ['cat','labrador','animals',1,'star'], ['person','horse','animals',2,''],
   ['elephant','giraffe','animals',2,'star'], ['elephant','mammoth','animals',0,'close'], ['hippo','rhino','animals',3,''],
   ['tiger','person','animals',2,''], ['chihuahua','cat','animals',0,'close'], ['polarbear','giraffe','animals',2,''],
   ['gorilla','polarbear','animals',2,''], ['flamingo','person','animals',3,''], ['fridge','polarbear','animals',2,'star'],
   ['person','bison','animals',0,'close'], ['bike','kangaroo','animals',3,''], ['door','polarbear','animals',2,''],
   ['kangaroo','giraffe','animals',2,''], ['penguin','polarbear','animals',2,''], ['ostrich','giraffe','animals',2,''],
-  ['flamingo','giraffe','animals',3,''],
+  ['flamingo','giraffe','animals',3,''], ['door','ostrich','animals',0,'close'], ['bus','elephant','animals',0,'close'],
+  ['suv','elephant','animals',2,''], ['horse','giraffe','animals',2,''],
   // dinosaurs
   ['person','trex','dinos',1,'star'], ['elephant','trex','dinos',0,'close'], ['giraffe','trex','dinos',2,''],
   ['trex','brachio','dinos',2,''], ['house','brachio','dinos',3,''], ['mammoth','trex','dinos',3,''],
@@ -2989,7 +2997,10 @@ const PAIRS_RAW = [
   ['person','pickup','everyday',0,'close'], ['chair','person','everyday',1,''], ['toilet','fridge','everyday',2,''],
   ['person','house','everyday',2,''], ['door','house','everyday',2,''], ['hoop','house','everyday',3,''],
   ['bus','house','everyday',3,''], ['chair','door','everyday',2,''], ['toilet','person','everyday',1,''],
-  ['bike','door','everyday',2,''], ['xmastree','house','everyday',3,''],
+  ['bike','door','everyday',2,''], ['xmastree','house','everyday',3,''], ['person','fridge','everyday',0,'close'],
+  ['person','vending','everyday',0,'close'], ['person','suv','everyday',0,'close'], ['person','semitruck','everyday',2,''],
+  ['semitruck','giraffe','everyday',2,''], ['elephant','semitruck','everyday',3,''], ['hoop','semitruck','everyday',0,'close'],
+  ['person','routemaster','everyday',2,''], ['suv','bus','everyday',2,''],
   // tech
   ['phone','gameboy','tech',0,'close'], ['ipod','phone','tech',2,''], ['gameboy','ipod','tech',3,''], ['sodacan','phone','tech',0,'close'],
   // landmarks
@@ -3014,7 +3025,7 @@ const PAIRS_RAW = [
   ['shaq','hoop','people',1,'star'], ['bogues','door','people',2,''],
   // sports and small things
   ['golfball','tennisball','sports',0,'tiny'], ['baseball','softball','sports',0,'tiny'], ['golfball','baseball','sports',0,'tiny'],
-  ['tennisball','basketball','sports',0,'tiny'], ['marble','golfball','sports',0,'tiny'], ['egg','phone','everyday',0,'tiny'],
+  ['tennisball','basketball','sports',0,'tiny'], ['marble','golfball','sports',0,'tiny'],
   ['battery','phone','tech',0,'tiny'], ['mug','sodacan','everyday',0,'tiny'],
   ['soccer','bucket','sports',2,''], ['baseball','basketball','sports',1,''], ['basketball','bucket','sports',2,''],
   ['basketball','trophy','sports',2,''], ['person','goal','sports',1,''], ['goal','hoop','sports',2,''],
@@ -3309,6 +3320,7 @@ function drawStage(cv, s) {
   drawEmoji(c, s.tgt, T0.m, k * s.g * T0.h, x1, ground, 1);
   const tc = T[s.tgtColor || 'measure'];
   const tEnd = measureLine(c, x1, T0.w * k * s.g, T0.h * k * s.g, ground, 'right', tc, false, 0, s.actual ? 2.5 : 1.5);
+  cv.drawn = {ground, refH: k * R0.h, tgtH: k * s.g * T0.h, refX: x0, tgtX: x1};
   if (s.handle) {
     // a grab handle on the corner that grows, so it reads as something to pull
     const hx = x1 + T0.w * k * s.g, hy = ground - T0.h * k * s.g;
@@ -3892,11 +3904,11 @@ function renderRound() {
   // this round's points join the total only once the reveal has shown them
   $('#rb-score').textContent = totalOf(mine()) - (cur && (!reveal || !local.shown) ? cur.p || 0 : 0);
   const info = pairInfo(room.round), flag = flagOf(room.round);
-  $('#ask-sub').textContent = info ? THEMES[info.theme] : '';
+  $('#ask-sub').innerHTML = `<b class="dim-chip">Height</b>${info ? esc(THEMES[info.theme]) : ''}`;
   // giant and tiny rounds are announced up front; a close call is only revealed afterwards
   const badge = flag === 'giant' ? 'Giant mode' : flag === 'tiny' ? 'Tiny mode' : flag === 'final' ? 'Final round' : flag === 'close' && reveal ? 'Close call' : '';
   $('#ask-badge').hidden = !badge; $('#ask-badge').textContent = badge; $('#ask-badge').dataset.kind = flag;
-  $('#prompt').innerHTML = `Next to <em>${esc(ref.a.split(',')[0])}</em>, how tall is <em>${esc(tgt.a.split(',')[0])}</em>?`;
+  $('#prompt').innerHTML = `How tall is <em>${esc(tgt.a.split(',')[0])}</em> compared to <em>${esc(ref.a.split(',')[0])}</em>?`;
 
   $('#play-ui').hidden = reveal;
   $('#reveal').hidden = !reveal;
@@ -3930,9 +3942,10 @@ function renderRound() {
     // the panel waits for the size animation to finish, so the picture lands first and the score second
     $('#reveal').classList.toggle('pending', !local.shown);
     const cell = (k, x, m, cls) => `<div class="${cls}"><span class="eyebrow">${k}</span><b>${x}</b><small>${m}</small></div>`;
+    $('#rv-head').innerHTML = `<b>${esc(tgt.name)}</b><span>${fmtHeight(tgt)}</span>`;
     $('#rv-cmp').innerHTML = g == null
-      ? `${cell('You guessed', '—', 'no resize', 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtX(r), fmtHeight(tgt), 'rv-act')}`
-      : `${cell('You guessed', fmtX(g), fmtLen(g * ref.height), 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtX(r), fmtHeight(tgt), 'rv-act')}`;
+      ? `${cell('Your guess', '—', 'no resize', 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtLen(tgt.height), `${fmtX(r)} the ${esc(ref.noun)}`, 'rv-act')}`
+      : `${cell('Your guess', fmtLen(g * ref.height), `${fmtX(g)} the ${esc(ref.noun)}`, 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtLen(tgt.height), `${fmtX(r)} the ${esc(ref.noun)}`, 'rv-act')}`;
     $('#rv-pct').textContent = g == null ? 'No answer' : pctOff(g, r) === 0 ? 'Spot on' : `${pctOff(g, r).toLocaleString('en-US')}% off`;
     $('#rv-verdict').textContent = g == null ? '' : verdict(p, g);
     $('#rv-pts').textContent = '+' + p;
@@ -4173,7 +4186,12 @@ async function boot() {
   }
 }
 const DEBUG = new URLSearchParams(location.search).has('debug');
-if (DEBUG) { window.HowBig = {makeRounds, POOL, PAIRS, PAIR_ISSUES, BY, PBY, scoreFor, pctOff}; mountDebug(); }
+if (DEBUG) {
+  window.HowBig = {makeRounds, POOL, PAIRS, PAIR_ISSUES, BY, PBY, scoreFor, pctOff, NOT_UPRIGHT, fmtLen,
+    // what's on the stage right now, for tests
+    current: () => { const [ref, tgt] = pairOf(room.round); return {ref: ref.id, tgt: tgt.id, r: tgt.height / ref.height, g: local.g, drawn: $('#stage').drawn}; }};
+  mountDebug();
+}
 /* ---------------- ?debug=1: content simulator ----------------
    Plays thousands of games through the real makeRounds (with its own history, like Play Again on one device)
    and reports what came out. Nothing here changes how games are made. */
