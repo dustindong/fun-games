@@ -84,13 +84,16 @@ function addSet(ds) {
       label: it.label || '', // shown on the reveal instead of the number (curated sequences)
       emo: '',
       tier: it.fam == null ? 1 : it.fam >= 4 ? 0 : it.fam <= 2 ? 2 : 1,
+      fam: it.fam,
     }));
     if (list.length < N) { console.warn(`Order Up: ${id} has only ${list.length} items, skipped`); continue; }
     const src = [c.src || ds.src, c.asOf ? `Snapshot as of ${asOfLabel(c.asOf)}.` : ''].filter(Boolean).join(' ');
     const view = {
       id, set: ds, key: c.key, title: c.title || `${ds.label} by ${c.label}`, ask: c.ask, hi: c.hi, lo: c.lo,
       unit: c.unit, gap: c.gap, year: !!c.year, abs: !!c.abs, asc: c.dir === 'asc' || !!c.asc, about: !!c.about,
-      type: typeOf(c), weight: c.weight ?? 1, catId: c.category || null,
+      type: typeOf(c), weight: c.weight ?? 1, catId: c.category || null, close: c.close, subset: !!c.filter,
+      // how recognizable the pool is on average (unset fam counts as 3, a sequence as 4: everyone knows the words)
+      famAvg: ds.sequence ? 4 : list.reduce((t, i) => t + (i.fam ?? 3), 0) / list.length,
       flags: !!ds.flags, src, famous: hasFam, mixed: ds.mixed, list, byId: Object.fromEntries(list.map(i => [i.id, i])),
     };
     VIEWS[id] = view;
@@ -101,7 +104,7 @@ for (const ds of root.OrderUpData || []) addSet(ds);
 // a curated sequence lists its items in order; it becomes a dataset whose one comparison is that order
 for (const q of root.OrderUpSequences || []) addSet({
   id: `seq-${q.id}`, label: q.title, sequence: true,
-  comparisons: [{key: 'order', title: q.title, ask: q.ask, hi: q.hi, lo: q.lo, dir: 'asc', unit: 'seq', gap: 1, abs: true,
+  comparisons: [{key: 'order', title: q.title, ask: q.ask, hi: q.hi, lo: q.lo, dir: 'asc', unit: 'seq', gap: q.gap || 1, abs: true,
     type: q.type || 'sequence', weight: q.weight ?? 1, category: q.category || 'wild', src: q.src}],
   items: q.items.map((it, i) => ({...(typeof it === 'string' ? {name: it} : it), order: i + 1})),
 });
@@ -111,6 +114,7 @@ for (const q of root.OrderUpSequences || []) addSet({
    Nostalgia round); curated sequences default to Wild Cards. */
 const CATEGORIES = [
   {id: 'screen', name: 'Movies', sets: 'movies', pillar: true},
+  {id: 'tv', name: 'TV', sets: 'tv', pillar: true},
   {id: 'music', name: 'Music', sets: 'songs', pillar: true},
   {id: 'gaming', name: 'Gaming', sets: 'games pokemon', pillar: true},
   {id: 'tech', name: 'Tech & Internet', sets: 'tech', pillar: true},
@@ -142,7 +146,22 @@ for (const ds of Object.values(SETS)) for (const v of ds.views) {
 for (const c of CATEGORIES.slice()) { if (c.views.length) CAT[c.id] = c; else CATEGORIES.splice(CATEGORIES.indexOf(c), 1); }
 // null means every category; otherwise a list of category ids (possibly empty while someone is choosing)
 const cleanCats = v => Array.isArray(v) ? CATEGORIES.map(c => c.id).filter(id => v.includes(id)) : null;
-const catsLabel = cats => !cats ? 'All topics' : cats.length ? cats.map(id => CAT[id].name).join(' · ') : 'None yet';
+/* presets are just ready-made category lists for the picker; generation doesn't know about them.
+   A selection that doesn't match one exactly is Custom. Everything is `null` (every category). */
+const PRESETS = [
+  {id: 'party', name: 'Party Mix', cats: 'screen tv music gaming food tech nostalgia people wild',
+   blurb: 'The recommended mix: movies, TV, music, games, food, the internet, nostalgia, celebrities and wild cards.'},
+  {id: 'pop', name: 'Pop Culture', cats: 'screen tv music gaming people tech', blurb: 'Movies, TV, music, games, celebrities and the internet.'},
+  {id: 'throwback', name: 'Throwback', cats: 'nostalgia music gaming screen tech', blurb: 'Toys, old-school tech, classic games, songs and movies.'},
+  {id: 'classic', name: 'Classic Trivia', cats: 'animals cars geo stuff food', blurb: 'Animals, cars, US states, everyday stuff and food: the numbers game.'},
+  {id: 'all', name: 'Everything', cats: null, blurb: 'Every category, all mixed together.'},
+].map(p => ({...p, cats: p.cats && cleanCats(p.cats.split(' '))}));
+const sameCats = (a, b) => a === b || (!!a && !!b && a.length === b.length && a.every(id => b.includes(id)));
+const presetOf = cats => PRESETS.find(p => sameCats(p.cats, cats)) || (cats && cats.length === CATEGORIES.length ? PRESETS.find(p => !p.cats) : null);
+const catsLabel = cats => {
+  const p = presetOf(cats), list = cats && cats.length ? cats.map(id => CAT[id].name).join(' · ') : '';
+  return !cats ? 'Everything: all categories' : !cats.length ? 'None yet' : p ? `${p.name}: ${list}` : list;
+};
 
 /* numbers are stored in metric (as the sources give them) and shown in US units */
 function sig(x, n = 3) {
@@ -177,6 +196,7 @@ function fmtVal(t, v) {
       if (i === 12) { ft++; i = 0; }
       return i ? `${ft} ft ${i} in` : `${ft} ft`;
     }
+    case 'cm': { const inch = Math.round(v / 2.54), ft = Math.floor(inch / 12); return inch % 12 ? `${ft} ft ${inch % 12} in` : `${ft} ft`; }
     case 'ft': return `${Math.round(v).toLocaleString('en-US')} ft`;
     case 'mph': return `${num(v)} mph`;
     case 'kcal': return `${t.about ? 'about ' : ''}${v.toLocaleString('en-US')} calories`;
@@ -215,6 +235,7 @@ function fmtVal(t, v) {
     case 'imdb': return `${v.toFixed(1)} / 10`;
     case 'oscars': return `${v} Oscar${v === 1 ? '' : 's'}`;
     case 'eps': return `${v.toLocaleString('en-US')} episodes`;
+    case 'seasons': return `${v} season${v === 1 ? '' : 's'}`;
     case 'sec': return `${Math.floor(v / 60)}:${String(v % 60).padStart(2, '0')}`;
   }
   return String(v);
@@ -231,19 +252,27 @@ const goodMix = (t, got) => {
   if (t.capFamous === undefined) t.capFamous = t.list.filter(i => i.tier !== 0).length >= t.list.length * 0.3;
   return famous >= 2 && (famous <= 4 || !t.capFamous) && hard <= 1;
 };
-function pick5(t) {
+/* five items for a round. Options (all optional) tune it for the round's place in the game:
+   - win: the neighbor window as a share of the sorted pool (default 0.55); smaller means closer values
+   - min: the smallest window (default 10)
+   - famous: at least this many very familiar items, for openers and the finale
+   - strict: never fall back to the whole pool or a weaker mix; return null instead (Close Call rounds) */
+function pick5(t, o = {}) {
   const pool = t.list.slice().sort((a, b) => b.v - a.v);
+  const win = Math.min(pool.length, Math.max(o.min ?? 10, Math.ceil(pool.length * (o.win ?? 0.55))));
+  const mixOK = got => goodMix(t, got) && (!o.famous || !t.famous || got.filter(i => i.tier === 0).length >= o.famous);
   // draw from a window of neighbors most of the time so rounds aren't all giant-vs-tiny;
   // prefer a good mix of familiar and harder items, and only give that up if nothing fits
   for (let tries = 0; tries < 240; tries++) {
-    const w = tries < 120 ? Math.min(pool.length, Math.max(10, Math.ceil(pool.length * 0.55))) : pool.length;
+    const w = tries < 120 || o.strict ? win : pool.length;
     const s = Math.floor(Math.random() * (pool.length - w + 1));
     const got = [];
     for (const it of shuffle(pool.slice(s, s + w))) {
       if (got.every(g => far(t, g, it))) got.push(it);
       if (got.length === N) break;
     }
-    if (got.length === N && (tries >= 200 || goodMix(t, got))) return got;
+    if (got.length !== N) continue;
+    if (mixOK(got) || (!o.strict && (tries >= 200 || (tries >= 160 && goodMix(t, got))))) return got;
   }
   return null;
 }
@@ -270,17 +299,29 @@ const isPerfect = p => p === ROUND_MAX;
    - two rounds from one dataset in a game can't share three or more items (Pixar movies, then all movies)
    Then five items are picked with the value gap and familiarity mix, and a round (view + the same five items)
    never repeats within a game and is avoided if seen recently. */
-// the most rounds of one type in a 10-round game before it gets pushed back hard (chronology is the main pillar)
-const TYPE_CAP = {chronology: 4, measure: 3, popularity: 3};
+// the most rounds of one type in a 10-round game before it gets pushed back hard
+const TYPE_CAP = {chronology: 3, measure: 3, popularity: 3};
 const SEQ_SHARE = 0.2;
 const STATS = new Set(['measure', 'nutrition']);
 const roundKey = (view, five) => view.id + '|' + five.map(x => x.id).sort().join(',');
-function newHistory() { return {used: new Set(), order: [], cmpUse: {}}; }
+function newHistory() { return {used: new Set(), order: [], cmpUse: {}, catUse: {}}; }
 function remember(hist, key, view) {
   hist.used.add(key); hist.order.push(key);
   if (hist.order.length > 400) hist.used.delete(hist.order.shift());
   hist.cmpUse[view.id] = (hist.cmpUse[view.id] || 0) + 1;
+  if (hist.catUse) hist.catUse[view.cat.id] = (hist.catUse[view.cat.id] || 0) + 1;
 }
+/* PACING AND SPECIAL ROUNDS. A game has a light arc without fixed slots:
+   - rounds 1-2 lean on very familiar pools and five-item picks with 3+ famous things, no Wild Cards or trivia
+   - rounds 3-7 are the open middle: maximum variety
+   - rounds 8-9 draw from a tighter neighbor window, so values sit a little closer (still past the gap)
+   - round 10 is the FINAL ORDER: a familiar pop-culture pick, a tighter window, and its own look on screen
+   A few rounds get a label, at most SPECIAL_SHARE of the game besides the finale: WILD CARD (a curated
+   sequence), THROWBACK (a nostalgia round) and CLOSE CALL (a strict, narrow window of close values). The label
+   rides on the round string as a third field: `${viewId}|ids|flag`; older pages simply ignore it. */
+const SPECIAL_SHARE = 0.2, CLOSE_CHANCE = 0.3, THROWBACK_CHANCE = 0.5;
+const HARD = new Set(['knowledge', 'ranking']);
+const closeOK = v => !v.set.sequence && v.close !== false && v.list.length >= 20 && !HARD.has(v.type);
 function makeRounds(n, cats, hist = newHistory()) {
   const all = !cats;
   // All Topics works like picking every category (minus datasets marked mixed: false)
@@ -288,27 +329,34 @@ function makeRounds(n, cats, hist = newHistory()) {
   if (!cats) cats = CATEGORIES.filter(c => c.views.some(usable)).map(c => c.id);
   cats = cats.filter(id => CAT[id]);
   const out = [], inGame = new Set(), useView = {}, useSet = {}, useType = {}, picked = {};
-  let prev = null, pass = [], seqs = 0;
+  let prev = null, pass = [], seqs = 0, specials = 0, closeDone = false, throwDone = false;
   // curated sequences are a side dish: at most about one round in five
-  const seqCap = Math.max(1, Math.round(n * SEQ_SHARE));
-  const score = v => {
+  const seqCap = Math.max(1, Math.round(n * SEQ_SHARE)), specialCap = Math.max(1, Math.round(n * SPECIAL_SHARE));
+  const arc = n >= 6; // pacing only makes sense for a full-length game
+  const score = (v, r) => {
     let s = Math.random() * 12;
-    if (!pass.includes(v.cat.id)) s += 100;
+    if (!pass.includes(v.cat.id)) s += 170;
     if (v.cat.pillar) s -= 30; // pop culture, nostalgia and chronology are the heart of the game
     if (prev && v.set === prev.set) s += 200;
     if (prev && v.type === prev.type) s += 120;
     else if (prev && STATS.has(v.type) && STATS.has(prev.type)) s += 60; // two stat rounds in a row feel samey
     const t = useType[v.type] || 0;
-    s += t * 30 + (t >= (TYPE_CAP[v.type] ?? 2) ? 150 : 0);
+    s += t * 22 + (t >= (TYPE_CAP[v.type] ?? 2) ? 180 : 0);
     s += (useSet[v.set.id] || 0) * 45 + (useView[v.id] || 0) * 400;
-    s += (hist.cmpUse[v.id] || 0) * 6;
+    s += (hist.cmpUse[v.id] || 0) * 25; // spread a session across all of a category's comparisons
+    s += (hist.catUse?.[v.cat.id] || 0) * 15; // and rotate which category gets the extra round in a game
     s += (1 - v.weight) * 70;
+    if (v.subset) s -= 25; // themed subsets (Pixar, Taylor Swift, sitcoms) are the most fun version of a dataset
     if (v.set.sequence) s += 25 + (seqs >= seqCap ? 400 : 0);
+    if (arc && r < 2) s += (4 - v.famAvg) * 25 + (v.set.sequence ? 150 : 0) + (HARD.has(v.type) ? 80 : 0) + (1 - v.weight) * 60;
+    if (arc && r === n - 1) s += (4 - v.famAvg) * 30 + (v.set.sequence ? 600 : 0) + (v.cat.pillar ? -30 : 60) + (HARD.has(v.type) ? 100 : 0);
     return s;
   };
-  const tryView = (view, strict) => {
+  // how the five are picked at each point of the game
+  const pickFor = r => !arc ? {} : r < 2 ? {famous: 3} : r === n - 1 ? {win: 0.35, famous: 3} : r >= n - 3 ? {win: 0.4} : {};
+  const tryView = (view, strict, o) => {
     for (let k = 0; k < 12; k++) {
-      const five = pick5(view);
+      const five = pick5(view, o);
       if (!five) return null;
       const key = roundKey(view, five);
       if (inGame.has(key) || (strict && hist.used.has(key))) continue;
@@ -318,21 +366,37 @@ function makeRounds(n, cats, hist = newHistory()) {
     }
     return null;
   };
-  const choose = cands => {
-    const ranked = cands.map(v => [score(v), v]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
-    for (const strict of [true, false]) for (const v of ranked) { const got = tryView(v, strict); if (got) return got; }
+  const choose = (cands, r) => {
+    const ranked = cands.map(v => [score(v, r), v]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+    for (const strict of [true, false]) for (const v of ranked) {
+      const got = tryView(v, strict, pickFor(r)) || tryView(v, strict, {});
+      if (got) return got;
+    }
     return null;
   };
   for (let guard = 0; out.length < n && guard < n * 3; guard++) {
+    const r = out.length;
     // this pass: the categories not used yet in it (a fresh pass once they've all had a turn)
     if (!pass.length) pass = cats.slice();
     // every other category is a candidate too, at a cost, so the end of a pass isn't forced into a repeat type
     const open = cats.length > 1 && prev ? cats.filter(c => c !== prev.cat.id) : cats;
-    let got = choose(open.flatMap(c => CAT[c].views.filter(usable)));
+    let got = choose(open.flatMap(c => CAT[c].views.filter(usable)), r);
     // a category that has run out of fresh rounds hands over to any chosen category
-    if (!got) got = choose(cats.flatMap(c => CAT[c].views.filter(usable)));
+    if (!got) got = choose(cats.flatMap(c => CAT[c].views.filter(usable)), r);
     if (!got) break;
     const v = got.view;
+    // the label, if this round gets one
+    let flag = '';
+    if (arc && r === n - 1) flag = 'final';
+    else if (arc && r >= 2 && specials < specialCap) { // the opening two stay plain
+      if (v.set.sequence) flag = 'wild';
+      else if (v.cat.id === 'nostalgia' && !throwDone && Math.random() < THROWBACK_CHANCE) flag = 'throwback';
+      else if (r >= 3 && !closeDone && closeOK(v) && Math.random() < CLOSE_CHANCE) {
+        const tight = tryView(v, true, {win: 0.2, min: 7, strict: true});
+        if (tight) { got = tight; flag = 'close'; }
+      }
+    }
+    if (flag && flag !== 'final') { specials++; if (flag === 'close') closeDone = true; if (flag === 'throwback') throwDone = true; }
     pass = pass.filter(c => c !== v.cat.id);
     inGame.add(got.key); remember(hist, got.key, v);
     (picked[v.set.id] = picked[v.set.id] || []).push(new Set(got.five.map(x => x.id)));
@@ -342,11 +406,14 @@ function makeRounds(n, cats, hist = newHistory()) {
     const R = {t: v, ids: got.five.map(x => x.id)};
     // the starting order is the same for everyone; reshuffle only if it would already score 80+
     for (let k = 0; k < 50; k++) { shuffle(R.ids); if (scoreOrder(R.ids, R) < 80) break; }
-    out.push(`${v.id}|${R.ids.join(',')}`);
+    out.push(`${v.id}|${R.ids.join(',')}${flag ? '|' + flag : ''}`);
   }
   return out;
 }
+// a round string back to its parts
+const parseRound = s => { const [id, ids, flag] = String(s).split('|'); return {t: VIEWS[id], ids: (ids || '').split(','), flag: flag || ''}; };
+const FLAGS = {final: 'Final order', wild: 'Wild card', throwback: 'Throwback', close: 'Close call'};
 
-root.OrderUp = {N, BASE_MAX, PERFECT_BONUS, ROUND_MAX, TOP: VIEWS, SETS, CATEGORIES, CAT, cleanCats, catsLabel,
-  fmtVal, far, goodMix, pick5, rightOrder, scoreOrder, isPerfect, makeRounds, newHistory, roundKey};
+root.OrderUp = {N, BASE_MAX, PERFECT_BONUS, ROUND_MAX, TOP: VIEWS, SETS, CATEGORIES, CAT, PRESETS, presetOf, cleanCats, catsLabel,
+  fmtVal, far, goodMix, pick5, rightOrder, scoreOrder, isPerfect, makeRounds, newHistory, roundKey, parseRound, FLAGS};
 })(typeof window !== 'undefined' ? window : globalThis);

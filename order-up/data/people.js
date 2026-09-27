@@ -5,7 +5,7 @@
 (globalThis.OrderUpData = globalThis.OrderUpData || []).push({
   id: 'people', label: 'Celebrities',
   comparisons: [
-    {key: 'born', type: 'age', title: 'Celebrity ages', ask: 'Oldest to youngest', hi: 'Oldest', lo: 'Youngest', dir: 'asc', unit: 'year', gap: 4, year: true,
+    {key: 'born', type: 'age', title: 'Celebrity ages', ask: 'Oldest to youngest', hi: 'Oldest', lo: 'Youngest', dir: 'asc', unit: 'born', gap: 4, year: true,
      src: 'Birth year, from each person’s Wikipedia page.'},
     {key: 'cm', type: 'measure', title: 'Celebrity heights', ask: 'Tallest to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'cm', gap: 1.05,
      src: 'Height as commonly reported (league rosters, official bios, Wikipedia). Every person in a round is at least 5% taller than the next.'},
