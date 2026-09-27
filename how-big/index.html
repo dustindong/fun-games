@@ -63,8 +63,9 @@ p{margin:0}
 /* top bar */
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;margin-bottom:10px}
 .brand{font:900 22px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-.brand i{display:inline-block;width:22px;height:10px;border-radius:2px;background:var(--tape);
-  background-image:repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 4px);background-size:100% 4px;background-repeat:no-repeat;background-position:bottom}
+.brand img{display:block;height:44px;width:auto}
+/* the big logo is the homepage's title, so the small one in the header waits for the game screens */
+body:not(.in-room) .brand{visibility:hidden}
 .top-right{display:flex;align-items:center;gap:10px}
 .chip{font:600 12px/1 var(--mono);letter-spacing:.08em;padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
 
@@ -88,7 +89,15 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 /* ---------- home ---------- */
 .hero{display:grid;gap:14px;margin-bottom:22px}
 .title{font:900 clamp(92px,21vw,200px)/.78 var(--display);letter-spacing:-.005em;text-transform:uppercase;margin-top:6px}
-.title span{color:var(--measure)}
+.title img{display:block;width:min(100%,460px);height:auto;margin-left:-6px}
+/* wide screens: the logo on the left, the pitch beside it, the tape across the bottom */
+@media (min-width: 760px){
+  .hero{grid-template-columns:minmax(0,440px) minmax(0,1fr);column-gap:48px;align-items:center;margin-bottom:28px}
+  .hero .title{margin-top:0}
+  .hero .title img{width:100%}
+  .hero .tape-strip{grid-column:1/-1;grid-row:2}
+  .hero .tagline{grid-column:2;grid-row:1}
+}
 .tape-strip{height:34px;border-radius:3px;background:var(--tape);color:var(--tape-ink);overflow:hidden;display:flex;position:relative;
   box-shadow:inset 0 -1px 0 rgba(0,0,0,.12)}
 .tape-strip::before{content:"";position:absolute;inset:0;
@@ -242,9 +251,11 @@ input[type=text]{font-size:16px}
   body.in-room .wrap{padding-bottom:0}
   .top{min-height:40px;margin-bottom:6px}
   .brand{font-size:19px}
+  .brand img{height:38px}
   .chip{padding:6px 8px;font-size:11px}
   .btn.small{padding:9px 11px}
   .title{font-size:clamp(76px,24vw,120px)}
+  .title img{width:min(100%,320px)}
   .tagline{font-size:17px}
   .home-grid .play{order:-1}
   .demo canvas{height:190px}
@@ -285,7 +296,6 @@ input[type=text]{font-size:16px}
 .brand,.chip{white-space:nowrap}
 a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
 #btn-hub{white-space:nowrap}
-@media (max-width:370px){ body.in-room .brand span{display:none} }
 /* phones held sideways: one compact column that still fits without scrolling */
 @media (orientation:landscape) and (max-height:520px){
   .wrap{padding-block:4px 8px}
@@ -314,7 +324,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
 
 <div class="wrap">
   <header class="top">
-    <div class="brand"><i></i><span>How Big?</span></div>
+    <div class="brand"><img src="logo.svg?v=1" alt="How Big?" width="1374" height="814"></div>
     <div class="top-right">
       <a class="btn small" id="btn-hub" href="../">All games</a>
       <span class="chip" id="room-chip" hidden></span>
@@ -326,7 +336,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
   <!-- HOME -->
   <section class="screen" id="scr-home">
     <div class="hero">
-      <h1 class="title">How <span>Big?</span></h1>
+      <h1 class="title"><img src="logo.svg?v=1" alt="How Big?" width="1374" height="814"></h1>
       <div class="tape-strip" aria-hidden="true" id="tape-strip"></div>
       <p class="tagline">Two things, side by side. Stretch the one on the right until their heights are to scale. Closest guess wins.</p>
     </div>
