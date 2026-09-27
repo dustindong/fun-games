@@ -301,7 +301,7 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .row.dim{opacity:.45}
 .row.active{border-color:var(--ink);z-index:4;box-shadow:0 3px 0 var(--ink),0 14px 26px -14px rgba(20,33,44,.45)}
 .row{transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .15s ease,border-color .15s,opacity .2s ease}
-.sorter.sliding .row{transition:transform .4s cubic-bezier(.35,0,.25,1),opacity .2s ease}
+.sorter.sliding .row{transition:transform .6s cubic-bezier(.35,0,.25,1),opacity .2s ease}
 .evaltag{position:absolute;right:8px;top:calc(100% - 12px);z-index:8;display:grid;gap:3px;justify-items:end;padding:7px 10px;border-radius:7px;background:var(--surface);
   border:2px solid var(--ink);box-shadow:0 3px 0 var(--ink);transform:rotate(-1.5deg);animation:tag-in .22s cubic-bezier(.2,1.4,.4,1) both;pointer-events:none}
 .evaltag b{font:900 20px/1 var(--display);text-transform:uppercase;letter-spacing:.02em;white-space:nowrap}
@@ -1400,7 +1400,8 @@ function moveItem(id, delta, keepFocus) {
    label it "you #2 → actual #4", slide it into place, then show its points and add them to the round score.
    After all five, a short pause, then a Perfect Order bonus if you earned one, then the results panel.
    With reduced motion the same steps and pauses happen, just without the sliding. */
-const REVEAL = {hold: 650, focus: 180, label: 560, labelExact: 480, move: 380, points: 560, pause: 550, bonus: 1400};
+// per card: highlight + label, a short pause, the slide, then points once it has landed, then a hold (~1.1–1.5 s)
+const REVEAL = {hold: 700, focus: 350, exactBeat: 250, move: 620, points: 500, pause: 550, bonus: 1400};
 async function startReveal(right, mine) {
   clearTimeout(local.revealT);
   const key = local.key, alive = () => local.key === key && room?.phase === 'reveal';
@@ -1413,14 +1414,11 @@ async function startReveal(right, mine) {
   for (let k = 0; k < right.length; k++) {
     const id = right[k], at = mine ? mine.indexOf(id) : -1, d = Math.abs(at - k), pts = at < 0 ? 0 : d === 0 ? 20 : d === 1 ? 10 : 0;
     const li = [...sorterEl.children].find(x => x.dataset.id === id);
+    // highlight the card where it sits now, labeled you #2 → actual #4, and pause before it moves
     local.active = id; renderRound();
-    await wait(mine ? REVEAL.focus : 120); if (!alive()) return;
-    // you #2 → actual #4, and how far off that is
-    if (mine) {
-      li.insertAdjacentHTML('beforeend', `<span class="evaltag ${d === 0 ? 'exact' : d === 1 ? 'near' : 'far'}" aria-hidden="true">
+    if (mine) li.insertAdjacentHTML('beforeend', `<span class="evaltag ${d === 0 ? 'exact' : d === 1 ? 'near' : 'far'}" aria-hidden="true">
         <b>You #${at + 1} <i>→</i> Actual #${k + 1}</b><small>${d === 0 ? '✓ Correct' : d === 1 ? '↕ 1 spot off' : `✗ ${d} spots off`}</small></span>`);
-      await wait(d === 0 ? REVEAL.labelExact : REVEAL.label); if (!alive()) return;
-    }
+    await wait(mine ? REVEAL.focus : 200); if (!alive()) return;
     // slide it into its spot (only this card and the ones it passes move)
     local.order.splice(local.order.indexOf(id), 1);
     local.order.splice(k, 0, id);
@@ -1428,15 +1426,16 @@ async function startReveal(right, mine) {
     placeRows(local.order);
     local.landed.add(id);
     renderRound();
-    // (a card that's already in its spot doesn't need the slide time)
-    if (at !== k || !mine) { await wait(REDUCED ? 150 : REVEAL.move); if (!alive()) return; }
+    // let the slide finish completely before any points show (a card already in its spot just gets a short beat)
+    const moves = !mine || at !== k;
+    await wait(!moves ? REVEAL.exactBeat : REDUCED ? 250 : REVEAL.move); if (!alive()) return;
     sorterEl.classList.remove('sliding');
     if (!REDUCED) { li.classList.remove('landed'); void li.offsetWidth; li.classList.add('landed'); }
     // its points, then into the round score
     if (mine) {
       popPoints(li, pts);
       const from = local.tally; local.tally += pts;
-      if (pts) { bump(tally); countUp(tally, from, local.tally, 280, v => String(v)); }
+      if (pts) { bump(tally); countUp(tally, from, local.tally, 450, v => String(v)); }
       await wait(REVEAL.points); if (!alive()) return;
     } else await wait(250);
     li.querySelector('.evaltag')?.remove();
@@ -1450,7 +1449,7 @@ async function startReveal(right, mine) {
     scraps(wrap);
     await wait(500); if (!alive()) return;
     $('#tally-bonus').textContent = `+${PERFECT_BONUS} bonus`;
-    bump(tally); countUp(tally, local.tally, local.tally + PERFECT_BONUS, 300, v => String(v));
+    bump(tally); countUp(tally, local.tally, local.tally + PERFECT_BONUS, 450, v => String(v));
     local.tally += PERFECT_BONUS;
     await wait(REVEAL.bonus - 500); if (!alive()) return;
   }
@@ -1732,7 +1731,7 @@ function renderRound() {
     $('#rv-main').classList.toggle('perfect', perfect);
     sorterEl.classList.toggle('perfect', perfect);
     // the round score was added up on the board, item by item; the panel lands with the final number
-    if (local.counted !== local.key) { local.counted = local.key; $('#rv-pts').textContent = '+' + p; bump($('#rv-pts')); }
+    if (local.counted !== local.key) { local.counted = local.key; countUp($('#rv-pts'), 0, p, 1200).then(() => bump($('#rv-pts'))); }
     $('#rv-pts').style.color = p >= 60 ? 'var(--green)' : p > 0 ? 'var(--ink)' : 'var(--red)';
     $('#rv-verdict').textContent = verdict(p, !!mineO, room.round);
     const near = mineO ? mineO.filter((id, i) => Math.abs(right.indexOf(id) - i) === 1).length : 0;
