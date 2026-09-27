@@ -74,9 +74,7 @@ p{margin:0}
 /* top bar */
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;margin-bottom:10px}
 .brand{font:900 22px/1 var(--display);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:8px;white-space:nowrap}
-.brand i{display:inline-grid;gap:2px;width:18px}
-.brand i b{display:block;height:3px;border-radius:1px;background:var(--accent)}
-.brand i b:nth-child(2){width:78%}.brand i b:nth-child(3){width:56%}.brand i b:nth-child(4){width:34%}
+.brand img{display:block;height:44px;width:auto}
 .top-right{display:flex;align-items:center;gap:10px}
 .chip{font:600 12px/1 var(--mono);letter-spacing:.08em;padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:var(--surface);white-space:nowrap}
 
@@ -99,10 +97,7 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 /* ---------- home ---------- */
 .hero{display:grid;gap:14px;margin-bottom:22px}
 .title{font:900 clamp(92px,21vw,200px)/.78 var(--display);letter-spacing:-.005em;text-transform:uppercase;margin-top:6px}
-.title span{color:var(--accent)}
-.stairs{display:grid;gap:4px}
-.stairs span{height:7px;border-radius:2px;background:var(--accent)}
-.stairs span:nth-child(2){width:80%;opacity:.8}.stairs span:nth-child(3){width:60%;opacity:.62}.stairs span:nth-child(4){width:40%;opacity:.46}.stairs span:nth-child(5){width:20%;opacity:.32}
+.title img{display:block;width:min(100%,460px);height:auto;margin-left:-6px}
 .tagline{font-size:clamp(17px,2.3vw,21px);max-width:40ch;line-height:1.35}
 .tagline b{font-weight:700}
 
@@ -501,10 +496,12 @@ input[type=text]{font-size:16px}
   body.in-room .wrap{padding-bottom:0}
   .top{min-height:40px;margin-bottom:6px}
   .brand{font-size:19px}
+  .brand img{height:38px}
   .chip{padding:6px 8px;font-size:11px}
   .cat-chip{min-height:40px;padding:8px 12px}
   .btn.small{padding:9px 11px}
   .title{font-size:clamp(76px,24vw,120px)}
+  .title img{width:min(100%,320px)}
   .tagline{font-size:17px}
   .home-grid{grid-template-columns:1fr}
   .home-grid .play{order:-1}
@@ -562,7 +559,6 @@ input[type=text]{font-size:16px}
   .board .bars{display:none}
 }
 @media (max-width:370px){
-  body.in-room .brand span{display:none}
   .row .lbl b{font-size:14px}
   .mv{width:36px;height:40px}
 }
@@ -599,7 +595,7 @@ input[type=text]{font-size:16px}
 
 <div class="wrap">
   <header class="top">
-    <div class="brand"><i aria-hidden="true"><b></b><b></b><b></b><b></b></i><span>Order Up!</span></div>
+    <div class="brand"><img src="logo.svg?v=2026-09-30h" alt="Order Up!" width="1416" height="964"></div>
     <div class="top-right">
       <a class="btn small" id="btn-hub" href="../">All games</a>
       <span class="chip" id="room-chip" hidden></span>
@@ -610,8 +606,7 @@ input[type=text]{font-size:16px}
   <!-- HOME -->
   <section class="screen" id="scr-home">
     <div class="hero">
-      <h1 class="title">Order <span>Up!</span></h1>
-      <div class="stairs" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <h1 class="title"><img src="logo.svg?v=2026-09-30h" alt="Order Up!" width="1416" height="964"></h1>
       <p class="headline">Five things.<br><span>One order.</span></p>
       <p class="tagline">Think you know what came first? You'll recognize every one of them. The order is the hard part.</p>
     </div>
@@ -779,24 +774,24 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-30g"></script>
-<script src="data/countries.js?v=2026-09-30g"></script>
-<script src="data/songs.js?v=2026-09-30g"></script>
-<script src="data/movies.js?v=2026-09-30g"></script>
-<script src="data/tv.js?v=2026-09-30g"></script>
-<script src="data/games.js?v=2026-09-30g"></script>
-<script src="data/pokemon.js?v=2026-09-30g"></script>
-<script src="data/tech.js?v=2026-09-30g"></script>
-<script src="data/nostalgia.js?v=2026-09-30g"></script>
-<script src="data/people.js?v=2026-09-30g"></script>
-<script src="data/animals.js?v=2026-09-30g"></script>
-<script src="data/dogs.js?v=2026-09-30g"></script>
-<script src="data/cars.js?v=2026-09-30g"></script>
-<script src="data/food.js?v=2026-09-30g"></script>
-<script src="data/drinks.js?v=2026-09-30g"></script>
-<script src="data/stuff.js?v=2026-09-30g"></script>
-<script src="data/sequences.js?v=2026-09-30g"></script>
-<script src="engine.js?v=2026-09-30g"></script>
+<script src="data/states.js?v=2026-09-30h"></script>
+<script src="data/countries.js?v=2026-09-30h"></script>
+<script src="data/songs.js?v=2026-09-30h"></script>
+<script src="data/movies.js?v=2026-09-30h"></script>
+<script src="data/tv.js?v=2026-09-30h"></script>
+<script src="data/games.js?v=2026-09-30h"></script>
+<script src="data/pokemon.js?v=2026-09-30h"></script>
+<script src="data/tech.js?v=2026-09-30h"></script>
+<script src="data/nostalgia.js?v=2026-09-30h"></script>
+<script src="data/people.js?v=2026-09-30h"></script>
+<script src="data/animals.js?v=2026-09-30h"></script>
+<script src="data/dogs.js?v=2026-09-30h"></script>
+<script src="data/cars.js?v=2026-09-30h"></script>
+<script src="data/food.js?v=2026-09-30h"></script>
+<script src="data/drinks.js?v=2026-09-30h"></script>
+<script src="data/stuff.js?v=2026-09-30h"></script>
+<script src="data/sequences.js?v=2026-09-30h"></script>
+<script src="engine.js?v=2026-09-30h"></script>
 <script>
 (() => {
 'use strict';
