@@ -557,7 +557,9 @@ input[type=text]{font-size:16px}
     padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
     box-shadow:0 -10px 24px -16px rgba(0,0,0,.35)}
 }
-@media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important}
+  /* without motion the stamp can't fade away, so it sits small at the bottom of the board instead */
+  .stamp{top:auto;bottom:-14px;font-size:22px;border-width:3px;transform:translate(-50%,0) rotate(-3deg)} }
 </style>
 </head>
 <body>
