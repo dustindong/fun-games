@@ -102,8 +102,14 @@ a.game:hover .play svg{transform:translateX(3px)}
 .game .body:has(.name-logo) .name{margin:-58px 0 -2px;position:relative;z-index:1}
 .game .body:has(.name-logo) .meta{justify-content:center}
 .game .body:has(.name-logo) .play{justify-self:center}
-.name-logo{display:block;width:220px;height:auto;filter:drop-shadow(0 6px 10px rgba(20,33,44,.18));transition:transform .15s ease}
+.name-logo{display:block;height:140px;width:auto;filter:drop-shadow(0 6px 10px rgba(20,33,44,.18));transition:transform .15s ease}
 a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
+/* side by side, the cards share rows (logo, description, tags, button) so each line lines up across games */
+@media (min-width:701px){
+  .games{grid-template-rows:repeat(5,auto)}
+  .game{grid-row:span 5;grid-template-rows:subgrid;row-gap:0}
+  .game .body{grid-row:2/span 4;grid-template-rows:subgrid;row-gap:10px}
+}
 .badge{justify-self:start;margin-top:6px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
   padding:9px 11px;border:1px dashed var(--line);border-radius:6px}
 
