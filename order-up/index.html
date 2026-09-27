@@ -288,6 +288,8 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .sorter.still .moves,.sorter.still .grip{display:none}
 /* reveal state of the list */
 .ans{display:flex;align-items:center;gap:8px;justify-content:flex-end;text-align:right}
+.ans.blank,.picks.blank{visibility:hidden}
+.you{white-space:nowrap}
 .ans .val{font:600 13px/1.2 var(--mono);white-space:nowrap}
 .you{font:600 11px/1 var(--mono);letter-spacing:.04em;padding:5px 7px;border-radius:4px;white-space:nowrap;border:1px solid transparent}
 .row.exact{border-color:var(--green);background:linear-gradient(90deg,var(--green-bg),transparent 60%),var(--surface)}
@@ -520,7 +522,9 @@ input[type=text]{font-size:16px}
   .rv-actions .btn.small{padding:12px 18px;font-size:15px}
   .ans{flex-direction:column;align-items:flex-end;gap:4px}
   .sorter.answers .row{grid-template-columns:36px minmax(0,1fr);row-gap:4px}
-  .sorter.answers .ans{grid-column:2;flex-direction:row;justify-content:space-between;align-items:center;flex-wrap:wrap;padding-bottom:2px}
+  /* fixed two lines (value, then result) so a card's height never changes during the reveal */
+  .sorter.answers .ans{grid-column:2;flex-direction:column;align-items:flex-start;gap:4px;padding-bottom:2px}
+  .sorter.answers .ans .val{min-height:1.2em}
   .ans .val{font-size:12px}
   .lobby-foot{flex-direction:column;align-items:stretch}
   .lobby-foot > div:last-child{justify-items:stretch !important}
@@ -749,23 +753,23 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-28g"></script>
-<script src="data/songs.js?v=2026-09-28g"></script>
-<script src="data/movies.js?v=2026-09-28g"></script>
-<script src="data/tv.js?v=2026-09-28g"></script>
-<script src="data/games.js?v=2026-09-28g"></script>
-<script src="data/pokemon.js?v=2026-09-28g"></script>
-<script src="data/tech.js?v=2026-09-28g"></script>
-<script src="data/nostalgia.js?v=2026-09-28g"></script>
-<script src="data/people.js?v=2026-09-28g"></script>
-<script src="data/animals.js?v=2026-09-28g"></script>
-<script src="data/dogs.js?v=2026-09-28g"></script>
-<script src="data/cars.js?v=2026-09-28g"></script>
-<script src="data/food.js?v=2026-09-28g"></script>
-<script src="data/drinks.js?v=2026-09-28g"></script>
-<script src="data/stuff.js?v=2026-09-28g"></script>
-<script src="data/sequences.js?v=2026-09-28g"></script>
-<script src="engine.js?v=2026-09-28g"></script>
+<script src="data/states.js?v=2026-09-28h"></script>
+<script src="data/songs.js?v=2026-09-28h"></script>
+<script src="data/movies.js?v=2026-09-28h"></script>
+<script src="data/tv.js?v=2026-09-28h"></script>
+<script src="data/games.js?v=2026-09-28h"></script>
+<script src="data/pokemon.js?v=2026-09-28h"></script>
+<script src="data/tech.js?v=2026-09-28h"></script>
+<script src="data/nostalgia.js?v=2026-09-28h"></script>
+<script src="data/people.js?v=2026-09-28h"></script>
+<script src="data/animals.js?v=2026-09-28h"></script>
+<script src="data/dogs.js?v=2026-09-28h"></script>
+<script src="data/cars.js?v=2026-09-28h"></script>
+<script src="data/food.js?v=2026-09-28h"></script>
+<script src="data/drinks.js?v=2026-09-28h"></script>
+<script src="data/stuff.js?v=2026-09-28h"></script>
+<script src="data/sequences.js?v=2026-09-28h"></script>
+<script src="engine.js?v=2026-09-28h"></script>
 <script>
 (() => {
 'use strict';
@@ -1259,7 +1263,10 @@ async function submit(manual) {
   const o = local.touched || manual ? local.order.slice() : null;
   const p = scoreOrder(o, R);
   local.locked = local.submitted = true;
-  if (manual && !REDUCED) { sorterEl.classList.remove('sealed'); void sorterEl.offsetWidth; sorterEl.classList.add('sealed'); }
+  if (manual && !REDUCED) {
+    sorterEl.classList.remove('sealed'); void sorterEl.offsetWidth; sorterEl.classList.add('sealed');
+    setTimeout(() => sorterEl.classList.remove('sealed'), 600);
+  }
   renderRound();
   const body = {scores: {[game]: {['r' + round]: {o: o && o.join(','), p}}}};
   const pref = db.doc(`rooms/${code}/players/${me.pid}`);
@@ -1381,6 +1388,8 @@ const REVEAL = {start: 300, highlight: 550, move: 500, after: 250};
 function startReveal(right) {
   clearTimeout(local.revealT);
   local.landed = new Set(); local.revealDone = false; local.active = null;
+  // the Lock it in drop is over; clear it so it can't replay while cards change state during the reveal
+  sorterEl.classList.remove('sealed');
   const key = local.key, alive = () => local.key === key && room?.phase === 'reveal';
   let k = 0;
   const next = () => {
@@ -1398,8 +1407,6 @@ function startReveal(right) {
         if (!alive()) return;
         sorterEl.classList.remove('gliding');
         local.landed.add(id); local.active = null; renderRound();
-        const li = sorterEl.querySelector(`[data-id="${id}"]`);
-        if (!REDUCED) { li.classList.remove('landed'); void li.offsetWidth; li.classList.add('landed'); }
         k++;
         local.revealT = setTimeout(next, REVEAL.after);
       }, REDUCED ? 150 : REVEAL.move);
@@ -1630,27 +1637,30 @@ function renderRound() {
       const lit = local.active === id;
       li.classList.toggle('pending', !done && !lit);
       li.classList.toggle('lit', lit);
-      const ans = li.querySelector('.ans'); ans.hidden = !done && !lit;
+      const ans = li.querySelector('.ans'); ans.hidden = false;
+      ans.classList.toggle('blank', !done && !lit);
+      const picks = li.querySelector('.picks');
+      picks.hidden = take.rows.length < 2;
+      picks.classList.toggle('blank', !done);
+      if (!picks.hidden) {
+        const html = many
+          ? `${take.rows.filter(r => r.o[right.indexOf(id)] === id).length} of ${take.rows.length} had it here`
+          : take.rows.map(r => { const k = r.o.indexOf(id), dd = Math.abs(k - right.indexOf(id));
+              return `<span class="pk ${dd === 0 ? 'exact' : dd === 1 ? 'near' : 'far'}" title="${esc(r.p.name)}: ${ordinal(k + 1)}">${mark(r.p)}${k + 1}</span>`; }).join('');
+        if (picks.dataset.html !== html) { picks.dataset.html = html; picks.innerHTML = html; }
+      }
       if (!done) {
         // the answer being revealed: lit up where it sits, colored by how far off you were, with where it's going
-        li.querySelector('.val').textContent = '';
-        if (!lit) return;
-        const you = li.querySelector('.you'), to = right.indexOf(id), dd = at < 0 ? -1 : Math.abs(at - to);
+        li.querySelector('.val').textContent = '\u00a0';
+        const you = li.querySelector('.you');
+        if (!lit) { you.hidden = false; you.textContent = '\u00a0'; return; }
+        const to = right.indexOf(id), dd = at < 0 ? -1 : Math.abs(at - to);
         if (dd >= 0) li.classList.add(dd === 0 ? 'exact' : dd === 1 ? 'near' : 'far');
         you.hidden = false; you.textContent = dd === 0 ? `✓ stays #${to + 1}` : `→ moves to #${to + 1}`;
         return;
       }
       if (d >= 0) li.classList.add(d === 0 ? 'exact' : d === 1 ? 'near' : 'far');
       li.querySelector('.val').textContent = it.label || fmtVal(t, it.v);
-      const picks = li.querySelector('.picks');
-      picks.hidden = take.rows.length < 2;
-      if (!picks.hidden) {
-        const html = many
-          ? `${take.rows.filter(r => r.o[i] === id).length} of ${take.rows.length} had it here`
-          : take.rows.map(r => { const k = r.o.indexOf(id), dd = Math.abs(k - i);
-              return `<span class="pk ${dd === 0 ? 'exact' : dd === 1 ? 'near' : 'far'}" title="${esc(r.p.name)}: ${ordinal(k + 1)}">${mark(r.p)}${k + 1}</span>`; }).join('');
-        if (picks.dataset.html !== html) { picks.dataset.html = html; picks.innerHTML = html; }
-      }
       const you = li.querySelector('.you');
       you.hidden = d < 0;
       // the static result keeps everything readable after the animation: your spot, the real one, the distance, the points
@@ -1877,6 +1887,8 @@ function sortable(el, {can, order, onMove, renumber}) {
 function settle(li, delay = 0) {
   if (REDUCED || !li) return;
   setTimeout(() => { li.classList.remove('settle'); void li.offsetWidth; li.classList.add('settle'); }, delay);
+  // take the class off when it's done: moving a card re-inserts the list, which would replay any animation left on it
+  li.addEventListener('animationend', () => li.classList.remove('settle'), {once: true});
 }
 const board = sortable(sorterEl, {
   can: () => canSort(), order: () => local.order, renumber: true,
