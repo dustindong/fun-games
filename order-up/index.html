@@ -298,7 +298,8 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .row.exact .pos{color:var(--green)}.row.near .pos{color:var(--amber)}
 .row.exact{box-shadow:0 3px 0 var(--green)}
 .sorter.revealing .row.pending{opacity:.55}
-.sorter.gliding .row{transition:transform .72s cubic-bezier(.45,0,.2,1),border-color .15s,background-color .15s}
+.sorter.gliding .row{transition:transform .5s cubic-bezier(.45,0,.2,1),border-color .15s,background-color .15s}
+.row.lit{z-index:4;box-shadow:0 3px 0 var(--ink),0 12px 22px -12px rgba(20,33,44,.45)}
 .row{transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .15s ease,border-color .15s,opacity .2s ease}
 /* reveal payoff: points float off each card, the total counts up, a perfect order gets stamped */
 .rv-pts b.bump{animation:bump .3s cubic-bezier(.3,1.6,.5,1)}
@@ -748,23 +749,23 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-28f"></script>
-<script src="data/songs.js?v=2026-09-28f"></script>
-<script src="data/movies.js?v=2026-09-28f"></script>
-<script src="data/tv.js?v=2026-09-28f"></script>
-<script src="data/games.js?v=2026-09-28f"></script>
-<script src="data/pokemon.js?v=2026-09-28f"></script>
-<script src="data/tech.js?v=2026-09-28f"></script>
-<script src="data/nostalgia.js?v=2026-09-28f"></script>
-<script src="data/people.js?v=2026-09-28f"></script>
-<script src="data/animals.js?v=2026-09-28f"></script>
-<script src="data/dogs.js?v=2026-09-28f"></script>
-<script src="data/cars.js?v=2026-09-28f"></script>
-<script src="data/food.js?v=2026-09-28f"></script>
-<script src="data/drinks.js?v=2026-09-28f"></script>
-<script src="data/stuff.js?v=2026-09-28f"></script>
-<script src="data/sequences.js?v=2026-09-28f"></script>
-<script src="engine.js?v=2026-09-28f"></script>
+<script src="data/states.js?v=2026-09-28g"></script>
+<script src="data/songs.js?v=2026-09-28g"></script>
+<script src="data/movies.js?v=2026-09-28g"></script>
+<script src="data/tv.js?v=2026-09-28g"></script>
+<script src="data/games.js?v=2026-09-28g"></script>
+<script src="data/pokemon.js?v=2026-09-28g"></script>
+<script src="data/tech.js?v=2026-09-28g"></script>
+<script src="data/nostalgia.js?v=2026-09-28g"></script>
+<script src="data/people.js?v=2026-09-28g"></script>
+<script src="data/animals.js?v=2026-09-28g"></script>
+<script src="data/dogs.js?v=2026-09-28g"></script>
+<script src="data/cars.js?v=2026-09-28g"></script>
+<script src="data/food.js?v=2026-09-28g"></script>
+<script src="data/drinks.js?v=2026-09-28g"></script>
+<script src="data/stuff.js?v=2026-09-28g"></script>
+<script src="data/sequences.js?v=2026-09-28g"></script>
+<script src="engine.js?v=2026-09-28g"></script>
 <script>
 (() => {
 'use strict';
@@ -1373,31 +1374,38 @@ function moveItem(id, delta, keepFocus) {
   if (keepFocus) sorterEl.querySelector(`[data-id="${id}"]`)?.focus({preventScroll: true});
 }
 
-/* the reveal, like the original: first every card lights up where you put it (green right, amber one off,
-   red further) with where it's headed, then the whole list slides into the right order together, and then the
-   answers and points appear. With reduced motion the list switches without sliding, with the same pauses. */
-const REVEAL = {mark: 1100, move: 720, settle: 250};
+/* the reveal, one answer at a time, top to bottom: the card that belongs in the next spot lights up where it
+   sits (green right, amber one off, red further) with where it's headed, then slides into place, then the next.
+   With reduced motion the cards switch places without sliding, with the same pauses. */
+const REVEAL = {start: 300, highlight: 550, move: 500, after: 250};
 function startReveal(right) {
   clearTimeout(local.revealT);
-  local.landed = new Set(); local.revealDone = false; local.marked = false;
+  local.landed = new Set(); local.revealDone = false; local.active = null;
   const key = local.key, alive = () => local.key === key && room?.phase === 'reveal';
-  local.revealT = setTimeout(() => {
+  let k = 0;
+  const next = () => {
     if (!alive()) return;
-    local.marked = true; renderRound();
+    if (k >= right.length) { local.active = null; local.revealDone = true; renderRound(); return; }
+    const id = right[k], spot = k;
+    local.active = id; renderRound();                       // highlight it where it is
     local.revealT = setTimeout(() => {
       if (!alive()) return;
-      local.order = right.slice();
+      local.order.splice(local.order.indexOf(id), 1);        // then move it into its spot
+      local.order.splice(spot, 0, id);
       sorterEl.classList.add('gliding');
       placeRows(local.order, REDUCED);
       local.revealT = setTimeout(() => {
         if (!alive()) return;
         sorterEl.classList.remove('gliding');
-        right.forEach(id => local.landed.add(id));
-        renderRound();
-        local.revealT = setTimeout(() => { if (alive()) { local.revealDone = true; renderRound(); } }, REVEAL.settle);
+        local.landed.add(id); local.active = null; renderRound();
+        const li = sorterEl.querySelector(`[data-id="${id}"]`);
+        if (!REDUCED) { li.classList.remove('landed'); void li.offsetWidth; li.classList.add('landed'); }
+        k++;
+        local.revealT = setTimeout(next, REVEAL.after);
       }, REDUCED ? 150 : REVEAL.move);
-    }, REVEAL.mark);
-  }, 250);
+    }, REVEAL.highlight);
+  };
+  local.revealT = setTimeout(next, REVEAL.start);
 }
 // a small burst of paper scraps over an element (about a second, then gone)
 function scraps(host, n = 18) {
@@ -1619,17 +1627,17 @@ function renderRound() {
       const id = li.dataset.id, it = t.byId[id], done = local.landed.has(id);
       const at = mineO ? mineO.indexOf(id) : -1, d = at < 0 ? -1 : Math.abs(at - i);
       li.classList.remove('exact', 'near', 'far');
-      li.classList.toggle('pending', !done && !local.marked);
-      const ans = li.querySelector('.ans'); ans.hidden = !done && !local.marked;
+      const lit = local.active === id;
+      li.classList.toggle('pending', !done && !lit);
+      li.classList.toggle('lit', lit);
+      const ans = li.querySelector('.ans'); ans.hidden = !done && !lit;
       if (!done) {
-        // marked, still in your order: highlighted by how far off it is, with the spot it's moving to
+        // the answer being revealed: lit up where it sits, colored by how far off you were, with where it's going
         li.querySelector('.val').textContent = '';
-        const you = li.querySelector('.you'), to = right.indexOf(id), dd = Math.abs(i - to);
-        li.classList.remove('exact', 'near', 'far');
-        if (local.marked && mineO) {
-          li.classList.add(dd === 0 ? 'exact' : dd === 1 ? 'near' : 'far');
-          you.hidden = false; you.textContent = dd === 0 ? `✓ stays #${to + 1}` : `→ moves to #${to + 1}`;
-        } else if (local.marked) { you.hidden = false; you.textContent = `→ #${to + 1}`; }
+        if (!lit) return;
+        const you = li.querySelector('.you'), to = right.indexOf(id), dd = at < 0 ? -1 : Math.abs(at - to);
+        if (dd >= 0) li.classList.add(dd === 0 ? 'exact' : dd === 1 ? 'near' : 'far');
+        you.hidden = false; you.textContent = dd === 0 ? `✓ stays #${to + 1}` : `→ moves to #${to + 1}`;
         return;
       }
       if (d >= 0) li.classList.add(d === 0 ? 'exact' : d === 1 ? 'near' : 'far');
@@ -1692,7 +1700,7 @@ function renderRound() {
     $('#rv-main').classList.remove('perfect');
     sorterEl.classList.remove('revealing', 'perfect', 'answers');
     document.querySelectorAll('.board-wrap .stamp, .board-wrap .scraps').forEach(x => x.remove());
-    for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far', 'pending', 'landed'); li.querySelector('.ans').hidden = true; li.querySelector('.picks').hidden = true; }
+    for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far', 'pending', 'landed', 'lit'); li.querySelector('.ans').hidden = true; li.querySelector('.picks').hidden = true; }
     $('#rv-room').hidden = true;
   }
 }
