@@ -21,7 +21,7 @@
   --accent:#EE5E33; --accent-ink:#2A0C02; --tape:#F2B21B; --tape-ink:#261C02;
   --measure:#2D69AC; --red:#C93D26; --green:#1E8452; --amber:#B7791F;
   --green-bg:rgba(30,132,82,.1); --amber-bg:rgba(242,178,27,.16); --red-bg:rgba(201,61,38,.08);
-  --focus:#2D69AC;
+  --focus:#2D69AC; --edge:#93A3AE; --scrap:#F2B21B;
   --shadow:0 1px 0 rgba(20,33,44,.05),0 10px 28px -16px rgba(20,33,44,.28);
   --lift:0 2px 0 rgba(20,33,44,.06),0 18px 32px -14px rgba(20,33,44,.45);
   --display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",Impact,sans-serif;
@@ -37,7 +37,7 @@
     --accent:#F7815C; --accent-ink:#2A0C02; --tape:#F4BE36; --tape-ink:#261C02;
     --measure:#72AAE8; --red:#F06B51; --green:#45C182; --amber:#F4BE36;
     --green-bg:rgba(69,193,130,.14); --amber-bg:rgba(244,190,54,.14); --red-bg:rgba(240,107,81,.12);
-    --focus:#72AAE8;
+    --focus:#72AAE8; --edge:#3E586D;
     --shadow:0 1px 0 rgba(0,0,0,.2),0 12px 30px -16px rgba(0,0,0,.6);
     --lift:0 2px 0 rgba(0,0,0,.25),0 20px 34px -14px rgba(0,0,0,.8);
     color-scheme:dark;
@@ -49,7 +49,7 @@
   --accent:#F7815C; --accent-ink:#2A0C02; --tape:#F4BE36; --tape-ink:#261C02;
   --measure:#72AAE8; --red:#F06B51; --green:#45C182; --amber:#F4BE36;
   --green-bg:rgba(69,193,130,.14); --amber-bg:rgba(244,190,54,.14); --red-bg:rgba(240,107,81,.12);
-  --focus:#72AAE8;
+  --focus:#72AAE8; --edge:#3E586D;
   --shadow:0 1px 0 rgba(0,0,0,.2),0 12px 30px -16px rgba(0,0,0,.6);
   --lift:0 2px 0 rgba(0,0,0,.25),0 20px 34px -14px rgba(0,0,0,.8);
   color-scheme:dark;
@@ -105,12 +105,19 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .stairs span:nth-child(2){width:80%;opacity:.8}.stairs span:nth-child(3){width:60%;opacity:.62}.stairs span:nth-child(4){width:40%;opacity:.46}.stairs span:nth-child(5){width:20%;opacity:.32}
 .tagline{font-size:clamp(17px,2.3vw,21px);max-width:40ch;line-height:1.35}
 .tagline b{font-weight:700}
-.teasers{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
-.teasers li{font:600 13px/1.2 var(--body);padding:6px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+
 .home-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;align-items:start}
-.demo{padding:0;overflow:hidden;margin:0}
-.demo-body{padding:14px 16px 16px;background:var(--surface-2)}
-.demo figcaption{padding:10px 14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.demo{padding:0;margin:0;position:relative;border:2px solid var(--ink);box-shadow:0 5px 0 var(--ink)}
+.demo-head{display:grid;gap:3px;padding:14px 16px 10px;position:relative}
+.demo-head b{font:900 30px/.95 var(--display);text-transform:uppercase}
+.demo-head .dir{font-size:18px}
+.try{position:absolute;right:14px;top:10px;display:grid;justify-items:center;font:700 13px/1 var(--mono);color:var(--accent);transform:rotate(6deg)}
+.try svg{width:46px;height:30px;order:2;transform:rotate(12deg)}
+.demo-body{padding:10px 12px 14px;background:var(--surface-2);position:relative;border-top:1.5px dashed var(--line)}
+.demo-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.demo-foot .btn{flex:none}
+.headline{font:900 clamp(40px,7vw,64px)/.9 var(--display);text-transform:uppercase}
+.headline span{color:var(--accent)}
 .play{padding:18px;display:grid;gap:12px}
 .play label,.play .lbl{font-weight:600;font-size:13px}
 .cats{display:grid;gap:8px}
@@ -185,18 +192,57 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .tape-fill{position:absolute;left:0;top:0;bottom:0;width:100%;background-color:var(--tape);
   background-image:repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 8px),repeating-linear-gradient(90deg,var(--tape-ink) 0 1px,transparent 1px 40px);
   background-size:100% 7px,100% 14px;background-repeat:no-repeat;background-position:left top,left top}
+.tape.warn .tape-fill{background-color:var(--accent)}
 .tape.low .tape-fill{background-color:var(--red)}
+.tape.warn .tape-sec{font-weight:700}
+.tape.low .tape-sec{font-size:17px;font-weight:700;color:#fff;background:var(--red);padding:4px 7px;border-radius:4px;transform:translateY(-50%);animation:tick 1s ease-in-out infinite}
+@keyframes tick{0%,100%{transform:translateY(-50%) scale(1)}15%{transform:translateY(-50%) scale(1.14)}}
 .tape-sec{position:absolute;right:8px;top:50%;transform:translateY(-35%);font:600 13px/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)}
-.ask{display:grid;gap:6px;margin-bottom:12px}
-.prompt{font:800 clamp(28px,4.6vw,44px)/1 var(--display);text-transform:uppercase;letter-spacing:.005em}
+.ask{display:grid;gap:4px;margin-bottom:22px}
+.prompt{font:900 clamp(32px,5.4vw,52px)/.95 var(--display);text-transform:uppercase;letter-spacing:.005em}
+.dir{justify-self:start;font:800 clamp(17px,2.6vw,22px)/1 var(--display);text-transform:uppercase;letter-spacing:.04em;color:var(--accent)}
+/* round intro: a title card, then the cards are dealt onto the board */
+#scr-round{position:relative}
+.intro{position:absolute;left:0;right:0;top:64px;z-index:9;display:grid;justify-items:center;gap:8px;text-align:center;padding:26px 18px 24px;
+  background:var(--surface);border:2px solid var(--ink);border-radius:12px;box-shadow:0 5px 0 var(--ink);animation:intro .85s cubic-bezier(.2,1.2,.4,1) both}
+.finale .intro{animation-duration:1.1s;border-color:var(--tape);box-shadow:0 5px 0 var(--amber)}
+.intro b{font:900 clamp(40px,9vw,76px)/.9 var(--display);text-transform:uppercase}
+.intro .dir{justify-self:center}
+.intro .badge{position:static;margin-bottom:6px}
+@keyframes intro{0%{opacity:0;transform:scale(.86) rotate(-2deg)}22%{opacity:1;transform:scale(1.02) rotate(.5deg)}32%{transform:none}82%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-10px) scale(.97)}}
+.intro-on .ask,.intro-on .board-wrap .row,.intro-on .board-wrap .badge,.intro-on #play-ui{opacity:0}
+.dealing .sorter .row{animation:deal .32s cubic-bezier(.2,1.3,.4,1) both}
+.dealing .sorter .row:nth-child(2){animation-delay:.05s}.dealing .sorter .row:nth-child(3){animation-delay:.1s}
+.dealing .sorter .row:nth-child(4){animation-delay:.15s}.dealing .sorter .row:nth-child(5){animation-delay:.2s}
+.dealing .ask{animation:rv-in .25s ease both}
+@keyframes deal{from{opacity:0;transform:translateY(-18px) rotate(-2deg) scale(.96)}to{opacity:1;transform:none}}
+/* Lock it in: cards drop into place */
+.sorter.sealed .row{animation:seal .28s cubic-bezier(.3,1.4,.5,1)}
+.sorter.sealed .row:nth-child(2){animation-delay:.03s}.sorter.sealed .row:nth-child(3){animation-delay:.06s}
+.sorter.sealed .row:nth-child(4){animation-delay:.09s}.sorter.sealed .row:nth-child(5){animation-delay:.12s}
+@keyframes seal{0%{transform:none}40%{transform:translateY(3px) scale(.99);box-shadow:0 0 0 var(--edge)}100%{transform:none}}
 .prompt em{font-style:normal;color:var(--accent)}
 /* special rounds: a label over the prompt; the finale gets gold trim and a bigger send-off */
-.badge{justify-self:start;display:inline-flex;align-items:center;gap:6px;font:800 13px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;
-  padding:6px 10px 5px;border-radius:4px;background:var(--ink);color:var(--surface);animation:callout-in .45s cubic-bezier(.2,1.4,.4,1) both}
-.badge.wild{background:var(--measure);color:#fff}
-.badge.throwback{background:var(--amber-bg);color:var(--ink);border:1px solid var(--amber)}
-.badge.close{background:var(--red-bg);color:var(--red);border:1px solid var(--red)}
-.badge.final{background:var(--tape);color:var(--tape-ink);font-size:16px;padding:8px 12px 7px}
+/* special-round stickers: a stamp, a hand-marked label, a playing card and a taped banner, stuck to the board.
+   Normal rounds get none of this. */
+.badge{position:absolute;top:-18px;right:14px;z-index:4;display:inline-grid;justify-items:center;gap:2px;font:900 16px/1 var(--display);letter-spacing:.1em;
+  text-transform:uppercase;padding:7px 12px 6px;animation:sticker .38s cubic-bezier(.2,1.4,.4,1) both;pointer-events:none;white-space:nowrap}
+.badge small{font:600 10px/1 var(--mono);letter-spacing:.04em;text-transform:none}
+@keyframes sticker{from{opacity:0;transform:scale(1.5) rotate(var(--rot,0deg))}to{opacity:1;transform:rotate(var(--rot,0deg))}}
+.badge.throwback{--rot:-4deg;transform:rotate(-4deg);color:var(--amber);background:var(--surface);border:3px double var(--amber);border-radius:4px;
+  box-shadow:0 2px 0 rgba(0,0,0,.08);letter-spacing:.16em}
+.badge.close{--rot:2deg;transform:rotate(2deg);color:var(--red);background:var(--surface);border:1.5px solid var(--red);border-radius:3px;padding-bottom:12px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10'%3E%3Cpath d='M3 6c12-5 22 4 34 0s22-5 34 0 24 4 46-2' fill='none' stroke='%23C93D26' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-size:84% 8px;background-position:50% calc(100% - 3px)}
+.badge.close span::before{content:"→ "}.badge.close span::after{content:" ←"}
+.badge.wild{--rot:5deg;transform:rotate(5deg);color:var(--ink);background:var(--surface);border:2px solid var(--ink);border-radius:8px;box-shadow:0 3px 0 var(--ink);
+  padding:9px 16px 8px 22px}
+.badge.wild::before{content:"♠";position:absolute;left:6px;top:4px;font:14px/1 var(--body);color:var(--accent)}
+.badge.wild::after{content:"♠";position:absolute;right:6px;bottom:3px;font:10px/1 var(--body);color:var(--accent);transform:rotate(180deg)}
+.badge.final{--rot:-2deg;transform:rotate(-2deg);top:-24px;font-size:24px;padding:9px 20px 8px;background:var(--tape);color:var(--tape-ink);border-radius:2px;
+  box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.badge.final::before,.badge.final::after{content:"";position:absolute;top:-8px;width:34px;height:16px;background:rgba(255,255,255,.55);border:1px solid rgba(0,0,0,.06)}
+.badge.final::before{left:-12px;transform:rotate(-24deg)}.badge.final::after{right:-12px;transform:rotate(22deg)}
 .finale .board-wrap{border-color:var(--tape);box-shadow:0 0 0 2px var(--tape),var(--shadow)}
 .finale .tape-fill{background-color:var(--accent)}
 .finale .reveal.pop .rv-main{border-color:var(--tape);box-shadow:0 0 0 2px var(--tape),var(--shadow)}
@@ -208,25 +254,34 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .end{display:flex;align-items:center;gap:8px;font:600 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:2px 4px}
 .end::after{content:"";flex:1;height:1px;background:var(--line)}
 .end svg{flex:none}
-.sorter{list-style:none;margin:0;padding:0;display:grid;gap:6px;position:relative}
-.row{display:grid;grid-template-columns:30px auto minmax(0,1fr) auto;align-items:center;gap:10px;min-height:54px;padding:6px 8px 6px 10px;
-  background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:0 1px 0 rgba(20,33,44,.04);
-  user-select:none;-webkit-user-select:none;touch-action:none;cursor:grab;position:relative;transition:transform .16s ease,box-shadow .16s ease,border-color .16s}
-.row:hover{border-color:var(--muted)}
-.row.dragging{z-index:5;cursor:grabbing;box-shadow:var(--lift);border-color:var(--accent);transition:box-shadow .16s ease}
-.sorter.sorting .row:not(.dragging){transition:transform .16s ease}
+.sorter{list-style:none;margin:0;padding:0;display:grid;gap:8px;position:relative}
+/* the cards: chunky printed game pieces with a hard edge, a big rank tab, and a lift when grabbed */
+.row{display:grid;grid-template-columns:44px auto minmax(0,1fr) auto;align-items:center;gap:10px;min-height:60px;padding:6px 8px 6px 0;
+  background:var(--surface);border:1.5px solid var(--edge);border-radius:10px;box-shadow:0 3px 0 var(--edge);
+  user-select:none;-webkit-user-select:none;touch-action:none;cursor:grab;position:relative;z-index:1;
+  transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .15s ease,border-color .15s}
+.row:hover{border-color:var(--ink)}
+.row:active:not(.dragging){box-shadow:0 1px 0 var(--edge)}
+.row.dragging{z-index:5;cursor:grabbing;border-color:var(--accent);box-shadow:0 3px 0 var(--accent),0 22px 30px -14px rgba(20,33,44,.55);transition:box-shadow .12s ease}
+.row.dragging .pos{color:var(--accent)}
+.sorter.sorting .row:not(.dragging){transition:transform .14s cubic-bezier(.2,.8,.2,1)}
 .sorter.still .row{cursor:default;touch-action:auto}
-.sorter.still .row:hover{border-color:var(--line)}
-.pos{font:800 22px/1 var(--display);color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.sorter.still .row:hover{border-color:var(--edge)}
+.slot{position:absolute;left:0;right:0;z-index:0;border:2px dashed var(--accent);border-radius:10px;background:rgba(238,94,51,.07);transition:top .12s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.row.settle{animation:settle .26s cubic-bezier(.3,1.6,.5,1)}
+@keyframes settle{0%{transform:scale(1.03)}45%{transform:scale(.985)}100%{transform:none}}
+.pos{align-self:stretch;display:grid;place-items:center;font:900 30px/1 var(--display);color:var(--ink);text-align:center;font-variant-numeric:tabular-nums;
+  border-right:1.5px dashed var(--line)}
 .emo{font:22px/1 var(--emoji);width:28px;text-align:center}
 .sorter:not(.flags) .emo{display:none}
-.sorter:not(.flags) .row{grid-template-columns:30px minmax(0,1fr) auto}
+.sorter:not(.flags) .row{grid-template-columns:44px minmax(0,1fr) auto}
 .row .lbl{display:grid;gap:1px;min-width:0}
-.row .lbl b{font-weight:600;font-size:16px;line-height:1.2;overflow-wrap:anywhere}
+.row .lbl b{font-weight:700;font-size:17px;line-height:1.2;overflow-wrap:anywhere}
 .row .lbl small{font-size:12px;color:var(--muted);line-height:1.2}
 .moves{display:flex;gap:4px;align-items:center}
-.mv{appearance:none;width:38px;height:38px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
-.mv:hover{border-color:var(--muted)}
+.mv{appearance:none;width:38px;height:38px;border-radius:7px;border:1.5px solid var(--edge);background:var(--surface-2);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;box-shadow:0 2px 0 var(--edge);transition:transform .08s,box-shadow .08s}
+.mv:hover{border-color:var(--ink)}
+.mv:active:not(:disabled){transform:translateY(2px);box-shadow:none}
 .mv:disabled{opacity:.3;cursor:default}
 .grip{color:var(--muted);display:grid;place-items:center;width:14px}
 .sorter.still .moves,.sorter.still .grip{display:none}
@@ -240,12 +295,35 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .row.near .you{color:var(--amber);background:var(--amber-bg);border-color:var(--amber)}
 .row.far .you{color:var(--red);background:var(--red-bg);border-color:var(--red)}
 .row.exact .pos{color:var(--green)}.row.near .pos{color:var(--amber)}
+.row.exact{box-shadow:0 3px 0 var(--green)}.row.near{box-shadow:0 3px 0 var(--amber)}.row.far{border-style:dashed}
+/* reveal payoff: points float off each card, the total counts up, a perfect order gets stamped */
+.ptpop{position:absolute;left:4px;top:-10px;font:900 22px/1 var(--display);pointer-events:none;animation:pop-up .85s cubic-bezier(.2,.8,.2,1) both;z-index:6}
+.ptpop.exact{color:var(--green)}.ptpop.near{color:var(--amber)}.ptpop.far{color:var(--muted)}
+@keyframes pop-up{0%{opacity:0;transform:translateY(6px) scale(.7)}25%{opacity:1;transform:translateY(-10px) scale(1.15)}100%{opacity:0;transform:translateY(-30px) scale(1)}}
+.rv-pts b.bump{animation:bump .3s cubic-bezier(.3,1.6,.5,1)}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.18)}100%{transform:none}}
+.board-wrap{position:relative}
+.stamp{position:absolute;left:50%;top:44%;z-index:8;pointer-events:none;display:grid;justify-items:center;gap:2px;
+  font:900 clamp(34px,8vw,52px)/.9 var(--display);text-transform:uppercase;letter-spacing:.02em;color:var(--green);white-space:nowrap;
+  padding:10px 18px 8px;border:4px solid var(--green);border-radius:8px;background:color-mix(in srgb,var(--surface) 88%,transparent);
+  transform:translate(-50%,-50%) rotate(-7deg);animation:stamp .42s cubic-bezier(.2,1.3,.4,1) both,stamp-away .35s 2s ease forwards;
+  box-shadow:0 0 0 2px var(--surface),0 12px 28px -12px rgba(0,0,0,.4)}
+.stamp small{font:700 13px/1 var(--mono);letter-spacing:.06em;color:var(--surface);background:var(--green);padding:4px 8px;border-radius:3px;
+  animation:bonus-in .45s .35s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes stamp-away{to{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(.92)}}
+@keyframes stamp{0%{opacity:0;transform:translate(-50%,-50%) rotate(-14deg) scale(1.9)}70%{opacity:1;transform:translate(-50%,-50%) rotate(-6deg) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}}
+.scraps{position:absolute;inset:0;pointer-events:none;z-index:7;overflow:visible}
+.scraps i{position:absolute;top:40%;border-radius:1px;opacity:0;animation:scrap 1.1s cubic-bezier(.2,.7,.4,1) forwards}
+@keyframes scrap{0%{opacity:1;transform:translate(0,0) rotate(0)}60%{opacity:1}100%{opacity:0;transform:translate(var(--dx),calc(var(--dy) + 180px)) rotate(var(--r))}}
 
 .controls{display:flex;align-items:center;justify-content:space-between;gap:10px 14px;margin-top:12px}
 .hint{font-size:13px;color:var(--muted)}
 .hint-touch{display:none}
 @media (hover:none) and (pointer:coarse){ .hint-desk{display:none} .hint-touch{display:inline} }
-#btn-lock{min-width:180px;padding:14px 20px;font-size:16px}
+#btn-lock{min-width:210px;padding:14px 22px 13px;font:900 22px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;border-radius:10px;
+  border:2px solid var(--accent-ink);box-shadow:0 4px 0 var(--accent-ink);transition:transform .08s,box-shadow .08s}
+#btn-lock:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--accent-ink)}
+#btn-lock:disabled{opacity:1;background:var(--surface);color:var(--green);border-color:var(--green);box-shadow:0 2px 0 var(--green);transform:translateY(2px)}
 .waiting{margin-top:12px;padding:12px 14px;border-radius:8px;background:var(--surface);border:1px dashed var(--line);font-size:14px}
 .waiting b{color:var(--green)}
 
@@ -358,6 +436,39 @@ input[type=text]:focus{border-color:var(--focus);background:var(--surface)}
 .debug input,.debug select{width:90px;font:inherit;padding:4px}
 .dbg-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .dbg-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start}
+
+/* ---------- players: a symbol in their color, everywhere they show up ---------- */
+.pm{display:inline-grid;place-items:center;flex:none;width:1.25em;height:1.25em;font:700 13px/1 var(--body);color:var(--c);font-style:normal;
+  text-shadow:0 0 0 var(--c)}
+.pms{display:inline-flex;gap:1px}
+.pwho{display:inline-flex;align-items:center;gap:2px;margin-right:6px;font-weight:600;color:var(--ink)}
+.pk .pm{font-size:11px;width:1.1em;height:1.1em}
+.crown{width:20px;height:14px;margin-right:5px;vertical-align:-1px;flex:none}
+/* social notes: a taped card with who-said-what */
+.rv-room{position:relative;border:2px solid var(--ink);box-shadow:0 4px 0 var(--ink)}
+.rv-room::before{content:"";position:absolute;top:-10px;left:22px;width:62px;height:18px;background:rgba(242,178,27,.75);transform:rotate(-4deg)}
+.rv-room .who{display:flex;flex-wrap:wrap;align-items:center;gap:2px;font-size:14px}
+.rv-room .who em{font-style:normal;color:var(--muted)}
+.rv-room .vals{font:500 12px/1.3 var(--mono);color:var(--muted)}
+.rv-room li + li{border-top:1.5px dashed var(--line);padding-top:8px}
+/* standings: the leader wears the crown, movers show it */
+.rv-list li.lead{background:linear-gradient(90deg,rgba(242,178,27,.18),transparent 70%);border-radius:6px}
+.rv-list li.lead .nm{font-weight:800}
+.rv-list .move.up,.rv-list .move.down{font-weight:700;padding:3px 5px;border-radius:4px}
+.rv-list .move.up{background:var(--green-bg)}.rv-list .move.down{background:var(--red-bg)}
+.reveal.pop .rv-list li.rose{animation:rise .5s .4s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes rise{from{transform:translateY(14px)}to{transform:none}}
+.board li.win .crown{width:26px;height:18px}
+/* lobby: players arrive with a little pop */
+.players li{border:1.5px solid var(--edge);box-shadow:0 3px 0 var(--edge);font-size:15px}
+.players li .pm{font-size:18px}
+.players li.joined{animation:join .38s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes join{0%{opacity:0;transform:translateY(10px) scale(.9) rotate(-2deg)}100%{opacity:1;transform:none}}
+.tag.host{background:var(--ink);color:var(--surface);border-color:var(--ink);transform:rotate(-3deg)}
+.btn.big{font:900 22px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding:14px 26px 13px;border-radius:10px;
+  border:2px solid var(--accent-ink);box-shadow:0 4px 0 var(--accent-ink);transition:transform .08s,box-shadow .08s}
+.btn.big:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--accent-ink)}
+.callout .pms .pm{font-size:18px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:calc(100% - 32px);
   background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:8px;font-size:14px;box-shadow:var(--shadow);z-index:10}
 
@@ -388,10 +499,10 @@ input[type=text]{font-size:16px}
   .prompt{font-size:clamp(22px,6.4vw,30px);line-height:1.02}
   .board-wrap{padding:8px;gap:5px}
   .sorter{gap:5px}
-  .row{min-height:50px;gap:8px;padding:5px 6px 5px 8px;grid-template-columns:24px auto minmax(0,1fr) auto}
-  .pos{font-size:19px}
-  .sorter:not(.flags) .row{grid-template-columns:24px minmax(0,1fr) auto}
-  .row .lbl b{font-size:15px}
+  .row{min-height:56px;gap:8px;padding:5px 6px 5px 0;grid-template-columns:36px auto minmax(0,1fr) auto}
+  .pos{font-size:26px}
+  .sorter:not(.flags) .row{grid-template-columns:36px minmax(0,1fr) auto}
+  .row .lbl b{font-size:16px}
   .mv{width:40px;height:40px}
   .grip{display:none}
   .controls{margin-top:8px}
@@ -466,21 +577,25 @@ input[type=text]{font-size:16px}
     <div class="hero">
       <h1 class="title">Order <span>Up!</span></h1>
       <div class="stairs" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-      <p class="tagline"><b>Five things. One question. Put them in order.</b> You'll know every one of them. The order is the hard part.</p>
-      <ul class="teasers" aria-label="Example questions">
-        <li>Which Pixar movie came first?</li><li>Which fast-food item has more calories?</li><li>Did MySpace launch before YouTube?</li>
-        <li>Which Pokémon weighs more?</li><li>Which childhood toy came first?</li>
-      </ul>
+      <p class="headline">Five things.<br><span>One order.</span></p>
+      <p class="tagline">Think you know what came first? You'll recognize every one of them. The order is the hard part.</p>
     </div>
 
     <div class="home-grid">
       <figure class="card demo">
+        <div class="demo-head">
+          <span class="eyebrow">Try one</span>
+          <b id="demo-title">Websites &amp; apps</b>
+          <span class="dir" id="demo-dir">Oldest → newest</span>
+          <span class="try" aria-hidden="true"><svg viewBox="0 0 60 40"><path d="M4 8c14-6 34-4 42 12 3 6 3 11 2 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M40 30l8 8 6-10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>drag me!</span>
+        </div>
         <div class="demo-body">
           <div class="end" id="demo-hi"></div>
-          <ol class="sorter still" id="demo-list" aria-label="Example round"></ol>
+          <ol class="sorter" id="demo-list" aria-label="Example round: drag to reorder"></ol>
           <div class="end" id="demo-lo"></div>
         </div>
-        <figcaption id="demo-cap">Example round: Pixar movies, oldest to newest.</figcaption>
+        <figcaption class="demo-foot"><span id="demo-cap" aria-live="polite">Drag the cards (or tap the arrows), then check your order.</span>
+          <button class="btn primary small" id="demo-check" type="button">Check my order</button></figcaption>
       </figure>
 
       <div class="card play">
@@ -549,7 +664,7 @@ input[type=text]{font-size:16px}
         <div><span class="eyebrow">Max score</span><b>1,150</b></div>
       </div>
       <div style="display:grid;gap:6px;justify-items:end">
-        <button class="btn primary" id="btn-start">Start game</button>
+        <button class="btn primary big" id="btn-start">Start game <span aria-hidden="true">→</span></button>
         <span class="muted" id="lb-wait" hidden></span>
       </div>
     </div>
@@ -563,11 +678,14 @@ input[type=text]{font-size:16px}
       <div class="stat right"><span class="eyebrow">Score</span><b id="rb-score">0</b></div>
     </div>
     <div class="ask">
-      <span class="badge" id="ask-badge" hidden></span>
       <span class="eyebrow" id="ask-sub"></span>
       <h2 class="prompt" id="prompt"></h2>
+      <p class="dir" id="ask-dir"></p>
     </div>
+    <!-- the round intro: a title card that pops up for under a second before the cards are dealt -->
+    <div class="intro" id="intro" hidden aria-hidden="true"><span class="badge" id="intro-badge" hidden></span><span class="eyebrow" id="intro-cat"></span><b id="intro-title"></b><span class="dir" id="intro-dir"></span></div>
     <div class="card board-wrap">
+      <span class="badge" id="ask-badge" hidden></span>
       <div class="end" id="lbl-hi"></div>
       <ol class="sorter" id="sorter" aria-label="Your order"></ol>
       <div class="end" id="lbl-lo"></div>
@@ -576,7 +694,7 @@ input[type=text]{font-size:16px}
     <div id="play-ui">
       <div class="controls">
         <p class="hint" id="hint"><span class="hint-desk">Drag the rows, or click one and use the ↑ ↓ keys. Enter locks in.</span><span class="hint-touch">Drag a row, or tap the arrows.</span></p>
-        <button class="btn primary" id="btn-lock">Lock in</button>
+        <button class="btn primary" id="btn-lock">Lock it in <span aria-hidden="true">→</span></button>
       </div>
       <div class="waiting" id="waiting" hidden></div>
     </div>
@@ -617,7 +735,7 @@ input[type=text]{font-size:16px}
       <ul id="fn-awards-list"></ul>
     </div>
     <div class="final-actions">
-      <button class="btn primary" id="btn-again">Play again</button>
+      <button class="btn primary big" id="btn-again">Play again <span aria-hidden="true">→</span></button>
       <span class="muted" id="fn-wait" hidden></span>
     </div>
   </section>
@@ -626,23 +744,23 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-27b"></script>
-<script src="data/songs.js?v=2026-09-27b"></script>
-<script src="data/movies.js?v=2026-09-27b"></script>
-<script src="data/tv.js?v=2026-09-27b"></script>
-<script src="data/games.js?v=2026-09-27b"></script>
-<script src="data/pokemon.js?v=2026-09-27b"></script>
-<script src="data/tech.js?v=2026-09-27b"></script>
-<script src="data/nostalgia.js?v=2026-09-27b"></script>
-<script src="data/people.js?v=2026-09-27b"></script>
-<script src="data/animals.js?v=2026-09-27b"></script>
-<script src="data/dogs.js?v=2026-09-27b"></script>
-<script src="data/cars.js?v=2026-09-27b"></script>
-<script src="data/food.js?v=2026-09-27b"></script>
-<script src="data/drinks.js?v=2026-09-27b"></script>
-<script src="data/stuff.js?v=2026-09-27b"></script>
-<script src="data/sequences.js?v=2026-09-27b"></script>
-<script src="engine.js?v=2026-09-27b"></script>
+<script src="data/states.js?v=2026-09-28a"></script>
+<script src="data/songs.js?v=2026-09-28a"></script>
+<script src="data/movies.js?v=2026-09-28a"></script>
+<script src="data/tv.js?v=2026-09-28a"></script>
+<script src="data/games.js?v=2026-09-28a"></script>
+<script src="data/pokemon.js?v=2026-09-28a"></script>
+<script src="data/tech.js?v=2026-09-28a"></script>
+<script src="data/nostalgia.js?v=2026-09-28a"></script>
+<script src="data/people.js?v=2026-09-28a"></script>
+<script src="data/animals.js?v=2026-09-28a"></script>
+<script src="data/dogs.js?v=2026-09-28a"></script>
+<script src="data/cars.js?v=2026-09-28a"></script>
+<script src="data/food.js?v=2026-09-28a"></script>
+<script src="data/drinks.js?v=2026-09-28a"></script>
+<script src="data/stuff.js?v=2026-09-28a"></script>
+<script src="data/sequences.js?v=2026-09-28a"></script>
+<script src="engine.js?v=2026-09-28a"></script>
 <script>
 (() => {
 'use strict';
@@ -661,14 +779,20 @@ const {N, BASE_MAX, PERFECT_BONUS, ROUND_MAX, TOP, CATEGORIES, CAT, PRESETS, pre
 const HISTORY = newHistory();
 
 /* ---------------- rules ---------------- */
-const ROUNDS = 10, SECONDS = 30, REVEAL_MS = 15000, STEP_MS = 650;
+const ROUNDS = 10, SECONDS = 30, REVEAL_MS = 15000, STEP_MS = 430;
 const COLORS = ['#E4572E','#3A7FD0','#23905A','#9B5DE5','#D99A00','#D6337F','#12A4B6','#7F8F2A','#C0632B','#5C6BC0'];
+// every player gets a symbol with their color, so you can spot who's who at a glance (and without color)
+const SYMBOLS = ['●', '◆', '▲', '■', '★', '✚', '♥', '▼', '♣', '✦'];
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------------- helpers ---------------- */
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pick = a => a[Math.floor(Math.random() * a.length)];
+const symOf = p => SYMBOLS[Math.max(0, COLORS.indexOf(p?.color))];
+const mark = p => `<i class="pm" style="--c:${esc(p.color)}" aria-hidden="true">${symOf(p)}</i>`;
+// "● Dustin ◆ Ling", or just the symbols for a crowd
+const marks = (ps, names = ps.length <= 3) => ps.map(p => names ? `<span class="pwho">${mark(p)}${esc(p.name)}</span>` : mark(p)).join('');
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const rid = n => Array.from(crypto.getRandomValues(new Uint8Array(n)), b => 'abcdefghijkmnpqrstuvwxyz23456789'[b % 32]).join('');
 const slug = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -689,14 +813,15 @@ function cleanOrder(o, R) {
   if (ids.length !== N || new Set(ids).size !== N || !ids.every(id => R.ids.includes(id))) return null;
   return ids;
 }
-function verdict(p, answered) {
+// a rough round gets a shrug, not a scolding; the line changes from round to round
+const SHRUGS = ['Well… that happened', 'Close enough-ish', 'We’ll never speak of this again', 'Bold strategy', 'Next one’s yours'];
+function verdict(p, answered, i = 0) {
   if (!answered) return 'No answer';
   if (isPerfect(p)) return 'Perfect order!';
   if (p >= 80) return 'So close';
   if (p >= 60) return 'Solid';
   if (p >= 40) return 'Mixed up';
-  if (p > 0) return 'Scrambled';
-  return 'Upside down';
+  return SHRUGS[i % SHRUGS.length];
 }
 function rightCount(order, R) {
   if (!order) return 'no answer';
@@ -926,6 +1051,7 @@ function stopSubs() { unsubs.forEach(u => { try { u(); } catch {} }); unsubs = [
 function enterRoom(c) {
   stopSubs();
   code = c; room = null; players = []; local = {key: null};
+  lobbySeen.clear();
   unsubs.push(db.doc(`rooms/${c}`).onSnapshot(s => {
     if (!s.exists) { if (code) { toast('This room has closed.'); exitToHome(); } return; }
     room = s.data();
@@ -1117,6 +1243,7 @@ function syncLocal() {
   local = {key, start: performance.now(), order: R.ids.slice(), touched: false, locked: !!rec, submitted: !!rec, revealAt: 0, landed: new Set(), revealDone: false};
   if (rec?.o) { local.order = String(rec.o).split(','); local.touched = true; }
   buildRows(R);
+  if (room.phase === 'play' && !rec) roundIntro(R); else { $('#intro').hidden = true; $('#scr-round').classList.remove('intro-on', 'dealing'); }
 }
 async function submit(manual) {
   if (local.submitted || !room || room.phase === 'final') return;
@@ -1126,6 +1253,7 @@ async function submit(manual) {
   const o = local.touched || manual ? local.order.slice() : null;
   const p = scoreOrder(o, R);
   local.locked = local.submitted = true;
+  if (manual && !REDUCED) { sorterEl.classList.remove('sealed'); void sorterEl.offsetWidth; sorterEl.classList.add('sealed'); }
   renderRound();
   const body = {scores: {[game]: {['r' + round]: {o: o && o.join(','), p}}}};
   const pref = db.doc(`rooms/${code}/players/${me.pid}`);
@@ -1156,12 +1284,19 @@ function sync() {
   hostDuty();
 }
 
+const lobbySeen = new Set();
 function renderLobby() {
   $('#lb-code').innerHTML = code.split('').map(ch => `<span>${ch}</span>`).join('');
   $('#lb-count').textContent = `Players (${players.length})`;
-  $('#lb-players').innerHTML = players.map(p => `
-    <li class="${p.online === false ? 'away' : ''}"><i class="dot" style="background:${esc(p.color)}"></i><span class="nm">${esc(p.name)}</span>
-    ${p.pid === room.host ? '<span class="tag">host</span>' : ''}${p.pid === me.pid ? '<span class="tag">you</span>' : ''}${p.online === false ? '<span class="tag">away</span>' : ''}</li>`).join('');
+  // players pop into the list as they join (only the new ones animate)
+  const html = players.map(p => `
+    <li class="${p.online === false ? 'away' : ''}${lobbySeen.has(p.pid) ? '' : ' joined'}" data-pid="${esc(p.pid)}">${mark(p)}<span class="nm">${esc(p.name)}</span>
+    ${p.pid === room.host ? '<span class="tag host">host</span>' : ''}${p.pid === me.pid ? '<span class="tag">you</span>' : ''}${p.online === false ? '<span class="tag">away</span>' : ''}</li>`).join('');
+  if ($('#lb-players').dataset.html !== html.replace(/ joined/g, '')) {
+    $('#lb-players').dataset.html = html.replace(/ joined/g, '');
+    $('#lb-players').innerHTML = html;
+    players.forEach(p => lobbySeen.add(p.pid));
+  }
   const host = isHost(), cats = cleanCats(room.cats);
   renderLobbyCats(cats, host);
   $('#btn-start').hidden = !host;
@@ -1175,6 +1310,8 @@ function renderLobby() {
   $('#lb-wait').textContent = hostP ? `Waiting for ${hostP.name} to start the game` : 'Waiting for the host to start the game';
 }
 
+// a little hand-drawn crown for whoever's in front
+const CROWN = '<svg class="crown" viewBox="0 0 24 16" aria-label="Leader" role="img"><path d="M2 14 3.5 4l5 5L12 2l3.5 7 5-5L22 14z" fill="var(--tape)" stroke="var(--ink)" stroke-width="1.6" stroke-linejoin="round"/><circle cx="3.5" cy="3.5" r="1.4" fill="var(--ink)"/><circle cx="12" cy="1.8" r="1.4" fill="var(--ink)"/><circle cx="20.5" cy="3.5" r="1.4" fill="var(--ink)"/></svg>';
 const ARROW_UP = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2 2 7h8z" fill="currentColor"/></svg>';
 const ARROW_DN = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10 2 5h8z" fill="currentColor"/></svg>';
 const GRIP = '<svg width="10" height="16" viewBox="0 0 10 16" aria-hidden="true"><g fill="currentColor"><circle cx="2" cy="3" r="1.4"/><circle cx="8" cy="3" r="1.4"/><circle cx="2" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="2" cy="13" r="1.4"/><circle cx="8" cy="13" r="1.4"/></g></svg>';
@@ -1197,22 +1334,21 @@ function buildRows(R) {
   }
   paintRows();
 }
-/* put the DOM rows in the given order, sliding them from where they were */
-function placeRows(order, skipAnim) {
-  const rows = new Map([...sorterEl.children].map(li => [li.dataset.id, li]));
+/* put a list's rows in the given order, sliding them from where they were */
+function flipTo(list, order, skipAnim) {
+  const rows = new Map([...list.querySelectorAll('.row')].map(li => [li.dataset.id, li]));
   const before = new Map([...rows].map(([id, li]) => [id, li.getBoundingClientRect().top]));
-  for (const id of order) sorterEl.appendChild(rows.get(id));
-  if (!REDUCED && !skipAnim) {
-    for (const [id, li] of rows) {
-      const dy = before.get(id) - li.getBoundingClientRect().top;
-      if (!dy) continue;
-      li.style.transition = 'none'; li.style.transform = `translateY(${dy}px)`;
-      li.getBoundingClientRect();
-      li.style.transition = ''; li.style.transform = '';
-    }
+  for (const id of order) list.appendChild(rows.get(id));
+  if (REDUCED || skipAnim) return;
+  for (const [id, li] of rows) {
+    const dy = before.get(id) - li.getBoundingClientRect().top;
+    if (!dy) continue;
+    li.style.transition = 'none'; li.style.transform = `translateY(${dy}px)`;
+    li.getBoundingClientRect();
+    li.style.transition = ''; li.style.transform = '';
   }
-  paintRows();
 }
+function placeRows(order, skipAnim) { flipTo(sorterEl, order, skipAnim); paintRows(); }
 function paintRows() {
   const rows = [...sorterEl.children];
   rows.forEach((li, i) => {
@@ -1228,11 +1364,12 @@ function moveItem(id, delta, keepFocus) {
   [local.order[i], local.order[j]] = [local.order[j], local.order[i]];
   local.touched = true;
   placeRows(local.order);
+  settle(sorterEl.querySelector(`[data-id="${id}"]`), 120);
   if (keepFocus) sorterEl.querySelector(`[data-id="${id}"]`)?.focus({preventScroll: true});
 }
 
 /* the reveal: rows slide into the right order one at a time, last place first, so 1st lands last */
-function startReveal(right) {
+function startReveal(right, mine) {
   clearTimeout(local.revealT);
   local.landed = new Set(); local.revealDone = false;
   if (REDUCED) {
@@ -1240,24 +1377,65 @@ function startReveal(right) {
     right.forEach(id => local.landed.add(id)); local.revealDone = true;
     return;
   }
+  // top to bottom, one card at a time: each slides into its spot, lands, and pops the points it earned
   const key = local.key;
-  let k = right.length - 1;
+  let k = 0;
   const tick = () => {
     if (local.key !== key || room?.phase !== 'reveal') return;
-    if (k < 0) { local.revealDone = true; renderRound(); return; }
-    const id = right[k];
+    if (k >= right.length) { local.revealDone = true; renderRound(); return; }
+    const id = right[k], at = mine ? mine.indexOf(id) : -1, d = Math.abs(at - k);
     local.order.splice(local.order.indexOf(id), 1);
     local.order.splice(k, 0, id);
     placeRows(local.order);
     local.landed.add(id);
     const li = [...sorterEl.children].find(x => x.dataset.id === id);
     // pulse once the slide has finished, so the two transforms don't fight
-    setTimeout(() => { li.classList.remove('landed'); void li.offsetWidth; li.classList.add('landed'); }, 170);
-    k--;
+    setTimeout(() => {
+      li.classList.remove('landed'); void li.offsetWidth; li.classList.add('landed');
+      if (at >= 0) popPoints(li, d === 0 ? 20 : d === 1 ? 10 : 0);
+    }, 170);
+    k++;
     renderRound();
-    local.revealT = setTimeout(tick, k < 0 ? 550 : STEP_MS);
+    local.revealT = setTimeout(tick, k >= right.length ? 450 : STEP_MS);
   };
-  local.revealT = setTimeout(tick, 350);
+  local.revealT = setTimeout(tick, 300);
+}
+// "+20" floats up off a card as it lands
+function popPoints(li, n) {
+  const el = document.createElement('span');
+  el.className = 'ptpop ' + (n === 20 ? 'exact' : n === 10 ? 'near' : 'far');
+  el.textContent = '+' + n;
+  el.setAttribute('aria-hidden', 'true');
+  li.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+// numbers that count up instead of appearing (fast: well under a second)
+function countUp(el, from, to, ms, fmt = v => '+' + v) {
+  if (REDUCED || to === from) { el.textContent = fmt(to); return Promise.resolve(); }
+  return new Promise(done => {
+    const t0 = performance.now();
+    const step = now => {
+      const f = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - f, 3);
+      el.textContent = fmt(Math.round(from + (to - from) * e));
+      if (f < 1) requestAnimationFrame(step); else done();
+    };
+    requestAnimationFrame(step);
+  });
+}
+// a small burst of paper scraps over an element (about a second, then gone)
+function scraps(host, n = 18) {
+  if (REDUCED) return;
+  const box = document.createElement('div');
+  box.className = 'scraps'; box.setAttribute('aria-hidden', 'true');
+  const colors = ['var(--accent)', 'var(--tape)', 'var(--ink)', 'var(--measure)', 'var(--green)'];
+  for (let i = 0; i < n; i++) {
+    const b = document.createElement('i');
+    b.style.cssText = `left:${10 + Math.random() * 80}%;--dx:${(Math.random() - .5) * 140}px;--dy:${-60 - Math.random() * 90}px;--r:${(Math.random() - .5) * 720}deg;` +
+      `background:${colors[i % colors.length]};animation-delay:${Math.random() * 120}ms;width:${6 + Math.random() * 6}px;height:${4 + Math.random() * 8}px`;
+    box.appendChild(b);
+  }
+  host.appendChild(box);
+  setTimeout(() => box.remove(), 1500);
 }
 
 /* standings after round i: competition ranking (ties share a rank), plus each player's rank after round i-1 */
@@ -1318,21 +1496,21 @@ function roomTake(i) {
   if (n < 2) return {rows, notes};
   const name = id => t.byId[id].name, val = id => t.byId[id].label || fmtVal(t, t.byId[id].v);
   const both = (a, b) => `${name(a)}: ${val(a)} · ${name(b)}: ${val(b)}`;
-  const who = ps => ps.length === 1 ? ps[0].name : ps.length === 2 ? `${ps[0].name} and ${ps[1].name}` : `${ps.length} players`;
   // every pair, in the right order (a above b); `flip` is who had them the other way round
   const pairs = [];
   for (let a = 0; a < N; a++) for (let b = a + 1; b < N; b++) {
     const A = right[a], B = right[b];
     pairs.push({A, B, dist: b - a, flip: rows.filter(r => r.o.indexOf(A) > r.o.indexOf(B)).map(r => r.p)});
   }
-  const used = new Set(), mark = (...ids) => ids.forEach(id => used.add(id));
+  const used = new Set(), claim = (...ids) => ids.forEach(id => used.add(id));
   const fresh = (...ids) => ids.every(id => !used.has(id));
   const byClose = (x, y) => x.dist - y.dist || right.indexOf(x.A) - right.indexOf(y.A);
   // everyone had the same two the wrong way round
   const swapped = pairs.filter(q => q.flip.length === n).sort(byClose)[0];
   if (swapped) {
-    notes.push({kind: 'swap', head: `${n === 2 ? 'Both of you' : 'Everyone'} had ${name(swapped.B)} above ${name(swapped.A)}`, sub: both(swapped.A, swapped.B)});
-    mark(swapped.A, swapped.B);
+    notes.push({kind: 'swap', head: `${n === 2 ? 'Both of you' : 'Everyone'} had ${name(swapped.B)} above ${name(swapped.A)}`, sub: both(swapped.A, swapped.B),
+      lines: [{ps: rows.map(r => r.p), text: 'all fell for it'}]});
+    claim(swapped.A, swapped.B);
   }
   // most of the room fell for the same trap, and someone saw through it
   if (n >= 3) {
@@ -1340,23 +1518,27 @@ function roomTake(i) {
       .sort((x, y) => y.flip.length - x.flip.length || byClose(x, y))[0];
     if (trap) {
       const sharp = rows.map(r => r.p).filter(p => !trap.flip.includes(p));
-      notes.push({kind: 'surprise', head: `Biggest surprise: ${name(trap.A)} goes above ${name(trap.B)}`,
-        sub: `${trap.flip.length} of ${n} had it the other way. ${sharp.length <= 2 ? `Only ${who(sharp)} got it. ` : ''}${both(trap.A, trap.B)}`});
-      mark(trap.A, trap.B);
+      notes.push({kind: 'surprise', head: `Biggest surprise: ${name(trap.A)} goes above ${name(trap.B)}`, sub: both(trap.A, trap.B),
+        lines: [{ps: trap.flip, text: `had ${name(trap.B)} higher`}, {ps: sharp, text: sharp.length === 1 ? 'was the only one who got it' : 'got it right'}]});
+      claim(trap.A, trap.B);
     }
   }
   // nobody agreed where something goes, or the room split down the middle on two things
   if (n >= 3 && notes.length < 2) {
     const spots = id => new Set(rows.map(r => r.o.indexOf(id))).size;
     const lost = right.filter(id => fresh(id) && spots(id) === n && n <= N)[0];
-    if (lost) { notes.push({kind: 'debate', head: `Nobody agreed on ${name(lost)}`, sub: `${n} players, ${n} different spots. It goes ${ordinal(right.indexOf(lost) + 1)}.`}); mark(lost); }
+    if (lost) {
+      notes.push({kind: 'debate', head: `Nobody agreed on ${name(lost)}`, sub: `${n} players, ${n} different spots. It goes ${ordinal(right.indexOf(lost) + 1)}.`,
+        lines: rows.map(r => ({ps: [r.p], text: ordinal(r.o.indexOf(lost) + 1)}))});
+      claim(lost);
+    }
     else {
       const split = pairs.filter(q => fresh(q.A, q.B) && Math.min(q.flip.length, n - q.flip.length) >= Math.max(1, Math.floor(n * 0.4)))
         .sort((x, y) => Math.min(y.flip.length, n - y.flip.length) - Math.min(x.flip.length, n - x.flip.length) || byClose(x, y))[0];
       if (split) {
-        notes.push({kind: 'debate', head: `Most debated: ${name(split.A)} vs ${name(split.B)}`,
-          sub: `${n - split.flip.length} put ${name(split.A)} higher, ${split.flip.length} put ${name(split.B)} higher. ${name(split.A)} was right.`});
-        mark(split.A, split.B);
+        notes.push({kind: 'debate', head: `Most debated: ${name(split.A)} vs ${name(split.B)}`, sub: `${name(split.A)} was right. ${both(split.A, split.B)}`,
+          lines: [{ps: rows.map(r => r.p).filter(p => !split.flip.includes(p)), text: `put ${name(split.A)} higher ✓`}, {ps: split.flip, text: `put ${name(split.B)} higher`}]});
+        claim(split.A, split.B);
       }
     }
   }
@@ -1364,11 +1546,40 @@ function roomTake(i) {
   if (n >= 3 && notes.length < 2) {
     const lone = right.map((id, k) => ({id, k, got: rows.filter(r => r.o[k] === id).map(r => r.p)}))
       .filter(x => x.got.length === 1 && fresh(x.id)).sort((x, y) => Math.min(x.k, N - 1 - x.k) - Math.min(y.k, N - 1 - y.k))[0];
-    if (lone) { notes.push({kind: 'lone', who: lone.got, head: `Only ${lone.got[0].name} got ${name(lone.id)} ${lone.k === 0 ? 'on top' : lone.k === N - 1 ? 'at the bottom' : `in ${ordinal(lone.k + 1)}`}`, sub: val(lone.id)}); mark(lone.id); }
+    if (lone) { notes.push({kind: 'lone', head: `Only ${lone.got[0].name} got ${name(lone.id)} ${lone.k === 0 ? 'on top' : lone.k === N - 1 ? 'at the bottom' : `in ${ordinal(lone.k + 1)}`}`, sub: val(lone.id),
+      lines: [{ps: lone.got, text: 'called it'}]}); claim(lone.id); }
   }
   return {rows, notes: notes.slice(0, 2)};
 }
 
+// "Oldest to newest" reads as "Oldest → newest"
+const dirText = t => t.ask.replace(/ to /i, ' → ');
+function paintBadge(el, flag, play) {
+  el.hidden = !flag;
+  el.className = 'badge ' + flag;
+  el.innerHTML = flag ? `<span>${esc(FLAGS[flag])}</span>${flag === 'close' && play ? '<small>closer than usual</small>' : ''}` : '';
+}
+/* the round intro: a title card for about 0.9 s (a special round shows its sticker), then the cards are dealt */
+function roundIntro(R) {
+  const scr = $('#scr-round');
+  clearTimeout(local.introT);
+  if (REDUCED) return;
+  const flag = R.flag && FLAGS[R.flag] ? R.flag : '';
+  paintBadge($('#intro-badge'), flag, false);
+  $('#intro-cat').textContent = `Round ${room.round + 1} · ${R.t.cat.name}`;
+  $('#intro-title').textContent = R.t.title;
+  $('#intro-dir').textContent = dirText(R.t);
+  $('#intro').hidden = false;
+  scr.classList.remove('dealing'); scr.classList.add('intro-on');
+  const key = local.key;
+  local.introT = setTimeout(() => {
+    $('#intro').hidden = true;
+    scr.classList.remove('intro-on');
+    if (local.key !== key) return;
+    void scr.offsetWidth; scr.classList.add('dealing');
+    local.introT = setTimeout(() => scr.classList.remove('dealing'), 700);
+  }, flag === 'final' ? 1100 : 850);
+}
 function renderRound() {
   if (!room || screen !== 'round') return;
   const R = roundOf(room.round), t = R.t;
@@ -1377,13 +1588,14 @@ function renderRound() {
   $('#rb-of').textContent = '/' + room.rounds.length;
   const cur = scoreRec(mine(), room.round);
   $('#rb-score').textContent = totalOf(mine()) - (reveal || !cur ? 0 : cur.p || 0);
-  $('#ask-sub').textContent = reveal ? `${t.title}: the right order` : `${t.cat.name} · ${t.title}`;
-  $('#prompt').textContent = t.ask;
-  // special rounds wear a label; the finale also gets its own look
+  // hierarchy: the topic big, the direction right under it, the category small on top
+  $('#ask-sub').textContent = reveal ? `${t.cat.name} · the right order` : t.cat.name;
+  $('#prompt').textContent = t.title;
+  $('#ask-dir').textContent = dirText(t);
+  $('#scr-round').dataset.view = t.id;
+  // special rounds wear a sticker on the board; the finale also gets its own look
   const flag = R.flag && FLAGS[R.flag] ? R.flag : '';
-  $('#ask-badge').hidden = !flag;
-  $('#ask-badge').className = 'badge ' + flag;
-  $('#ask-badge').textContent = flag ? FLAGS[flag] + (flag === 'close' && !reveal ? ' · closer than usual' : '') : '';
+  paintBadge($('#ask-badge'), flag, !reveal);
   $('#scr-round').classList.toggle('finale', flag === 'final');
   $('#lbl-hi').innerHTML = `${ARROW_UP}${esc(t.hi)}`;
   $('#lbl-lo').innerHTML = `${ARROW_DN}${esc(t.lo)}`;
@@ -1392,7 +1604,7 @@ function renderRound() {
   $('#reveal').hidden = !reveal || !local.revealDone;
   sorterEl.classList.toggle('still', reveal || local.locked);
   $('#btn-lock').disabled = local.locked;
-  $('#btn-lock').textContent = local.locked ? 'Locked' : 'Lock in';
+  $('#btn-lock').innerHTML = local.locked ? 'Locked in <span aria-hidden="true">✓</span>' : 'Lock it in <span aria-hidden="true">→</span>';
   $('#hint').hidden = local.locked;
   paintRows();
 
@@ -1415,7 +1627,7 @@ function renderRound() {
     if (sorterEl.dataset.revealed !== local.key) {
       sorterEl.dataset.revealed = local.key;
       local.mineAtReveal = local.order.slice(); // the reveal reorders local.order, so keep what the player had
-      startReveal(right);
+      startReveal(right, mineO);
     }
     sorterEl.classList.toggle('revealing', !local.revealDone);
     // everyone's picks under each row: a dot per player with the spot they chose (a count for big groups)
@@ -1435,39 +1647,51 @@ function renderRound() {
         const html = many
           ? `${take.rows.filter(r => r.o[i] === id).length} of ${take.rows.length} had it here`
           : take.rows.map(r => { const k = r.o.indexOf(id), dd = Math.abs(k - i);
-              return `<span class="pk ${dd === 0 ? 'exact' : dd === 1 ? 'near' : 'far'}" title="${esc(r.p.name)}: ${ordinal(k + 1)}"><i class="dot" style="background:${esc(r.p.color)}"></i>${k + 1}</span>`; }).join('');
+              return `<span class="pk ${dd === 0 ? 'exact' : dd === 1 ? 'near' : 'far'}" title="${esc(r.p.name)}: ${ordinal(k + 1)}">${mark(r.p)}${k + 1}</span>`; }).join('');
         if (picks.dataset.html !== html) { picks.dataset.html = html; picks.innerHTML = html; }
       }
       const you = li.querySelector('.you');
       you.hidden = d < 0;
-      if (d >= 0) you.textContent = `you: ${at + 1} · +${d === 0 ? 20 : d === 1 ? 10 : 0}`;
+      if (d >= 0) you.textContent = d === 0 ? '✓ right spot' : d === 1 ? `↕ 1 off · you: ${ordinal(at + 1)}` : `✗ you: ${ordinal(at + 1)}`;
     });
     if (!local.revealDone) return;
     $('#reveal').classList.add('pop');
-    const calls = roundCallouts(room.round).map(c => `<div class="callout${c.big ? ' big' : ''}">${c.who?.length === 1 ? `<i class="dot" style="background:${esc(c.who[0].color)}"></i>` : ''}<span>${esc(c.text)}</span>${c.sub ? `<small>${esc(c.sub)}</small>` : ''}</div>`).join('');
+    const calls = roundCallouts(room.round).map(c => `<div class="callout${c.big ? ' big' : ''}">${c.who?.length && c.who.length <= 5 ? `<span class="pms">${c.who.map(mark).join('')}</span>` : ''}<span>${esc(c.text)}</span>${c.sub ? `<small>${esc(c.sub)}</small>` : ''}</div>`).join('');
     // only touch the banner when it changes, so its entrance animation plays once
     if ($('#rv-callouts').dataset.html !== calls) { $('#rv-callouts').dataset.html = calls; $('#rv-callouts').innerHTML = calls; }
-    const roomHTML = take.notes.map(x => `<li class="${x.kind}${x.who?.length === 1 ? ' has-dot' : ''}">${x.who?.length === 1 ? `<i class="dot" style="background:${esc(x.who[0].color)}"></i>` : ''}<b>${esc(x.head)}</b><span>${esc(x.sub)}</span></li>`).join('');
+    const roomHTML = take.notes.map(x => `<li class="${x.kind}"><b>${esc(x.head)}</b>${(x.lines || []).map(l => `<span class="who">${marks(l.ps)} <em>${esc(l.text)}</em></span>`).join('')}<span class="vals">${esc(x.sub)}</span></li>`).join('');
     $('#rv-room').hidden = !roomHTML;
     if ($('#rv-room-list').dataset.html !== roomHTML) { $('#rv-room-list').dataset.html = roomHTML; $('#rv-room-list').innerHTML = roomHTML; }
     const perfect = isPerfect(p) && !!mineO;
     $('#rv-main').classList.toggle('perfect', perfect);
     sorterEl.classList.toggle('perfect', perfect);
-    $('#rv-pts').textContent = '+' + p;
+    // the payoff: the score counts up; a perfect order stamps the board, adds the bonus on top and throws scraps
+    if (local.counted !== local.key) {
+      local.counted = local.key;
+      const el = $('#rv-pts');
+      if (perfect) {
+        const wrap = $('.board-wrap');
+        wrap.insertAdjacentHTML('beforeend', `<div class="stamp" aria-hidden="true">Perfect order!<small>+${PERFECT_BONUS} bonus</small></div>`);
+        scraps(wrap);
+        countUp(el, 0, BASE_MAX, 380).then(() => { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); return countUp(el, BASE_MAX, p, 200); });
+      } else countUp(el, 0, p, 420);
+    }
     $('#rv-pts').style.color = p >= 60 ? 'var(--green)' : p > 0 ? 'var(--ink)' : 'var(--red)';
-    $('#rv-verdict').textContent = verdict(p, !!mineO);
+    $('#rv-verdict').textContent = verdict(p, !!mineO, room.round);
     const near = mineO ? mineO.filter((id, i) => Math.abs(right.indexOf(id) - i) === 1).length : 0;
     $('#rv-bonus').hidden = !perfect;
     if (perfect) { $('#rv-base').textContent = BASE_MAX; $('#rv-bonus-pts').textContent = '+' + PERFECT_BONUS; $('#rv-round').textContent = p; }
     $('#rv-off').textContent = perfect ? `${N} / ${N} exactly right` : mineO ? `${rightCount(mineO, R)}${near ? `, ${near} one spot off` : ''}` : 'Time ran out before you made a move or locked in.';
     $('#rv-fact').textContent = t.src;
-    const list = standingsAt(room.round).map(({p: pl, rec, round, total, rank, prev}) => {
+    const list0 = standingsAt(room.round);
+    const list = list0.map(({p: pl, rec, round, total, rank, prev}) => {
       const d = prev - rank;
-      const mv = room.round === 0 ? '' : d > 0 ? `<span class="move up" title="Up ${d}">▲${d}</span>`
-        : d < 0 ? `<span class="move down" title="Down ${-d}">▼${-d}</span>` : '<span class="move" title="No change">—</span>';
-      return `<li class="${pl.online === false ? 'away' : ''}" title="${esc(rec ? rightCount(rec.o ? String(rec.o).split(',') : null, R) : 'no answer')}">
-      <span class="rk">${rank}</span><i class="dot" style="background:${esc(pl.color)}"></i>
-      <span class="nm">${esc(pl.name)}${pl.pid === me.pid ? ' <span class="tag">you</span>' : ''}${pl.online === false ? ' <span class="tag">away</span>' : ''}</span>
+      const mv = room.round === 0 ? '' : d > 0 ? `<span class="move up" title="Up ${d}">↑${d}</span>`
+        : d < 0 ? `<span class="move down" title="Down ${-d}">↓${-d}</span>` : '<span class="move" title="No change">—</span>';
+      const lead = rank === 1 && total > 0 && list0.length > 1;
+      return `<li class="${pl.online === false ? 'away' : ''}${lead ? ' lead' : ''}${d > 0 && room.round ? ' rose' : ''}" title="${esc(rec ? rightCount(rec.o ? String(rec.o).split(',') : null, R) : 'no answer')}">
+      <span class="rk">${rank}</span>${mark(pl)}
+      <span class="nm">${lead ? CROWN : ''}${esc(pl.name)}${pl.pid === me.pid ? ' <span class="tag">you</span>' : ''}${pl.online === false ? ' <span class="tag">away</span>' : ''}</span>
       <span class="rd${isPerfect(round) ? ' hot' : ''}"${isPerfect(round) ? ` title="Includes the +${PERFECT_BONUS} Perfect Order bonus"` : ''}>${rec ? '+' + round : '—'}${isPerfect(round) ? '<small>★</small>' : ''}</span>
       <span class="pts">${total}</span>${mv || '<span class="move"></span>'}</li>`;
     }).join('');
@@ -1482,6 +1706,7 @@ function renderRound() {
     $('#reveal').classList.remove('pop');
     $('#rv-main').classList.remove('perfect');
     sorterEl.classList.remove('revealing', 'perfect');
+    document.querySelectorAll('.board-wrap .stamp, .board-wrap .scraps').forEach(x => x.remove());
     for (const li of sorterEl.children) { li.classList.remove('exact', 'near', 'far', 'pending', 'landed'); li.querySelector('.ans').hidden = true; li.querySelector('.picks').hidden = true; }
     $('#rv-room').hidden = true;
   }
@@ -1565,8 +1790,8 @@ function renderFinal() {
   $('#fn-board').innerHTML = rows.map(r => ({...r, rank: 1 + rows.filter(q => q.total > r.total).length})).map(r => `
     <li class="${r.rank === 1 && r.total > 0 ? 'win' : ''}">
       <span class="rank">${r.rank}</span>
-      <i class="dot" style="background:${esc(r.p.color)}"></i>
-      <span class="nm">${esc(r.p.name)}${r.p.pid === me.pid ? ' <span class="tag">you</span>' : ''}</span>
+      ${mark(r.p)}
+      <span class="nm">${r.rank === 1 && r.total > 0 ? CROWN : ''}${esc(r.p.name)}${r.p.pid === me.pid ? ' <span class="tag">you</span>' : ''}</span>
       <span class="bars" title="Points per round">${r.per.map(v => `<s style="--v:${v}"></s>`).join('')}</span>
       <span class="total">${r.total}</span>
     </li>`).join('');
@@ -1582,65 +1807,88 @@ function redrawAll() {}
 
 /* ---------------- sorting input: drag, arrows, keys ---------------- */
 const canSort = () => screen === 'round' && room?.phase === 'play' && !local.locked;
-let drag = null;
-sorterEl.addEventListener('pointerdown', e => {
-  if (!canSort() || e.button > 0 || e.target.closest('button')) return;
-  const li = e.target.closest('.row');
-  if (!li || drag) return;
-  const rows = [...sorterEl.children], idx = rows.indexOf(li);
-  const step = rows.length > 1 ? rows[1].getBoundingClientRect().top - rows[0].getBoundingClientRect().top : li.offsetHeight;
-  drag = {li, idx, to: idx, y0: e.clientY, step, rows, pid: e.pointerId, moved: false};
-  try { li.setPointerCapture(e.pointerId); } catch {}
-});
-sorterEl.addEventListener('pointermove', e => {
-  if (!drag || e.pointerId !== drag.pid) return;
-  let dy = e.clientY - drag.y0;
-  if (!drag.moved) {
-    if (Math.abs(dy) < 4) return;
-    drag.moved = true;
-    drag.li.classList.add('dragging'); sorterEl.classList.add('sorting');
-  }
-  e.preventDefault();
-  const {idx, step, rows} = drag;
-  dy = Math.max(-idx * step, Math.min((rows.length - 1 - idx) * step, dy));
-  drag.li.style.transform = `translateY(${dy}px)`;
-  const to = Math.max(0, Math.min(rows.length - 1, Math.round(idx + dy / step)));
-  drag.to = to; drag.dy = dy;
-  rows.forEach((r, j) => {
-    // number the rows as they would land, so the drop spot reads clearly
-    const at = r === drag.li ? to : j > idx && j <= to ? j - 1 : j < idx && j >= to ? j + 1 : j;
-    r.querySelector('.pos').textContent = at + 1;
-    if (r === drag.li) return;
-    const shift = j > idx && j <= to ? -step : j < idx && j >= to ? step : 0;
-    r.style.transform = shift ? `translateY(${shift}px)` : '';
+/* drag to reorder, for the game board and the home demo. The grabbed card lifts (bigger, tilted, deeper
+   shadow), the others slide out of the way, a dashed slot marks where it will land, and on release it glides
+   into place and settles with a small spring. */
+function sortable(el, {can, order, onMove, renumber}) {
+  let drag = null;
+  const slot = document.createElement('div');
+  slot.className = 'slot'; slot.setAttribute('aria-hidden', 'true');
+  el.addEventListener('pointerdown', e => {
+    if (!can() || e.button > 0 || e.target.closest('button')) return;
+    const li = e.target.closest('.row');
+    if (!li || drag) return;
+    const rows = [...el.querySelectorAll('.row')], idx = rows.indexOf(li);
+    const step = rows.length > 1 ? rows[1].getBoundingClientRect().top - rows[0].getBoundingClientRect().top : li.offsetHeight;
+    drag = {li, idx, to: idx, y0: e.clientY, step, rows, pid: e.pointerId, moved: false};
+    try { li.setPointerCapture(e.pointerId); } catch {}
   });
-});
-function endDrag(e) {
-  if (!drag || (e && e.pointerId !== drag.pid)) return;
-  const {li, idx, to, rows, moved} = drag;
-  drag = null;
-  li.classList.remove('dragging'); sorterEl.classList.remove('sorting');
-  if (!moved) return;
-  const top = li.getBoundingClientRect().top;
-  rows.forEach(r => { r.style.transition = 'none'; r.style.transform = ''; });
-  if (to !== idx && canSort()) {
-    const [id] = local.order.splice(idx, 1);
-    local.order.splice(to, 0, id);
-    local.touched = true;
+  el.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.pid) return;
+    let dy = e.clientY - drag.y0;
+    if (!drag.moved) {
+      if (Math.abs(dy) < 4) return;
+      drag.moved = true;
+      drag.li.classList.add('dragging'); el.classList.add('sorting');
+      slot.style.height = drag.li.offsetHeight + 'px';
+      el.appendChild(slot);
+      try { navigator.vibrate?.(6); } catch {}
+    }
+    e.preventDefault();
+    const {idx, step, rows} = drag;
+    dy = Math.max(-idx * step, Math.min((rows.length - 1 - idx) * step, dy));
+    drag.li.style.transform = `translateY(${dy}px) scale(1.035) rotate(${dy < 0 ? -0.8 : 0.8}deg)`;
+    const to = Math.max(0, Math.min(rows.length - 1, Math.round(idx + dy / step)));
+    drag.to = to;
+    // the empty slot sits where the card will land (offsetTop ignores the transforms)
+    slot.style.top = rows[to].offsetTop + 'px';
+    rows.forEach((r, j) => {
+      // number the rows as they would land, so the drop spot reads clearly
+      const at = r === drag.li ? to : j > idx && j <= to ? j - 1 : j < idx && j >= to ? j + 1 : j;
+      if (renumber) r.querySelector('.pos').textContent = at + 1;
+      if (r === drag.li) return;
+      const shift = j > idx && j <= to ? -step : j < idx && j >= to ? step : 0;
+      r.style.transform = shift ? `translateY(${shift}px)` : '';
+    });
+  });
+  function end(e) {
+    if (!drag || (e && e.pointerId !== drag.pid)) return;
+    const {li, idx, to, rows, moved} = drag;
+    drag = null;
+    slot.remove();
+    li.classList.remove('dragging'); el.classList.remove('sorting');
+    if (!moved) return;
+    const top = li.getBoundingClientRect().top;
+    rows.forEach(r => { r.style.transition = 'none'; r.style.transform = ''; });
+    if (to !== idx && can()) {
+      const o = order(), [id] = o.splice(idx, 1);
+      o.splice(to, 0, id);
+    }
+    for (const id of order()) el.appendChild(el.querySelector(`.row[data-id="${id}"]`));
+    // glide from where the finger let go into the slot, then settle
+    const dy = top - li.getBoundingClientRect().top;
+    li.style.transform = `translateY(${dy}px)`;
+    li.getBoundingClientRect();
+    rows.forEach(r => { r.style.transition = ''; });
+    li.style.transform = '';
+    settle(li, 150);
+    onMove(to !== idx);
+    try { navigator.vibrate?.(8); } catch {}
   }
-  for (const id of local.order) sorterEl.appendChild(sorterEl.querySelector(`[data-id="${id}"]`));
-  // let the dropped row glide from where the finger let go into its slot
-  const dy = top - li.getBoundingClientRect().top;
-  li.style.transform = `translateY(${dy}px)`;
-  li.getBoundingClientRect();
-  rows.forEach(r => { r.style.transition = ''; });
-  li.style.transform = '';
-  paintRows();
-  try { navigator.vibrate?.(8); } catch {}
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
+  el.addEventListener('lostpointercapture', end);
+  return {end: () => end(), active: () => !!drag};
 }
-sorterEl.addEventListener('pointerup', endDrag);
-sorterEl.addEventListener('pointercancel', endDrag);
-sorterEl.addEventListener('lostpointercapture', endDrag);
+// a short spring when a card lands in a new spot
+function settle(li, delay = 0) {
+  if (REDUCED || !li) return;
+  setTimeout(() => { li.classList.remove('settle'); void li.offsetWidth; li.classList.add('settle'); }, delay);
+}
+const board = sortable(sorterEl, {
+  can: () => canSort(), order: () => local.order, renumber: true,
+  onMove: changed => { if (changed) local.touched = true; paintRows(); },
+});
 sorterEl.addEventListener('click', e => {
   const b = e.target.closest('.mv');
   if (b) moveItem(b.closest('.row').dataset.id, +b.dataset.mv, false);
@@ -1669,60 +1917,80 @@ async function keepAwake(on) {
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && screen !== 'home') keepAwake(true); });
 
-/* ---------------- demo on home: a list sorting itself ---------------- */
+/* ---------------- demo on home: a real little round you can sort ----------------
+   Uses the same cards, drag and scoring as the game, locally, with no timer. */
 const demo = (() => {
-  // the example round on the home card: Pixar, oldest first (falls back to box office if that view didn't load)
-  // (any other round if movies.js didn't load, so a missing file can't break the page)
-  const pixar = ['up', 'toy-story', 'coco', 'finding-nemo', 'the-incredibles'];
-  const t = TOP['movies.pixar'] && pixar.every(id => TOP['movies.pixar'].byId[id]) ? TOP['movies.pixar'] : Object.values(TOP).find(v => !v.set.sequence) || Object.values(TOP)[0];
-  const ids = t.id === 'movies.pixar' ? pixar : pick5(t).map(x => x.id);
+  const EXAMPLES = [
+    ['tech.web', ['instagram', 'youtube', 'tiktok', 'facebook', 'spotify']],
+    ['movies.pixar', ['up', 'toy-story', 'coco', 'finding-nemo', 'the-incredibles']],
+    ['toys.year', ['furby', 'slinky', 'tamagotchi', 'barbie', 'rubik-s-cube']],
+    ['food.fastfood', ['big-mac', 'chicken-mcnuggets', 'whopper', 'taco-bell-crunchy-taco', 'baconator']],
+  ];
+  const sets = EXAMPLES.map(([v, ids]) => [TOP[v], ids]).filter(([t, ids]) => t && ids.every(id => t.byId[id]));
+  // (a missing data file can't break the page: fall back to any round that loaded)
+  if (!sets.length) { const t = Object.values(TOP).find(v => !v.set.sequence) || Object.values(TOP)[0]; sets.push([t, pick5(t).map(x => x.id)]); }
   const el = $('#demo-list');
-  $('#demo-hi').innerHTML = `${ARROW_UP}${t.hi}`; $('#demo-lo').innerHTML = `${ARROW_DN}${t.lo}`;
-  $('#demo-cap').textContent = `Example round: ${t.title}, ${t.ask.toLowerCase()}. Here the list sorts itself. In the game, you drag the rows.`;
-  let order, timer = null, on = false;
-  const right = rightOrder({t, ids});
-  function paint(done) {
+  let k = 0, t, order, checked = false;
+  function paint() {
+    const right = checked ? rightOrder({t, ids: order}) : null;
     [...el.children].forEach((li, i) => {
+      const id = li.dataset.id;
       li.querySelector('.pos').textContent = i + 1;
-      li.classList.toggle('exact', !!done);
-      const ans = li.querySelector('.ans'); ans.hidden = !done;
-      li.querySelector('.val').textContent = fmtVal(t, t.byId[li.dataset.id].v);
-      li.querySelector('.you').hidden = true;
+      const [up, dn] = li.querySelectorAll('.mv');
+      up.disabled = i === 0 || checked; dn.disabled = i === order.length - 1 || checked;
+      li.classList.remove('exact', 'near', 'far');
+      li.querySelector('.ans').hidden = !checked;
+      if (!checked) return;
+      const d = Math.abs(li.dataset.was - i);
+      li.classList.add(d === 0 ? 'exact' : d === 1 ? 'near' : 'far');
+      li.querySelector('.val').textContent = t.byId[id].label || fmtVal(t, t.byId[id].v);
+      li.querySelector('.you').textContent = d === 0 ? '✓ right spot' : d === 1 ? `↕ 1 off · you: ${ordinal(+li.dataset.was + 1)}` : `✗ you: ${ordinal(+li.dataset.was + 1)}`;
     });
   }
-  function place() {
-    const rows = new Map([...el.children].map(li => [li.dataset.id, li]));
-    const before = new Map([...rows].map(([id, li]) => [id, li.getBoundingClientRect().top]));
-    for (const id of order) el.appendChild(rows.get(id));
-    if (REDUCED) return;
-    for (const [id, li] of rows) {
-      const dy = before.get(id) - li.getBoundingClientRect().top;
-      if (!dy) continue;
-      li.style.transition = 'none'; li.style.transform = `translateY(${dy}px)`;
-      li.getBoundingClientRect();
-      li.style.transition = 'transform .45s cubic-bezier(.2,.8,.2,1)'; li.style.transform = '';
+  function load() {
+    let ids; [t, ids] = sets[k++ % sets.length];
+    order = ids.slice(); checked = false;
+    $('#demo-title').textContent = t.title; $('#demo-dir').textContent = dirText(t);
+    $('#demo-hi').innerHTML = `${ARROW_UP}${esc(t.hi)}`; $('#demo-lo').innerHTML = `${ARROW_DN}${esc(t.lo)}`;
+    el.innerHTML = order.map(id => `<li class="row" data-id="${id}" tabindex="0">${rowHTML(t.byId[id])}</li>`).join('');
+    el.classList.remove('still', 'perfect');
+    el.parentElement.querySelectorAll('.stamp').forEach(x => x.remove());
+    $('#demo-check').textContent = 'Check my order';
+    $('#demo-cap').textContent = 'Drag the cards (or tap the arrows), then check your order.';
+    paint();
+  }
+  const move = (id, dir, focus) => {
+    if (checked) return;
+    const i = order.indexOf(id), j = i + dir;
+    if (j < 0 || j >= order.length) return;
+    [order[i], order[j]] = [order[j], order[i]];
+    flipTo(el, order); paint(); settle(el.querySelector(`[data-id="${id}"]`), 120);
+    if (focus) el.querySelector(`[data-id="${id}"]`)?.focus({preventScroll: true});
+  };
+  sortable(el, {can: () => !checked && screen === 'home', order: () => order, renumber: true, onMove: () => paint()});
+  el.addEventListener('click', e => { const b = e.target.closest('.mv'); if (b) move(b.closest('.row').dataset.id, +b.dataset.mv); });
+  el.addEventListener('keydown', e => {
+    const li = e.target.closest('.row');
+    if (li && e.target === li && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); move(li.dataset.id, e.key === 'ArrowUp' ? -1 : 1, true); }
+  });
+  $('#demo-check').addEventListener('click', () => {
+    if (checked) { load(); return; }
+    checked = true;
+    const R = {t, ids: order.slice()}, p = scoreOrder(order, R), right = rightOrder(R);
+    [...el.children].forEach((li, i) => { li.dataset.was = i; });
+    el.classList.add('still');
+    order = right.slice(); flipTo(el, order); paint();
+    const exact = R.ids.filter((id, i) => right[i] === id).length;
+    $('#demo-cap').textContent = isPerfect(p) ? `Perfect order! ${p} points. You're ready.` : `${p} points: ${exact} of 5 in the right spot. ${p >= 60 ? 'Not bad at all.' : 'Tricky, right?'} Try another.`;
+    if (isPerfect(p)) {
+      el.classList.add('perfect');
+      el.parentElement.insertAdjacentHTML('beforeend', `<div class="stamp" aria-hidden="true">Perfect order!<small>+${PERFECT_BONUS} bonus</small></div>`);
+      scraps(el.parentElement);
     }
-  }
-  function reset() {
-    order = ids.slice();
-    el.innerHTML = order.map(id => `<li class="row" data-id="${id}">${rowHTML(t.byId[id])}</li>`).join('');
-    paint(false);
-  }
-  function step() {
-    const k = order.findIndex((id, i) => id !== right[i]);
-    if (k < 0) { paint(true); timer = setTimeout(() => { reset(); timer = setTimeout(step, 1200); }, 3600); return; }
-    const from = order.indexOf(right[k]);
-    order.splice(from, 1); order.splice(k, 0, right[k]);
-    place(); paint(false);
-    timer = setTimeout(step, 1100);
-  }
-  reset();
-  if (REDUCED) { order = right.slice(); place(); paint(true); }
-  return {run(v) {
-    if (REDUCED || v === on) return;
-    on = v; clearTimeout(timer);
-    if (on) timer = setTimeout(step, 900);
-  }};
+    $('#demo-check').textContent = 'Try another';
+  });
+  load();
+  return {run() {}};
 })();
 
 /* ---------------- frame loop: timer and reveal countdown ---------------- */
@@ -1736,8 +2004,13 @@ function frame(now) {
     const w = (left / SECONDS * 100).toFixed(1) + '%';
     if (w !== lastW) { fill.style.width = w; lastW = w; }
     const sec = 'p' + local.key + Math.ceil(left);
-    if (sec !== lastSec) { $('#tape-sec').textContent = Math.ceil(left) + 's'; lastSec = sec; tape.classList.toggle('low', left <= 5); }
-    if (left <= 0 && !local.locked) { if (drag) endDrag(); submit(false); }
+    if (sec !== lastSec) {
+      $('#tape-sec').textContent = Math.ceil(left) + 's'; lastSec = sec;
+      // urgency builds: a warmer tape from 10 s, then a bigger ticking count for the last 5
+      tape.classList.toggle('warn', left <= 10 && left > 5);
+      tape.classList.toggle('low', left <= 5 && left > 0);
+    }
+    if (left <= 0 && !local.locked) { if (board.active()) board.end(); submit(false); }
   } else if (room.phase === 'reveal') {
     const left = Math.max(0, Math.ceil((REVEAL_MS - (now - local.revealAt)) / 1000));
     const sk = 'r' + local.key + left;
@@ -1746,7 +2019,7 @@ function frame(now) {
       const last = room.round + 1 >= room.rounds.length;
       $('#rv-auto').textContent = left > 0 ? `${last ? 'Final scores' : 'Next round'} in ${left}s` : 'Moving on…';
       $('#tape-sec').textContent = '';
-      tape.classList.remove('low');
+      tape.classList.remove('low', 'warn');
       if (lastW !== '0%') { fill.style.width = '0%'; lastW = '0%'; }
     }
   }
