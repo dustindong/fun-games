@@ -626,23 +626,23 @@ input[type=text]{font-size:16px}
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
 <!-- bump ?v= on every script below whenever engine.js or a data file changes, so browsers fetch fresh copies -->
-<script src="data/states.js?v=2026-09-27a"></script>
-<script src="data/songs.js?v=2026-09-27a"></script>
-<script src="data/movies.js?v=2026-09-27a"></script>
-<script src="data/tv.js?v=2026-09-27a"></script>
-<script src="data/games.js?v=2026-09-27a"></script>
-<script src="data/pokemon.js?v=2026-09-27a"></script>
-<script src="data/tech.js?v=2026-09-27a"></script>
-<script src="data/nostalgia.js?v=2026-09-27a"></script>
-<script src="data/people.js?v=2026-09-27a"></script>
-<script src="data/animals.js?v=2026-09-27a"></script>
-<script src="data/dogs.js?v=2026-09-27a"></script>
-<script src="data/cars.js?v=2026-09-27a"></script>
-<script src="data/food.js?v=2026-09-27a"></script>
-<script src="data/drinks.js?v=2026-09-27a"></script>
-<script src="data/stuff.js?v=2026-09-27a"></script>
-<script src="data/sequences.js?v=2026-09-27a"></script>
-<script src="engine.js?v=2026-09-27a"></script>
+<script src="data/states.js?v=2026-09-27b"></script>
+<script src="data/songs.js?v=2026-09-27b"></script>
+<script src="data/movies.js?v=2026-09-27b"></script>
+<script src="data/tv.js?v=2026-09-27b"></script>
+<script src="data/games.js?v=2026-09-27b"></script>
+<script src="data/pokemon.js?v=2026-09-27b"></script>
+<script src="data/tech.js?v=2026-09-27b"></script>
+<script src="data/nostalgia.js?v=2026-09-27b"></script>
+<script src="data/people.js?v=2026-09-27b"></script>
+<script src="data/animals.js?v=2026-09-27b"></script>
+<script src="data/dogs.js?v=2026-09-27b"></script>
+<script src="data/cars.js?v=2026-09-27b"></script>
+<script src="data/food.js?v=2026-09-27b"></script>
+<script src="data/drinks.js?v=2026-09-27b"></script>
+<script src="data/stuff.js?v=2026-09-27b"></script>
+<script src="data/sequences.js?v=2026-09-27b"></script>
+<script src="engine.js?v=2026-09-27b"></script>
 <script>
 (() => {
 'use strict';
@@ -656,7 +656,7 @@ if (!window.OrderUp || !window.OrderUp.CATEGORIES.length) {
   throw new Error('Order Up: engine.js or its data did not load');
 }
 const {N, BASE_MAX, PERFECT_BONUS, ROUND_MAX, TOP, CATEGORIES, CAT, PRESETS, presetOf, cleanCats, catsLabel,
-  fmtVal, rightOrder, scoreOrder, isPerfect, makeRounds, newHistory, parseRound, FLAGS} = window.OrderUp;
+  fmtVal, pick5, rightOrder, scoreOrder, isPerfect, makeRounds, newHistory, parseRound, FLAGS} = window.OrderUp;
 // rounds this page has already played, so Play Again and rematches avoid repeats and vary the comparisons
 const HISTORY = newHistory();
 
@@ -1672,7 +1672,10 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 /* ---------------- demo on home: a list sorting itself ---------------- */
 const demo = (() => {
   // the example round on the home card: Pixar, oldest first (falls back to box office if that view didn't load)
-  const t = TOP['movies.pixar'] || TOP['movies.box'], ids = TOP['movies.pixar'] ? ['up', 'toy-story', 'coco', 'finding-nemo', 'the-incredibles'] : ['barbie', 'home-alone', 'titanic', 'the-matrix', 'frozen'];
+  // (any other round if movies.js didn't load, so a missing file can't break the page)
+  const pixar = ['up', 'toy-story', 'coco', 'finding-nemo', 'the-incredibles'];
+  const t = TOP['movies.pixar'] && pixar.every(id => TOP['movies.pixar'].byId[id]) ? TOP['movies.pixar'] : Object.values(TOP).find(v => !v.set.sequence) || Object.values(TOP)[0];
+  const ids = t.id === 'movies.pixar' ? pixar : pick5(t).map(x => x.id);
   const el = $('#demo-list');
   $('#demo-hi').innerHTML = `${ARROW_UP}${t.hi}`; $('#demo-lo').innerHTML = `${ARROW_DN}${t.lo}`;
   $('#demo-cap').textContent = `Example round: ${t.title}, ${t.ask.toLowerCase()}. Here the list sorts itself. In the game, you drag the rows.`;
