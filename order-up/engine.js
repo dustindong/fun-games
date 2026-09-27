@@ -125,6 +125,7 @@ const CATEGORIES = [
   {id: 'cars', name: 'Cars', sets: 'cars'},
   {id: 'stuff', name: 'Everyday Stuff', sets: 'stuff'},
   {id: 'geo', name: 'US States', sets: 'states'},
+  {id: 'world', name: 'World Geography', sets: 'countries'},
   {id: 'wild', name: 'Wild Cards', sets: ''},
 ];
 const CAT = {};
@@ -153,7 +154,7 @@ const PRESETS = [
    blurb: 'The recommended mix: movies, TV, music, games, food, the internet, nostalgia, celebrities and wild cards.'},
   {id: 'pop', name: 'Pop Culture', cats: 'screen tv music gaming people tech', blurb: 'Movies, TV, music, games, celebrities and the internet.'},
   {id: 'throwback', name: 'Throwback', cats: 'nostalgia music gaming screen tech', blurb: 'Toys, old-school tech, classic games, songs and movies.'},
-  {id: 'classic', name: 'Classic Trivia', cats: 'animals cars geo stuff food', blurb: 'Animals, cars, US states, everyday stuff and food: the numbers game.'},
+  {id: 'classic', name: 'Classic Trivia', cats: 'animals cars geo world stuff food', blurb: 'Animals, cars, US states, world geography, everyday stuff and food: the numbers game.'},
   {id: 'all', name: 'Everything', cats: null, blurb: 'Every category, all mixed together.'},
 ].map(p => ({...p, cats: p.cats && cleanCats(p.cats.split(' '))}));
 const sameCats = (a, b) => a === b || (!!a && !!b && a.length === b.length && a.every(id => b.includes(id)));
@@ -227,6 +228,8 @@ function fmtVal(t, v) {
     case 'mfollow': return `about ${num(v)} million followers`;
     case 'msubs': return `about ${num(v)} million subscribers`;
     case 'stores': return `about ${num(v)} locations`;
+    case 'usd': return v >= 1e12 ? `$${sig(v / 1e12)} trillion` : v >= 1e9 ? `$${sig(v / 1e9)} billion` : `$${sig(v / 1e6)} million`;
+    case 'temp': return `${Math.round(v * 9 / 5 + 32)}°F (${v.toFixed(1)}°C)`;
     case 'mcopies': return `${t.about ? 'about ' : ''}${num(v)} million copies`;
     case 'munits': return `${t.about ? 'about ' : ''}${num(v)} million sold`;
     case 'musd': return (t.about ? 'about ' : '') + (v >= 1000 ? `$${num(v / 1000)} billion` : `$${num(v)} million`);
