@@ -189,6 +189,11 @@ function fmtVal(t, v) {
     case 'm': return `${Math.round(v * 3.28084).toLocaleString('en-US')} ft`;
     case 'year': return v < 1000 ? `AD ${v}` : String(v);
     case 'born': return `born ${v}`;
+    case 'age': return `${v} years old`;
+    case 'inch': { // 70.5 -> 5 ft 10½ in
+      const ft = Math.floor(v / 12), i = v - ft * 12, w = Math.floor(i), fr = {0.25: '¼', 0.5: '½', 0.75: '¾'}[Math.round((i - w) * 4) / 4] || '';
+      return w || fr ? `${ft} ft ${w || ''}${fr} in` : `${ft} ft`;
+    }
     case 'ftin': {
       const inch = v * 39.3701;
       if (inch < 12) return `${num(inch)} in`;
