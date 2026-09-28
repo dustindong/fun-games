@@ -376,6 +376,14 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
 .standings li{padding-left:4px}.standing-score{float:right;font-family:var(--mono)}
 #rv-standing-summary{font-size:14px;color:var(--muted)}
 @media(max-width:760px){#scr-round.revealing{padding-bottom:100px}.reveal{padding-bottom:0}.rv-pts b{font-size:40px}}
+.match-highlights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.highlight{padding:18px;display:grid;gap:8px;align-content:start;min-width:0}
+.highlight h3{font:800 24px/1.1 var(--display)}.highlight strong{font-size:18px;overflow-wrap:anywhere}
+.highlight p{font-size:14px;color:var(--muted)}.highlight .highlight-joke{color:var(--ink);font-style:italic}
+.session-box{padding:16px;display:grid;gap:12px}.session-row{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid var(--line)}
+.session-row:last-child{border-bottom:0}.session-row strong{font-family:var(--mono);white-space:nowrap}
+.session-live{font-size:12px;color:var(--muted);text-align:right;margin:-4px 0 10px}
+@media(max-width:760px){.match-highlights{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -473,6 +481,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
 
   <!-- ROUND -->
   <section class="screen" id="scr-round" hidden>
+    <p class="session-live" id="session-live" hidden></p>
     <div class="roundbar">
       <div class="stat"><span class="eyebrow">Round</span><b><span id="rb-num">1</span><small id="rb-of">/10</small></b></div>
       <div class="tape" id="tape" aria-hidden="true"><div class="tape-fill" id="tape-fill"></div><span class="tape-sec" id="tape-sec">20</span></div>
@@ -534,6 +543,15 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
       <p class="sub" id="fn-sub"></p>
     </div>
     <ol class="card board" id="fn-board"></ol>
+    <div>
+      <h2 style="font:800 30px/1.2 var(--display);margin-bottom:12px">Match highlights</h2>
+      <div class="match-highlights" id="match-highlights"></div>
+    </div>
+    <div class="card session-box" id="session-box">
+      <h3>This session</h3><p class="muted" id="session-summary"></p>
+      <div id="session-board"></div>
+      <p class="muted">Tied winners each earn a win. Practice and solo games do not award wins. A new room starts a new session.</p>
+    </div>
     <div class="final-actions">
       <button class="btn primary" id="btn-again">Play again</button>
       <span class="muted" id="fn-wait" hidden></span>
@@ -3103,6 +3121,32 @@ Object.assign(ART, {
   }},
 });
 
+// Product silhouettes use their upright orientation; dimensions are documented in CONTENT.md.
+Object.assign(ART, {
+  xboxseriesx: {aspect: 151 / 301, shade: null, draw(c,w,h) {
+    R(c,w,h,0,0,1,1,'#25292D'); R(c,w,h,0.06,0.015,0.94,0.045,'#75B83F');
+    R(c,w,h,0.13,0.3,0.17,0.72,'#090D11'); E(c,w,h,0.79,0.12,0.065,0.033,'#F3F5F0');
+    R(c,w,h,0.74,0.86,0.86,0.88,'#080B0F');
+  }},
+  ps5original: {aspect: 104 / 390, shade: null, draw(c,w,h) {
+    R(c,w,h,0.2,0.05,0.8,0.98,'#14212C');
+    fillP(c,w,h,[[0,0],[0.24,0.03],[0.32,0.7],[0.23,1],[0.02,0.97],[0.1,0.4]],'#F0F3F7',EDGE);
+    fillP(c,w,h,[[0.76,0.03],[1,0],[0.91,0.45],[1,0.95],[0.75,1],[0.68,0.7]],'#DEE6EF',EDGE);
+    R(c,w,h,0.27,0.09,0.3,0.68,'#55A8FF'); R(c,w,h,0.78,0.67,0.82,0.89,'#25313D');
+  }},
+  billybookcase: {aspect: 80 / 202, shade: null, draw(c,w,h) {
+    R(c,w,h,0,0,1,1,'#E7D4AE'); R(c,w,h,0.06,0.025,0.94,0.97,'#AE9474');
+    const colors=['#D56D46','#4276A6','#E6BB4E','#5C8E72'];
+    for(let row=0;row<6;row++) { const y=0.025+row*0.158;
+      for(let col=0;col<5;col++) R(c,w,h,0.1+col*0.15,y+0.03+(col%2)*0.02,0.2+col*0.15,y+0.147,colors[(row+col)%4]);
+      R(c,w,h,0.04,y+0.147,0.96,y+0.16,'#E7D4AE'); }
+  }},
+  lacktable: {aspect: 55 / 45, shade: null, draw(c,w,h) {
+    R(c,w,h,0.03,0.08,0.15,1,'#C5D2D8'); R(c,w,h,0.85,0.08,0.97,1,'#C5D2D8');
+    R(c,w,h,0,0,1,0.1,'#F0F4F6'); R(c,w,h,0,0.09,1,0.13,'#A9BEC9');
+  }},
+});
+
 /* ---------------- standardized items ----------------
    One representative height per thing, in feet, with how it's measured. These values are for gameplay, not
    universal truths: animals vary, so each row names the convention (shoulder height, standing height, ...).
@@ -3112,6 +3156,32 @@ Object.assign(ART, {
    Empire State Building's antenna above its roof. The measuring line stops at the measured point. */
 const FT = 0.3048;
 const STD = [
+  // Party expansion: everyday, sports, and recognizable tech.
+  ["bowlingpin", null, "a bowling pin", 0.381 / FT, "regulation tenpin, standing upright", "Bowling Pin", "sports", 10],
+  ["cone", null, "a traffic cone", 0.7112 / FT, "representative highway cone, base to tip", "Traffic Cone", "everyday", 10],
+  ["suitcase", null, "a carry-on suitcase", 0.5588 / FT, "representative cabin suitcase, wheels included, handle retracted", "Carry-on Suitcase", "everyday", 9],
+  ["winebottle", null, "a wine bottle", 0.3 / FT, "representative 750 ml bottle, base to top", "Wine Bottle", "everyday", 9],
+  ["desk", null, "an office desk", 0.74 / FT, "representative desk, floor to desktop", "Office Desk", "everyday", 10],
+  ["washer", null, "a washing machine", 0.85 / FT, "representative front-loader, overall height", "Washing Machine", "everyday", 10],
+  ["counter", null, "a kitchen counter", 0.9144 / FT, "standard counter, floor to worktop", "Kitchen Counter", "everyday", 10],
+  ["ttable", null, "a ping-pong table", 0.76 / FT, "floor to playing surface, net excluded", "Ping-pong Table", "sports", 9],
+  ["hockeygoal", null, "a hockey goal", 1.2192 / FT, "regulation opening, floor to crossbar", "Hockey Goal", "sports", 9],
+  ["hurdle", null, "a hurdles-race barrier", 1.067 / FT, "senior men’s 110 m race, ground to top", "Track Hurdle", "sports", 8],
+  ["tennisnet", null, "a tennis net", 1.0668 / FT, "height at the posts, not the center", "Tennis Net", "sports", 10],
+  ["beam", null, "a gymnastics balance beam", 1.25 / FT, "floor to top of beam", "Balance Beam", "sports", 8],
+  ["ninevolt", null, "a 9-volt battery", 0.0485 / FT, "upright, terminals included", "9-Volt Battery", "tech", 9],
+  ["aaa", null, "an AAA battery", 0.0445 / FT, "standing upright, end to end", "AAA Battery", "tech", 9],
+  ["dbattery", null, "a D battery", 0.0615 / FT, "standing upright, end to end", "D Battery", "tech", 8],
+  ["paperback", null, "a paperback book", 0.175 / FT, "representative mass-market paperback, standing upright", "Paperback Book", "everyday", 9],
+  ["die", "🎲", "a six-sided die", 0.016 / FT, "representative tabletop die, bottom face to top face", "Die", "everyday", 10],
+  ["pingpong", null, "a ping-pong ball", 0.04 / FT, "regulation ball, bottom to top", "Ping-pong Ball", "sports", 10],
+  ["mug", null, "a coffee mug", 0.095 / FT, "representative 11-ounce mug, base to rim", "Coffee Mug", "everyday", 10],
+  ["sodacan", null, "a soda can", 0.122 / FT, "representative US 12-ounce can, base to top", "Soda Can", "everyday", 10],
+  ["xboxseriesx", null, "an Xbox Series X", 0.301 / FT, "original disc console, standing vertically", "Xbox Series X", "tech", 10],
+  ["ps5original", null, "an original PlayStation 5", 0.39 / FT, "2020 disc console, vertical body, base excluded", "Original PlayStation 5", "tech", 10],
+  ["billybookcase", null, "an IKEA BILLY bookcase", 2.02 / FT, "tall standard model, no extension unit", "BILLY Bookcase", "everyday", 9],
+  ["lacktable", null, "an IKEA LACK side table", 0.45 / FT, "square side-table model, floor to tabletop", "LACK Side Table", "everyday", 9],
+
   // everyday
   ['person', '🧍', 'a 6-foot person', 6.0, 'standing height', '6-Foot Person', 'everyday', 10],
   ['door', '🚪', 'a door', 6.67, 'a standard door, floor to the top of the frame', 'Standard Door', 'everyday', 10],
@@ -3190,6 +3260,16 @@ for (const [id, pic, a, ft, measure, name, cat, fam, mfrac] of STD) {
 const THEMES = {animals: 'Animals', dinos: 'Prehistoric', everyday: 'Everyday stuff', vehicles: 'Vehicles', tech: 'Tech', landmarks: 'Landmarks',
   rides: 'Structures & rides', rockets: 'Rockets', people: 'People', sports: 'Sports'};
 const PAIRS_RAW = [
+  ['xboxseriesx','ps5original','tech',1,'star'], ['bowlingpin','ps5original','tech',0,'close'],
+  ['winebottle','xboxseriesx','tech',0,'close'], ['mug','xboxseriesx','tech',2,''],
+  ['sodacan','ps5original','tech',2,''], ['lacktable','suitcase','everyday',2,''],
+  ['washer','counter','everyday',0,'close'], ['desk','washer','everyday',0,'close'],
+  ['person','billybookcase','everyday',0,'close'], ['cone','tennisnet','sports',1,'star'],
+  ['suitcase','hockeygoal','sports',2,''], ['ttable','beam','sports',2,''],
+  ['bowlingpin','lacktable','everyday',2,''], ['sodacan','winebottle','everyday',2,''],
+  ['person','beam','sports',2,''], ['die','pingpong','sports',0,'tiny'],
+  ['aaa','ninevolt','tech',0,'close'], ['ninevolt','dbattery','tech',0,'tiny'],
+
   // animals
   ['person','giraffe','animals',1,'star'], ['person','polarbear','animals',1,'star'], ['hoop','giraffe','animals',2,''],
   ['fridge','gorilla','animals',0,'close'], ['car','elephant','animals',1,''], ['person','ostrich','animals',2,''],
@@ -4026,6 +4106,9 @@ async function advance(key) {
   if (room.phase === 'play') patch = {phase: 'reveal', at: Date.now()};
   else if (room.phase === 'reveal') patch = room.round + 1 >= room.rounds.length ? {phase: 'final', at: Date.now()} : {phase: 'play', round: room.round + 1, at: Date.now()};
   else { hostT.busy = false; return; }
+  if (patch.phase === 'final' && !room.practice && !room.sessionResults?.[room.game]) {
+    patch.sessionResults = {[room.game]: snapshotMatch()};
+  }
   await db.doc(`rooms/${code}`).update({...patch, paused: false});
 }
 
@@ -4164,6 +4247,7 @@ function renderRound() {
   $('#ask-badge').hidden = !badge; $('#ask-badge').textContent = badge; $('#ask-badge').dataset.kind = flag;
   $('#prompt').innerHTML = `How tall is <em>${esc(tgt.a.split(',')[0])}</em> compared to <em>${esc(ref.a.split(',')[0])}</em>?`;
 
+  renderSession(false);
   $('#measure-notes').textContent = [ref, tgt].filter(o => o.note).map(o => `${o.label}: ${o.note}`).join(' · ');
   $('#party-results').hidden = !reveal || !local.shown;
   $('#play-ui').hidden = reveal;
@@ -4264,8 +4348,86 @@ $('#btn-pause').addEventListener('click', async () => {
 
 function drawRound() { if (room && screen === 'round' && room.rounds?.[room.round]) drawStage($('#stage'), stageState()); }
 
+function snapshotMatch() {
+  return {rounds: [...room.rounds], players: players.map(pl => {
+    const answers = room.rounds.map((_, i) => {
+      const rec = scoreRec(pl, i);
+      return {g: Number.isFinite(rec?.g) && rec.g > 0 ? rec.g : null, p: rec?.p || 0};
+    });
+    return {pid: pl.pid, name: pl.name, color: pl.color, answers, total: answers.reduce((sum, a) => sum + a.p, 0)};
+  })};
+}
+function matchHighlights(match) {
+  const entries = match.players.flatMap(pl => pl.answers.flatMap((answer, round) => {
+    if (!(answer.g > 0)) return [];
+    const [ref, tgt] = match.rounds[round].split('|').map(id => BY[id]);
+    const ratio = answer.g / (tgt.height / ref.height);
+    return [{pl, round, answer, ref, tgt, ratio, error: Math.abs(ratio - 1)}];
+  }));
+  const closest = entries.slice().sort((a,b) => a.error - b.error || a.round - b.round)[0];
+  const over = entries.filter(e => e.ratio > 1.005).sort((a,b) => b.ratio - a.ratio || a.round - b.round)[0];
+  const totalAt = (pl, i) => pl.answers.slice(0,i+1).reduce((sum,a) => sum+a.p,0);
+  const rankAt = (pl, i) => 1 + match.players.filter(other => totalAt(other,i) > totalAt(pl,i)).length;
+  const last = match.rounds.length-1;
+  const recoveries = match.players.flatMap(pl => {
+    const finalRank = rankAt(pl,last);
+    let low = 0;
+    for(let i=1;i<last;i++) if(rankAt(pl,i)>rankAt(pl,low)) low=i;
+    const gain = rankAt(pl,low)-finalRank;
+    if(gain<=0) return [];
+    const moments = entries.filter(e => e.pl.pid===pl.pid && e.round>low).sort((a,b) =>
+      (rankAt(pl,b.round-1)-rankAt(pl,b.round))-(rankAt(pl,a.round-1)-rankAt(pl,a.round)) || b.answer.p-a.answer.p);
+    return moments.length ? [{pl, gain, low, from:rankAt(pl,low), to:finalRank, moment:moments[0]}] : [];
+  });
+  const comeback = recoveries.sort((a,b) => b.gain-a.gain || a.to-b.to || b.pl.total-a.pl.total)[0];
+  return {closest, over, comeback};
+}
+function renderHighlights(match) {
+  const {closest,over,comeback} = matchHighlights(match);
+  const comparison = e => `Round ${e.round+1}: ${e.tgt.label} beside ${e.ref.label}.`;
+  const detail = e => `Guessed ${fmtLen(e.answer.g*e.ref.height)}; actual ${fmtLen(e.tgt.height)}.`;
+  const card = (title, name, joke, text) => `<article class="card highlight"><h3>${title}</h3><strong>${esc(name)}</strong><p class="highlight-joke">${esc(joke)}</p><p>${esc(text)}</p></article>`;
+  $('#match-highlights').innerHTML = [
+    closest ? card('Closest guess',closest.pl.name,'Human tape measure.',`${comparison(closest)} ${detail(closest)} ${(closest.error*100).toFixed(1)}% off.`)
+      : card('Closest guess','No guesses this time','The tape measure stayed in the drawer.','Move the slider and lock in a guess next game.'),
+    over ? card('Biggest overestimate',over.pl.name,'Apparently, everything is a skyscraper.',`${comparison(over)} ${detail(over)} ${fmtNum(over.ratio)}× the real height.`)
+      : card('Biggest overestimate','Nobody went big','A remarkably restrained group.', 'No submitted guess was meaningfully taller than the real answer.'),
+    comeback ? card('Biggest comeback',comeback.pl.name,'Never count them out.',`From #${comeback.from} after round ${comeback.low+1} to #${comeback.to} at the finish. Recovery highlight: ${comparison(comeback.moment)} ${detail(comeback.moment)} +${comeback.moment.answer.p} points.`)
+      : card('Biggest comeback','No rank comeback this time','The order held steady.',match.players.length>1 ? 'Nobody finished above their lowest earlier position. Rematch?' : 'Bring a friend to compete for this one.'),
+  ].join('');
+}
+function sessionStandings(results, currentPlayers = []) {
+  const table = new Map();
+  for(const match of Object.values(results || {})) {
+    const best = Math.max(0,...match.players.map(p=>p.total));
+    const competitive = match.players.length>1 && best>0;
+    for(const pl of match.players) {
+      const row = table.get(pl.pid) || {pid:pl.pid,name:pl.name,wins:0,games:0};
+      row.name=pl.name; row.games++;
+      if(competitive && pl.total===best) row.wins++;
+      table.set(pl.pid,row);
+    }
+  }
+  for(const pl of currentPlayers) {
+    const row=table.get(pl.pid) || {pid:pl.pid,name:pl.name,wins:0,games:0};
+    row.name=pl.name; table.set(pl.pid,row);
+  }
+  return [...table.values()].sort((a,b)=>b.wins-a.wins || a.name.localeCompare(b.name));
+}
+function renderSession(final) {
+  const results=room.sessionResults || {}, count=Object.keys(results).length;
+  const rows=sessionStandings(results,players);
+  const live=$('#session-live'); live.hidden=!count;
+  const leaders=rows.filter(r=>r.wins>0 && r.wins===rows[0]?.wins);
+  live.textContent = leaders.length ? `Session lead: ${leaders.map(r=>r.name).join(', ')} · ${leaders[0].wins} ${leaders[0].wins===1?'win':'wins'}` : `${count} ${count===1?'game':'games'} completed this session`;
+  if(!final) return;
+  $('#session-summary').textContent=`${count} completed ${count===1?'game':'games'} in this room. Run it back to keep the rivalry going.`;
+  $('#session-board').innerHTML=rows.map(r=>`<div class="session-row"><span>${esc(r.name)}${players.some(p=>p.pid===r.pid)?'':' (left)'}</span><strong>${r.wins} ${r.wins===1?'win':'wins'}</strong></div>`).join('');
+}
+
 function renderFinal() {
-  const rows = players.map(p => ({p, total: totalOf(p), per: room.rounds.map((_, i) => scoreRec(p, i)?.p ?? 0)}))
+  const match = room.sessionResults?.[room.game] || snapshotMatch();
+  const rows = match.players.map(p => ({p, total: p.total, per: p.answers.map(a => a.p)}))
     .sort((a, b) => b.total - a.total || a.p.name.localeCompare(b.p.name));
   const max = room.rounds.length * 100;
   if (rows.length === 1) {
@@ -4277,13 +4439,15 @@ function renderFinal() {
     $('#fn-sub').textContent = `${rows[0].total} of ${max.toLocaleString()} possible points${tie ? ' at the top' : ''}.`;
   }
   $('#fn-board').innerHTML = rows.map((r, i) => `
-    <li class="${i === 0 && r.total > 0 ? 'win' : ''}">
-      <span class="rank">${i + 1}</span>
+    <li class="${r.total === rows[0].total && r.total > 0 ? 'win' : ''}">
+      <span class="rank">${1 + rows.filter(other => other.total > r.total).length}</span>
       <i class="dot" style="background:${esc(r.p.color)}"></i>
       <span class="nm">${esc(r.p.name)}${r.p.pid === me.pid ? ' <span class="tag">you</span>' : ''}</span>
       <span class="bars" title="Points per round">${r.per.map(v => `<s style="--v:${v}"></s>`).join('')}</span>
       <span class="total">${r.total}</span>
     </li>`).join('');
+  renderHighlights(match);
+  renderSession(true);
   $('#btn-again').hidden = !isHost();
   const hostP = players.find(p => p.pid === room.host);
   $('#fn-wait').hidden = isHost();
