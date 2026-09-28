@@ -1,0 +1,31 @@
+{
+  "mode": "Built-in image_gen",
+  "reference": "User-selected HOW BIG logo-inspired six-object preview (2026-09-28)",
+  "shared": "Single transparent subject extracted and redrawn from approved preview. Rounded navy outlines, pastel flat colors, tiny cream highlights, no texture, text, grid, backdrop, props, or outer sticker halo. Full uncropped object in frontal/side elevation. Preserve transparent holes and ground baseline.",
+  "subjects": [
+    [
+      "person",
+      "Extract and redraw ONLY the PERSON from the top left cell: mint sweater, lavender trousers, cream sneakers, brown hair, happy tiny face and coral cheeks. Keep the approved sticker style, but subtly lengthen torso and legs so it reads as a standing adult rather than a child. Full body frontal view, arms relaxed, both soles on the same baseline. Measured from soles to top of hair."
+    ],
+    [
+      "giraffe",
+      "Extract and redraw ONLY the GIRAFFE from the top middle cell: golden yellow, orange spots, dark brown mane and hooves, sweet face with coral cheek. Full side elevation facing right, four legs, long upright neck. Slightly lengthen the legs and neck toward natural giraffe proportions without losing the rounded cute style. All hooves on a single baseline, tallest point the tips of ossicones."
+    ],
+    [
+      "polarbear",
+      "Extract and redraw ONLY the POLAR BEAR from the top right cell: cream-white body, tiny lavender accent shadows, dark nose and eyes, coral cheeks. Full body upright on two hind feet, front view, relaxed forepaws, smile, thick navy outline. Both feet on one baseline, round ears at top."
+    ],
+    [
+      "door",
+      "Extract and redraw ONLY the DOOR from the bottom left cell: orange closed door, frame included, simple inset panels, navy knob on right, thick navy outlines and small cream highlights. Strict straight front elevation, rectangular upright standard door proportions. No perspective, no floor shadow, no face. Bottom of frame is the baseline."
+    ],
+    [
+      "ps5original",
+      "Extract and redraw ONLY the PLAYSTATION 5 from the bottom middle cell: cream white curving upright fins, near-black navy core, simple sky blue accent, disc slot. Original 2020 disc console front elevation. IMPORTANT remove the oval stand/base; the measured object is only the console body upright. No logo or face. Full console body bottom to fin tips."
+    ],
+    [
+      "eiffel",
+      "Extract and redraw ONLY the EIFFEL TOWER from the bottom right cell: sky blue structure, thick navy outline and simplified lattice, open arch and four feet. Full frontal elevation, antenna included. Preserve the tall taper and recognizable proportions. No face, no detached decorations, no shadows. Feet rest on one baseline."
+    ]
+  ]
+}

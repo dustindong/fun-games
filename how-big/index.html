@@ -561,6 +561,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script src="assets/stickers-v1/manifest.js"></script>
 <script>
 (() => {
 'use strict';
@@ -2958,7 +2959,8 @@ for (const [id, e, a, h, note, name] of RAW5) {
 const NOT_UPRIGHT = new Set(['egg', 'titanic', 'a380', 'b747', 'b737', 'an225', 'cessna', 'f35', 'b2', 'sr71', 'chinook', 'blimp', 'hindenburg',
   'wrightflyer', 'orbiter', 'quarter', 'dime', 'nickel', 'creditcard', 'cd', 'paper', 'pencil', 'crayon', 'card', 'puck', 'stickynote',
   'ruler', 'bat', 'racket', 'cube', 'clockface']);
-const artOf = o => ART[o.art || o.id];
+const SPRITE_ART = {}, pendingArtwork = {};
+const artOf = o => SPRITE_ART[o.id] || ART[o.art || o.id];
 
 Object.assign(ART, {
   polarbear: {aspect: 0.56, shade: null, draw(c, w, h) {
@@ -3507,6 +3509,33 @@ function tok() {
           measure: g('--measure'), green: g('--green'), red: g('--red')};
 }
 const artCanvas = document.createElement('canvas');
+// New artwork is installed at round boundaries so a late download never changes
+// the silhouette or scale while someone is adjusting a guess. Old art is the fallback.
+function activateArtwork() {
+  for (const [id, art] of Object.entries(pendingArtwork)) {
+    SPRITE_ART[id] = art; delete mCache[id]; delete pendingArtwork[id];
+  }
+}
+function loadArtwork() {
+  return Promise.all(Object.entries(window.HOW_BIG_SPRITES || {}).map(([id, asset]) => new Promise(resolve => {
+    const img = new Image();
+    img.decoding = 'async';
+    const timer = setTimeout(() => resolve(false), 4000);
+    img.onerror = () => { clearTimeout(timer); resolve(false); };
+    img.onload = () => {
+      clearTimeout(timer);
+      const [x, y, w, h] = asset.bounds;
+      if (!(w > 0 && h > 0 && x >= 0 && y >= 0 && x + w <= img.naturalWidth && y + h <= img.naturalHeight)) { resolve(false); return; }
+      pendingArtwork[id] = {aspect: w / h, shade: null, draw(c, dw, dh) {
+        c.drawImage(img, x, y, w, h, 0, 0, dw, dh);
+      }};
+      if (!room || room.phase !== 'play') { activateArtwork(); redrawAll(); }
+      resolve(true);
+    };
+    img.src = asset.src;
+  })));
+}
+
 function drawArt(c, o, hPx, left, ground, alpha) {
   const a = artOf(o), h = hPx, w = hPx * a.aspect;
   if (!(h > 0.5)) return;
@@ -4116,6 +4145,7 @@ async function advance(key) {
 function syncLocal() {
   const key = `${room.game}|${room.round}`;
   if (local.key === key) return;
+  activateArtwork();
   const rec = scoreRec(mine(), room.round);
   local = {selectedPid: null, revealVersion: null, countdownAt: 0, key, start: performance.now(), g: 1, touched: false, locked: !!rec, submitted: !!rec, revealAt: 0, anim: null};
   if (rec) { local.g = rec.g ?? 1; local.touched = rec.g != null; }
@@ -4734,6 +4764,7 @@ function mountDebug() {
   });
   $('#dbg-prev-out').addEventListener('click', e => { const k = e.target.closest('[data-k]')?.dataset.k; if (k) preview(k); });
 }
+loadArtwork();
 show('home');
 drawDemo(performance.now());
 boot();
