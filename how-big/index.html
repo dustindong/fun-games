@@ -364,6 +364,18 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
     box-shadow:0 -10px 24px -16px rgba(0,0,0,.35)}
 }
 @media (prefers-reduced-motion: reduce){ *{transition:none!important} .lock-stamp,.stage-wrap.thunk,.reveal .rv-main{animation:none!important} }
+/* Shared round results */
+.measure-notes{margin:-4px 0 12px;color:var(--muted);font-size:13px}
+.party-results{margin-top:14px;padding:16px;display:grid;gap:12px}
+.guess-row{display:grid;grid-template-columns:minmax(80px,1fr) 2fr minmax(60px,auto);gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;border-radius:5px;padding:7px;cursor:pointer;font-size:13px}
+.guess-row[aria-pressed="true"]{outline:2px solid var(--measure);background:var(--surface-2)}
+.guess-track{height:12px;background:var(--surface-2);position:relative;border-radius:3px}
+.guess-bar{height:100%;display:block;background:var(--player);border-radius:3px;min-width:2px}
+.true-marker{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--green)}
+.standings{margin:0;padding-left:24px;display:grid;gap:5px;font-size:14px}
+.standings li{padding-left:4px}.standing-score{float:right;font-family:var(--mono)}
+#rv-standing-summary{font-size:14px;color:var(--muted)}
+@media(max-width:760px){#scr-round.revealing{padding-bottom:100px}.reveal{padding-bottom:0}.rv-pts b{font-size:40px}}
 </style>
 </head>
 <body>
@@ -452,6 +464,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
         <div><span class="eyebrow">Max score</span><b>1,000</b></div>
       </div>
       <div style="display:grid;gap:6px;justify-items:end">
+        <label id="practice-option"><input type="checkbox" id="practice-first" checked> Start with an unscored practice round</label>
         <button class="btn primary" id="btn-start">Start game</button>
         <span class="muted" id="lb-wait" hidden></span>
       </div>
@@ -467,6 +480,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
     </div>
     <div class="ask-sub"><span class="eyebrow" id="ask-sub"></span><span class="badge" id="ask-badge" hidden></span></div>
     <h2 class="prompt" id="prompt"></h2>
+    <p class="measure-notes" id="measure-notes"></p>
     <div class="stage-wrap" id="stage-wrap"><canvas id="stage"></canvas><span class="lock-stamp" id="lock-stamp" hidden>Locked in</span></div>
 
     <div id="play-ui">
@@ -497,9 +511,18 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
         <ol class="rv-list" id="rv-list"></ol>
         <div class="rv-actions">
           <span class="muted" id="rv-auto"></span>
+          <button class="btn small" id="btn-pause">Pause reveal</button>
           <button class="btn primary small" id="btn-next">Next round</button>
         </div>
       </div>
+    </div>
+    <div class="card party-results" id="party-results" hidden>
+      <h3>Everyone’s guesses</h3>
+      <p class="muted">Green line = true height. Select a player to compare their guess above. Long bars stop at 3× the true height.</p>
+      <div id="guess-chart"></div>
+      <h3 id="standings-title">Overall standings</h3>
+      <p id="rv-standing-summary"></p>
+      <ol class="standings" id="standings"></ol>
     </div>
   </section>
 
@@ -3975,21 +3998,22 @@ function leave() {
   setTimeout(() => { list.forEach(c => { try { c.close(); } catch {} }); if (p) { try { p.destroy(); } catch {} } }, 400);
 }
 
-async function startGame() {
+async function startGame(skipPractice = false) {
   if (!db || (!isHost() && mode !== 'solo')) return;
-  const rounds = makeRounds(ROUNDS);
-  await db.doc(`rooms/${code}`).update({phase: 'play', game: 'g' + rid(6), round: 0, rounds, at: Date.now()});
+  const practice = !skipPractice && (room?.phase || 'lobby') === 'lobby' && $('#practice-first').checked;
+  const rounds = practice ? ['door|giraffe'] : makeRounds(ROUNDS);
+  await db.doc(`rooms/${code}`).update({phase: 'play', game: 'g' + rid(6), round: 0, rounds, practice, paused: false, at: Date.now()});
 }
 
 /* host moves the room forward */
 function hostDuty() {
   if (!room || !isHost() || mode === 'guest') { clearTimeout(hostT.t); hostT = {key: null, t: null, busy: false}; return; }
-  const key = `${room.phase}|${room.game}|${room.round}`;
+  const key = `${room.phase}|${room.game}|${room.round}|${!!room.paused}|${room.at}`;
   if (hostT.key !== key) {
     clearTimeout(hostT.t);
     hostT = {key, t: null, busy: false};
     if (room.phase === 'play') hostT.t = setTimeout(() => advance(key), (SECONDS + 2) * 1000);
-    if (room.phase === 'reveal') hostT.t = setTimeout(() => advance(key), REVEAL_MS);
+    if (room.phase === 'reveal' && !room.paused) hostT.t = setTimeout(() => advance(key), REVEAL_MS);
   }
   const act = activePlayers();
   if (room.phase === 'play' && act.length && act.every(p => scoreRec(p, room.round))) advance(key);
@@ -3997,11 +4021,12 @@ function hostDuty() {
 async function advance(key) {
   if (!room || !isHost() || hostT.busy || hostT.key !== key) return;
   hostT.busy = true;
+  if (room.phase === 'reveal' && room.practice) { await startGame(true); return; }
   let patch;
   if (room.phase === 'play') patch = {phase: 'reveal', at: Date.now()};
   else if (room.phase === 'reveal') patch = room.round + 1 >= room.rounds.length ? {phase: 'final', at: Date.now()} : {phase: 'play', round: room.round + 1, at: Date.now()};
   else { hostT.busy = false; return; }
-  await db.doc(`rooms/${code}`).update(patch);
+  await db.doc(`rooms/${code}`).update({...patch, paused: false});
 }
 
 /* ---------------- per-round local state ---------------- */
@@ -4009,7 +4034,7 @@ function syncLocal() {
   const key = `${room.game}|${room.round}`;
   if (local.key === key) return;
   const rec = scoreRec(mine(), room.round);
-  local = {key, start: performance.now(), g: 1, touched: false, locked: !!rec, submitted: !!rec, revealAt: 0, anim: null};
+  local = {selectedPid: null, revealVersion: null, countdownAt: 0, key, start: performance.now(), g: 1, touched: false, locked: !!rec, submitted: !!rec, revealAt: 0, anim: null};
   if (rec) { local.g = rec.g ?? 1; local.touched = rec.g != null; }
   $('#size').value = gToSlider(local.g);
 }
@@ -4043,8 +4068,9 @@ function sync() {
     if (!room.rounds?.[room.round]) return;
     syncLocal();
     if (room.phase === 'reveal') {
+      if (local.revealVersion !== room.at) { local.revealVersion = room.at; local.countdownAt = performance.now(); }
       if (!local.submitted) submit();
-      if (!local.revealAt) {
+      if (!local.anim) {
         local.revealAt = performance.now();
         const [ref, tgt] = pairOf(room.round);
         local.anim = {t0: performance.now(), from: local.touched ? local.g : 1, to: tgt.height / ref.height};
@@ -4064,6 +4090,7 @@ function renderLobby() {
     ${p.pid === room.host ? '<span class="tag">host</span>' : ''}${p.pid === me.pid ? '<span class="tag">you</span>' : ''}${p.online === false ? '<span class="tag">away</span>' : ''}</li>`).join('');
   const host = isHost();
   $('#btn-start').hidden = !host;
+  $('#practice-option').hidden = !host;
   $('#btn-start').disabled = !players.length;
   const hostP = players.find(p => p.pid === room.host);
   $('#lb-wait').hidden = host;
@@ -4100,15 +4127,19 @@ function stageState() {
     const a = local.anim || {from: 1}, t = revealT(), from = a.from;
     const g = t < RV.grow0 ? from : t < RV.grow1 ? logLerp(from, r, ease((t - RV.grow0) / (RV.grow1 - RV.grow0))) : r;
     const done = t >= RV.grow1;
-    const marks = guessMarks(r);
+    const selected = players.find(p => p.pid === local.selectedPid);
+    const selectedGuess = selected ? scoreRec(selected, room.round)?.g : null;
+    const marks = selected && selectedGuess != null
+      ? [{g: selectedGuess, color: selected.color, text: selected.name, mine: true}]
+      : guessMarks(r);
     const near = x => x <= r * 3; // guesses far too big show as a line running off the top, not a tiny answer
     const fitEnd = Math.max(r, ...marks.map(m => m.g).filter(near));
     const fit = t < RV.zoom0 ? Math.max(from, g) : t < RV.zoom1 ? Math.max(logLerp(from, fitEnd, ease((t - RV.zoom0) / (RV.zoom1 - RV.zoom0))), g) : fitEnd;
     const alpha = Math.max(0, Math.min(1, (t - RV.ghost) / 300));
     const ghosts = marks.map(m => ({...m, alpha}));
-    const mineG = local.touched ? local.g : null;
+    const mineG = selected ? selectedGuess : local.touched ? local.g : null;
     const tgtLines = done ? [[fmtHeight(tgt), 'green']] : [['? tall', 'measure']];
-    if (mineG != null) tgtLines.push([`you: ${fmtLen(mineG * ref.height)}`, 'red']);
+    if (mineG != null) tgtLines.push([`${selected ? selected.name : 'you'}: ${fmtLen(mineG * ref.height)}`, 'red']);
     return {ref, tgt, g, fit, ghosts, refLines, tgtLines, tgtColor: done ? 'green' : 'measure', tagR: done ? 'ACTUAL SIZE' : 'REVEALING…',
       actual: done ? `Actual: ${fmtLen(tgt.height)}` : null};
   }
@@ -4121,11 +4152,11 @@ function renderRound() {
   const [ref, tgt] = pairOf(room.round);
   const r = tgt.height / ref.height;
   const reveal = room.phase === 'reveal';
-  $('#rb-num').textContent = room.round + 1;
-  $('#rb-of').textContent = '/' + room.rounds.length;
+  $('#rb-num').textContent = room.practice ? 'Practice' : room.round + 1;
+  $('#rb-of').textContent = room.practice ? '' : '/' + room.rounds.length;
   const cur = scoreRec(mine(), room.round);
   // this round's points join the total only once the reveal has shown them
-  $('#rb-score').textContent = totalOf(mine()) - (cur && (!reveal || !local.shown) ? cur.p || 0 : 0);
+  $('#rb-score').textContent = room.practice ? 'Unscored' : totalOf(mine()) - (cur && (!reveal || !local.shown) ? cur.p || 0 : 0);
   const info = pairInfo(room.round), flag = flagOf(room.round);
   $('#ask-sub').innerHTML = `<b class="dim-chip">Height</b>${info ? esc(THEMES[info.theme]) : ''}`;
   // giant and tiny rounds are announced up front; a close call is only revealed afterwards
@@ -4133,6 +4164,8 @@ function renderRound() {
   $('#ask-badge').hidden = !badge; $('#ask-badge').textContent = badge; $('#ask-badge').dataset.kind = flag;
   $('#prompt').innerHTML = `How tall is <em>${esc(tgt.a.split(',')[0])}</em> compared to <em>${esc(ref.a.split(',')[0])}</em>?`;
 
+  $('#measure-notes').textContent = [ref, tgt].filter(o => o.note).map(o => `${o.label}: ${o.note}`).join(' · ');
+  $('#party-results').hidden = !reveal || !local.shown;
   $('#play-ui').hidden = reveal;
   $('#reveal').hidden = !reveal;
   $('#stage').classList.toggle('still', reveal || local.locked);
@@ -4171,7 +4204,7 @@ function renderRound() {
       : `${cell('Your guess', fmtLen(g * ref.height), `${fmtX(g)} the ${esc(ref.noun)}`, 'rv-you')}<span class="rv-arrow">→</span>${cell('Actual', fmtLen(tgt.height), `${fmtX(r)} the ${esc(ref.noun)}`, 'rv-act')}`;
     $('#rv-pct').textContent = g == null ? 'No answer' : pctOff(g, r) === 0 ? 'Spot on' : `${pctOff(g, r).toLocaleString('en-US')}% off`;
     $('#rv-verdict').textContent = g == null ? '' : verdict(p, g);
-    $('#rv-pts').textContent = '+' + p;
+    $('#rv-pts').textContent = room.practice ? 'Practice' : '+' + p;
     $('.rv-main').dataset.band = g == null ? 'none' : p >= 80 ? 'great' : p >= 60 ? 'close' : 'off';
     $('#rv-special').hidden = flag !== 'close' && flag !== 'giant' && flag !== 'tiny';
     $('#rv-special').textContent = flag === 'close' ? `Close call: they're only ${Math.round(Math.abs(r - 1) * 100)}% apart.`
@@ -4186,10 +4219,49 @@ function renderRound() {
       <span class="pts">+${rec ? rec.p : 0}</span></li>`).join('');
     const last = room.round + 1 >= room.rounds.length;
     $('#btn-next').hidden = !isHost();
-    $('#btn-next').textContent = last ? 'See final scores' : 'Next round';
+    $('#btn-next').textContent = room.practice ? 'Start scored game' : last ? 'See final scores' : 'Next round';
+    $('#btn-pause').hidden = !isHost();
+    $('#btn-pause').textContent = room.paused ? 'Resume reveal' : 'Pause reveal';
+    renderPartyResults(ref, tgt);
   }
   drawRound();
 }
+function renderPartyResults(ref, tgt) {
+  const truth = tgt.height / ref.height;
+  const guesses = players.map(pl => ({pl, g: scoreRec(pl, room.round)?.g ?? null}));
+  const max = Math.max(truth * 1.15, ...guesses.map(x => Math.min(x.g || 0, truth * 3)));
+  $('#guess-chart').innerHTML = guesses.map(({pl, g}) => `<button class="guess-row" data-pid="${esc(pl.pid)}" aria-pressed="${pl.pid === local.selectedPid}" style="--player:${esc(pl.color)}">
+    <span class="nm">${esc(pl.name)}</span><span class="guess-track"><span class="guess-bar" style="width:${g == null ? 0 : Math.min(g / max * 100, 100)}%;${g == null ? 'display:none' : ''}"></span><span class="true-marker" style="left:${truth / max * 100}%"></span></span>
+    <span>${g == null ? 'No answer' : `${g > max ? '↑ ' : ''}${fmtLen(g * ref.height)}`}</span></button>`).join('');
+  const standings = players.slice().sort((a, b) => totalOf(b) - totalOf(a));
+  $('#standings-title').hidden = $('#standings').hidden = !!room.practice;
+  if (room.practice) {
+    $('#standings').innerHTML = '';
+    $('#rv-standing-summary').textContent = 'Practice complete. These points do not count. Next up: 10 scored rounds.';
+    return;
+  }
+  $('#standings').innerHTML = standings.map(pl => {
+    const rank = 1 + standings.filter(other => totalOf(other) > totalOf(pl)).length;
+    return `<li value="${rank}">${esc(pl.name)}${pl.pid === me.pid ? ' (you)' : ''}<span class="standing-score">${totalOf(pl)}</span></li>`;
+  }).join('');
+  const rank = 1 + standings.filter(pl => totalOf(pl) > totalOf(mine())).length;
+  const previous = pl => totalOf(pl) - (scoreRec(pl, room.round)?.p || 0);
+  const oldRank = 1 + standings.filter(pl => previous(pl) > previous(mine())).length;
+  const gap = totalOf(standings[0]) - totalOf(mine());
+  $('#rv-standing-summary').textContent = `${rank < oldRank ? 'You moved up to' : rank > oldRank ? 'You dropped to' : 'You’re in'} #${rank}${gap ? `, ${gap} points behind the lead.` : standings.filter(pl => totalOf(pl) === totalOf(mine())).length > 1 ? ', tied for the lead.' : ', leading the game.'}`;
+}
+$('#guess-chart').addEventListener('click', e => {
+  const button = e.target.closest('[data-pid]');
+  if (!button) return;
+  local.selectedPid = button.dataset.pid;
+  renderRound();
+  $('#stage').scrollIntoView({behavior: REDUCED ? 'instant' : 'smooth', block: 'center'});
+});
+$('#btn-pause').addEventListener('click', async () => {
+  if (!isHost() || room.phase !== 'reveal') return;
+  await db.doc(`rooms/${code}`).update({paused: !room.paused, at: Date.now()});
+});
+
 function drawRound() { if (room && screen === 'round' && room.rounds?.[room.round]) drawStage($('#stage'), stageState()); }
 
 function renderFinal() {
@@ -4347,12 +4419,12 @@ function frame(now) {
     if (sec !== lastSec) { $('#tape-sec').textContent = Math.ceil(left) + 's'; lastSec = sec; tape.classList.toggle('low', left <= 5); }
     if (left <= 0 && !local.locked) submit();
   } else if (room.phase === 'reveal') {
-    const left = Math.max(0, Math.ceil((REVEAL_MS - (now - local.revealAt)) / 1000));
-    const sk = 'r' + local.key + left;
+    const left = Math.max(0, Math.ceil((REVEAL_MS - (now - local.countdownAt)) / 1000));
+    const sk = 'r' + local.key + left + room.paused;
     if (sk !== lastSec) {
       lastSec = sk;
       const last = room.round + 1 >= room.rounds.length;
-      $('#rv-auto').textContent = left > 0 ? `${last ? 'Final scores' : 'Next round'} in ${left}s` : 'Moving on…';
+      $('#rv-auto').textContent = room.paused ? 'Reveal paused by host' : left > 0 ? `${room.practice ? 'Scored game' : last ? 'Final scores' : 'Next round'} in ${left}s` : 'Moving on…';
       $('#tape-sec').textContent = '';
       tape.classList.remove('low');
       if (lastW !== '0%') { fill.style.width = '0%'; lastW = '0%'; }
