@@ -123,7 +123,7 @@ const CATEGORIES = [
   {id: 'food', name: 'Food & Drink', sets: 'food drinks'},
   {id: 'animals', name: 'Animals', sets: 'animals dogs'},
   {id: 'cars', name: 'Cars', sets: 'cars'},
-  {id: 'stuff', name: 'Everyday Stuff', sets: 'stuff'},
+  {id: 'stuff', name: 'Everyday Stuff', sets: 'stuff jobs'},
   {id: 'geo', name: 'US States', sets: 'states'},
   {id: 'world', name: 'World Geography', sets: 'countries'},
   {id: 'wild', name: 'Wild Cards', sets: ''},
@@ -143,6 +143,14 @@ for (const ds of Object.values(SETS)) for (const v of ds.views) {
   v.cat = c; c.views.push(v);
   if (!c.list.includes(ds)) c.list.push(ds);
   if (!ds.cat) ds.cat = c;
+  // Optional extra mix membership shares the same view ID and item pool.
+  // Keep a contextual category for pacing; serialized rounds still use the canonical view.
+  for (const id of ds.additionalCategories || []) {
+    const extra = CATEGORIES.find(x => x.id === id);
+    if (!extra || extra === c) continue;
+    extra.views.push({...v, cat: extra});
+    if (!extra.list.includes(ds)) extra.list.push(ds);
+  }
 }
 for (const c of CATEGORIES.slice()) { if (c.views.length) CAT[c.id] = c; else CATEGORIES.splice(CATEGORIES.indexOf(c), 1); }
 // null means every category; otherwise a list of category ids (possibly empty while someone is choosing)
@@ -428,3 +436,4 @@ const FLAGS = {final: 'Final order', wild: 'Wild card', throwback: 'Throwback', 
 root.OrderUp = {N, BASE_MAX, PERFECT_BONUS, ROUND_MAX, TOP: VIEWS, SETS, CATEGORIES, CAT, PRESETS, presetOf, cleanCats, catsLabel,
   fmtVal, far, goodMix, pick5, rightOrder, scoreOrder, isPerfect, makeRounds, newHistory, roundKey, parseRound, FLAGS};
 })(typeof window !== 'undefined' ? window : globalThis);
+
