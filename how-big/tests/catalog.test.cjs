@@ -12,13 +12,16 @@ const rawRows=groups.flatMap(name=>data[name]);
 const ids=new Set(rawRows.map(row=>row[0]));
 const allIds=new Set([...ids,...data.STD.map(row=>row[0])]);
 
-test('external catalog keeps every source record and metadata value unchanged',()=>{
+test('catalog contains only generated-sprite objects and retains their metadata',()=>{
  const snapshot={RAW:data.RAW,RAW2:data.RAW2,RAW3:data.RAW3,RAW4:data.RAW4,RAW5:data.RAW5,STD:data.STD,NOT_UPRIGHT:data.NOT_UPRIGHT,ANCHORS:data.ANCHORS};
- assert.equal(crypto.createHash('sha256').update(JSON.stringify(snapshot)).digest('hex'),'d7c05e8ec7bd6bfccffd8fea853d03564f2dd57b460d41f795a0e9bfef99e34f');
- assert.equal(ids.size,334);
+ assert.equal(crypto.createHash('sha256').update(JSON.stringify(snapshot)).digest('hex'),'716d546768cf814f3131b4631ccad3afde514e19dc433f5b8b49d3e9d592ab36');
+ assert.equal(ids.size,112);
  assert.equal(data.STD.length,100);
- assert.equal(allIds.size,374);
- for(const id of ['harrypotter','hermione','batman','godzilla','horse','lion','eiffel','a380','car']) assert(allIds.has(id),id+' remains in the catalog');
+ assert.equal(allIds.size,152);
+ const spritesContext=vm.createContext({window:{}});
+ vm.runInContext(fs.readFileSync(path.join(root,'assets/stickers-v1/manifest.js'),'utf8'),spritesContext);
+ for(const id of allIds) assert(spritesContext.window.HOW_BIG_SPRITES[id],id+' has generated artwork');
+ for(const id of ['harrypotter','hermione','batman','godzilla','horse','lion','eiffel','raptor','car']) assert(allIds.has(id),id+' remains in the catalog');
 });
 
 test('the page loads objects.js before game logic and does not duplicate catalog rows',()=>{
@@ -39,7 +42,7 @@ test('every catalog object is referenced by a comparison or eligible standard pa
   const a=meterRows[i],b=meterRows[j],q=Math.max(a.height,b.height)/Math.min(a.height,b.height),f=Math.min(a.fam,b.fam);
   if((q>=1.15&&q<=2.5&&f>=6)||(q<1.15&&f>=8)){covered.add(a.id);covered.add(b.id);}
  }
- assert.equal(pairContext.PAIRS_RAW.filter(row=>row[4].includes('coverage')).length,115);
+ assert.equal(pairContext.PAIRS_RAW.filter(row=>row[4].includes('coverage')).length,0);
  assert.deepEqual([...allIds].filter(id=>!covered.has(id)),[]);
  const byId=new Map(rawRows.map(row=>[row[0],{height:row[3],e:row[1]}]));
  for(const [id,pic,phrase,ft] of data.STD){const o=byId.get(id)||{};o.height=ft*.3048;o.e=pic||o.e;byId.set(id,o);}
