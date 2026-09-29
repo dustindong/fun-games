@@ -165,9 +165,7 @@ window.HOW_BIG_OBJECTS = (() => {
   ['container', null, 'a shipping container', 8.5, 'standard container sitting on the ground', 'Shipping Container', 'everyday', 8],
   // pop culture — canonical on-screen/toy heights, rounded for quick party-game comparisons
   ['spongebob', '🧽', 'SpongeBob SquarePants', 0.33, 'animated character height, about 4 inches', 'SpongeBob', 'popculture', 10],
-  ['minion', '🟡', 'a Minion', 3.6, 'standing height', 'Minion', 'popculture', 10],
   ['r2d2', '🤖', 'R2-D2', 3.2, 'standing height', 'R2-D2', 'popculture', 10],
-  ['yoda', '👽', 'Yoda', 2.17, 'standing height', 'Yoda', 'popculture', 10],
   ['et', '👽', 'E.T.', 3.0, 'standing height', 'E.T.', 'popculture', 9],
   ['gollum', '🧌', 'Gollum', 4.0, 'standing height', 'Gollum', 'popculture', 9],
   ['harrypotter', '🧙', 'Harry Potter', 5.11, 'standing height', 'Harry Potter', 'popculture', 10],
