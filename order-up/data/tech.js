@@ -182,7 +182,7 @@
     {name: 'Apple Pencil', fam: 4, year: 2015, tags: ['apple']},
     {name: 'HomePod', fam: 4, year: 2018, tags: ['apple']},
     {name: 'Apple Card', fam: 4, year: 2019, tags: ['apple']},
-    {name: 'Apple TV+', fam: 4, year: 2019, tags: ['apple', 'streaming']},
+    {id: 'apple-tv-plus', name: 'Apple TV+', fam: 4, year: 2019, tags: ['apple', 'streaming']},
     {name: 'AirTag', fam: 5, year: 2021, tags: ['apple']},
     {name: 'Dropbox', fam: 4, year: 2008, tags: ['web', 'app']},
     {name: 'Google Drive', fam: 5, year: 2012, tags: ['web', 'app']},
