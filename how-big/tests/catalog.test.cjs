@@ -14,13 +14,15 @@ const allIds=new Set([...ids,...data.STD.map(row=>row[0])]);
 
 test('catalog contains only generated-sprite objects and retains their metadata',()=>{
  const snapshot={RAW:data.RAW,RAW2:data.RAW2,RAW3:data.RAW3,RAW4:data.RAW4,RAW5:data.RAW5,STD:data.STD,NOT_UPRIGHT:data.NOT_UPRIGHT,ANCHORS:data.ANCHORS};
- assert.equal(crypto.createHash('sha256').update(JSON.stringify(snapshot)).digest('hex'),'716d546768cf814f3131b4631ccad3afde514e19dc433f5b8b49d3e9d592ab36');
+ assert.equal(crypto.createHash('sha256').update(JSON.stringify(snapshot)).digest('hex'),'6f9e9ac517cd7ccbe39d04bc3e59652e4c6c8eb2d70518222ef828bf468187ca');
  assert.equal(ids.size,112);
- assert.equal(data.STD.length,100);
- assert.equal(allIds.size,152);
+ assert.equal(data.STD.length,98);
+ assert.equal(allIds.size,150);
  const spritesContext=vm.createContext({window:{}});
  vm.runInContext(fs.readFileSync(path.join(root,'assets/stickers-v1/manifest.js'),'utf8'),spritesContext);
  for(const id of allIds) assert(spritesContext.window.HOW_BIG_SPRITES[id],id+' has generated artwork');
+ assert.deepEqual(Object.keys(spritesContext.window.HOW_BIG_SPRITES).sort(),[...allIds].sort(),'manifest contains no artwork for removed objects');
+ for(const id of ['minion','yoda']) assert(!allIds.has(id),id+' was removed due to mismatched artwork');
  for(const id of ['harrypotter','hermione','batman','godzilla','horse','lion','eiffel','raptor','car']) assert(allIds.has(id),id+' remains in the catalog');
 });
 
