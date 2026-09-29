@@ -409,7 +409,7 @@ a.btn{color:inherit;text-decoration:none;display:inline-flex;align-items:center}
     <div class="hero">
       <h1 class="title"><img src="logo.svg?v=1" alt="How Big?" width="1374" height="814"></h1>
       <div class="tape-strip" aria-hidden="true" id="tape-strip"></div>
-      <p class="tagline">Make the thing on the right as tall as you think it really is compared to the thing on the left. Lock it in, and watch the real height grow into place.</p>
+      <p class="tagline">Make the thing on the right as tall as you think it really is compared to the thing on the left. Measure from the ground to the highest visible point, then watch the real height grow into place.</p>
     </div>
 
     <div class="home-grid">
@@ -584,26 +584,26 @@ const RAW = [
   ['bucket','🪣','a 5-gallon bucket',0.37,'','Bucket'],
   ['toilet','🚽','a toilet',0.76,'',''],
   ['chair','🪑','a dining chair',0.9,'',''],
-  ['tiger','🐅','a Bengal tiger',1.0,'at the shoulder; its head is level with its back','Tiger'],
+  ['tiger','🐅','a Bengal tiger',1.30,'standing, ground to the top of its ears','Tiger'],
   ['penguin','🐧','an emperor penguin',1.0,'standing','Emperor penguin'],
   ['bike','🚲','a bicycle',1.0,'',''],
   ['flamingo','🦩','a flamingo',1.3,'',''],
-  ['hippo','🦛','a hippo',1.4,'at the shoulder',''],
+  ['hippo','🦛','a hippo',1.55,'standing, ground to the top of its ears',''],
   ['car','🚗','a compact car',1.44,'',''],
-  ['cow','🐄','a Holstein cow',1.5,'at the shoulder','Cow'],
-  ['horse','🐎','a horse',2.2,'head up, to the top of its head (about 5 ft 3 in at the withers)',''],
+  ['cow','🐄','a Holstein cow',1.68,'standing, ground to the top of its head and horns','Cow'],
+  ['horse','🐎','a horse',2.06,'standing, ground to the top of its ears',''],
   ['person','🧍','an adult person',1.7,'',''],
-  ['rhino','🦏','a white rhino',1.8,'at the shoulder',''],
-  ['bison','🦬','an American bison',1.8,'at the shoulder','Bison'],
+  ['rhino','🦏','a white rhino',1.98,'standing, ground to the top of its horn',''],
+  ['bison','🦬','an American bison',1.92,'standing, ground to the top of its horns','Bison'],
   ['pickup','🛻','a full-size pickup truck',1.96,'','Pickup truck'],
   ['door','🚪','a door',2.03,'',''],
-  ['camel','🐪','a camel',2.2,'to the top of the hump',''],
+  ['camel','🐪','a camel',2.29,'standing, ground to the top of its ears',''],
   ['xmastree','🎄','a 7.5-foot Christmas tree',2.29,'','Christmas tree'],
   ['goal','🥅','a soccer goal',2.44,'',''],
-  ['mammoth','🦣','a woolly mammoth',3.0,'at the shoulder',''],
-  ['elephant','🐘','an African elephant',3.2,'a bull, at the shoulder, about level with its head','Elephant'],
+  ['mammoth','🦣','a woolly mammoth',3.66,'standing, ground to the top of its head',''],
+  ['elephant','🐘','an African elephant',3.66,'adult bull, ground to the top of its head and ears','Elephant'],
   ['bus','🚌','a city bus',3.2,'',''],
-  ['giraffe','🦒','a male giraffe',5.2,'','Giraffe'],
+  ['giraffe','🦒','a male giraffe',5.49,'standing, ground to the top of its ossicones','Giraffe'],
   ['stonehenge',null,'the tallest stone at Stonehenge',6.7,'above ground','Stonehenge'],
   ['brachio','🦕','a Brachiosaurus',12,'with its head raised',''],
   ['hollywood',null,'the Hollywood sign',13.4,'letter height','Hollywood sign'],
@@ -611,7 +611,7 @@ const RAW = [
   ['christ',null,'Christ the Redeemer',38,'including its pedestal','Christ the Redeemer'],
   ['liberty','🗽','the Statue of Liberty',46,'heel to torch, without the pedestal','Statue of Liberty'],
   ['colosseum',null,'the Colosseum',48,'outer wall','Colosseum'],
-  ['pisa',null,'the Leaning Tower of Pisa',56.7,'on its high side','Tower of Pisa'],
+  ['pisa',null,'the Leaning Tower of Pisa',61.6,'ground to the top of the flag on its high side (approximate)','Tower of Pisa'],
   ['opera',null,'the Sydney Opera House',67,'highest roof, above sea level','Sydney Opera House'],
   ['taj',null,'the Taj Mahal',73,'','Taj Mahal'],
   ['bigben',null,'Big Ben',96,'the Elizabeth Tower','Big Ben'],
@@ -624,15 +624,15 @@ const RAW = [
   ['arch',null,'the Gateway Arch',192,'','Gateway Arch'],
   ['goldengate',null,'a Golden Gate Bridge tower',227,'above the water','Golden Gate tower'],
   ['eiffel',null,'the Eiffel Tower',330,'','Eiffel Tower'],
-  ['empire',null,'the Empire State Building',443,'to the tip of its antenna','Empire State Building'],
+  ['empire',null,'the Empire State Building',443,'ground to the top of its antenna','Empire State Building'],
   ['onewtc',null,'One World Trade Center',541,'','One World Trade Center'],
   ['cntower',null,'the CN Tower',553,'','CN Tower'],
   ['skytree',null,'Tokyo Skytree',634,'','Tokyo Skytree'],
   ['burj',null,'the Burj Khalifa',828,'','Burj Khalifa'],
   ['fuji','🗻','Mount Fuji',3776,'above sea level','Mount Fuji'],
   ['everest','🏔️','Mount Everest',8849,'above sea level','Mount Everest'],
-  ['dangi',null,'Chandra Bahadur Dangi, the shortest adult on record',0.546,'Guinness World Record','Chandra Bahadur Dangi'],
-  ['biles',null,'Simone Biles',1.42,'listed height','Simone Biles'],
+  ['dangi',null,'Chandra Bahadur Dangi, the shortest adult on record',0.61,'standing, ground to the top of his hat','Chandra Bahadur Dangi'],
+  ['biles',null,'Simone Biles',1.65,'in the pictured pose, ground to the top of her raised fingers','Simone Biles'],
   ['bogues',null,'Muggsy Bogues',1.6,'listed height','Muggsy Bogues'],
   ['messi',null,'Lionel Messi',1.7,'listed height','Lionel Messi'],
   ['clark',null,'Caitlin Clark',1.83,'listed height','Caitlin Clark'],
@@ -1049,16 +1049,16 @@ const RAW2 = [
   ['mug',null,'a coffee mug',0.095,'typical 11-ounce mug','Coffee mug'],
   ['sodacan',null,'a 12-ounce soda can',0.122,'','Soda can'],
   ['pencil',null,'a pencil',0.19,'unsharpened',''],
-  ['chihuahua',null,'a Chihuahua',0.28,'standing, to the top of its head',''],
+  ['chihuahua',null,'a Chihuahua',0.305,'standing, ground to the top of its ears',''],
   ['paper',null,'a sheet of letter paper',0.279,'standing on its short edge','Letter paper'],
   ['winebottle',null,'a wine bottle',0.3,'standard 750 ml bottle','Wine bottle'],
   ['ruler',null,'a 12-inch ruler',0.305,'standing on end','Ruler'],
   ['bowlingpin',null,'a bowling pin',0.381,'',''],
   ['suitcase',null,'a carry-on suitcase',0.56,'common airline size limit','Carry-on suitcase'],
-  ['labrador','🦮','a Labrador retriever',0.75,'standing, to the top of its head (about 22 in at the shoulder)','Labrador'],
+  ['labrador','🦮','a Labrador retriever',0.76,'standing, ground to the top of its ears','Labrador'],
   ['cone',null,'a highway traffic cone',0.71,'','Traffic cone'],
   ['macaw',null,'a scarlet macaw',0.84,'including its long tail','Scarlet macaw'],
-  ['zeus',null,'Zeus, the tallest dog on record',1.046,'Guinness World Record, 2022','Zeus (Great Dane)'],
+  ['zeus',null,'Zeus, the tallest dog on record',1.37,'standing, ground to the top of his ears (approximate)','Zeus (Great Dane)'],
   ['hockeygoal',null,'a hockey goal',1.22,'',''],
   ['ostrich',null,'a male ostrich',2.4,'','Ostrich'],
   ['highjump',null,'the men\'s high jump world record',2.45,'bar height, set in 1993','High jump record'],
@@ -1758,12 +1758,12 @@ const RAW3 = [
   ['ostrichegg',null,'an ostrich egg',0.15,'standing on end',''],
   ['paperback',null,'a paperback book',0.175,'mass-market size, standing up','Paperback book'],
   ['bowlingball',null,'a bowling ball',0.218,'',''],
-  ['cat','🐈','a house cat',0.3,'standing, to the top of its head','House cat'],
+  ['cat','🐈','a house cat',0.335,'standing, ground to the top of its ears','House cat'],
   ['racket',null,'a tennis racket',0.686,'standing on end, standard length','Tennis racket'],
   ['desk',null,'an office desk',0.74,'standard height','Desk'],
   ['washer',null,'a washing machine',0.85,'typical front-loader','Washing machine'],
   ['bat',null,'a baseball bat',0.864,'34-inch bat, standing on end','Baseball bat'],
-  ['counter',null,'a kitchen counter',0.914,'standard height','Kitchen counter'],
+  ['counter',null,'a kitchen counter',1.097,'floor to the top of the visible backsplash','Kitchen counter'],
   ['hurdle',null,'a 110-meter hurdle',1.067,'men\'s race height','Hurdle'],
   ['tennisnet',null,'a tennis net',1.07,'at the posts','Tennis net'],
   ['beam',null,'a gymnastics balance beam',1.25,'','Balance beam'],
@@ -2244,16 +2244,16 @@ const RAW4 = [
   ['brick',null,'a standard brick',0.0572,'US modular size, lying flat','Brick'],
   ['stickynote',null,'a sticky note',0.0762,'standard 3-inch square','Sticky note'],
   ['creditcard',null,'a credit card',0.0856,'standing on its short edge','Credit card'],
-  ['sputnik',null,'Sputnik 1',0.58,'body only, not the antennas','Sputnik 1'],
+  ['sputnik',null,'Sputnik 1',0.58,'ground to the top of the visible satellite artwork','Sputnik 1'],
   ['stumps',null,'a set of cricket stumps',0.711,'standard 28 inches','Cricket stumps'],
   ['ttable',null,'a ping-pong table',0.76,'playing surface, net not included','Ping-pong table'],
-  ['greatdane',null,'a Great Dane',1.0,'male, standing, to the top of its head (about 31 in at the shoulder)','Great Dane'],
+  ['greatdane',null,'a Great Dane',1.13,'male, standing, ground to the top of its ears','Great Dane'],
   ['lrv',null,'the Apollo Lunar Roving Vehicle',1.1,'','Lunar rover'],
   ['sarus',null,'a sarus crane',1.4,'standing, typical adult','Sarus crane'],
-  ['okapi',null,'an okapi',1.5,'at the shoulder',''],
+  ['okapi',null,'an okapi',1.65,'standing, ground to the top of its ears',''],
   ['badminton',null,'a badminton net',1.55,'at the posts','Badminton net'],
   ['emu',null,'an emu',1.7,'standing, typical adult',''],
-  ['moose','🫎','a moose',1.75,'at the shoulder',''],
+  ['moose','🫎','a moose',2.44,'standing, ground to the top of its antlers',''],
   ['vnet',null,'a volleyball net',2.43,'men\'s height','Volleyball net'],
   ['phonebox',null,'a red telephone box',2.51,'classic K6 kiosk','Red phone box'],
   ['f35',null,'an F-35 fighter jet',4.39,'','F-35 jet'],
@@ -2278,7 +2278,7 @@ const RAW4 = [
   ['plitvice',null,'Veliki Slap at Plitvice',78,'Croatia','Veliki Slap (Plitvice)'],
   ['rainbowbridge',null,'Rainbow Bridge in Utah',88,'natural stone arch','Rainbow Bridge'],
   ['newglenn',null,'a New Glenn rocket',98,'','New Glenn rocket'],
-  ['fury325',null,'the Fury 325 roller coaster',99,'','Fury 325 coaster'],
+  ['fury325',null,'the Fury 325 roller coaster',102,'ground to the top of the decorative marker above the lift hill (approximate)','Fury 325 coaster'],
   ['redpyramid',null,'the Red Pyramid',105,'Egypt','Red Pyramid'],
   ['bassrock',null,'Bass Rock',107,'island, Scotland','Bass Rock'],
   ['forthbridge',null,'the Forth Bridge',110,'above high water','Forth Bridge'],
@@ -2494,7 +2494,7 @@ Object.assign(ART, {
     fillP(c, w, h, [[0.19, 0.03], [0.0, 0.07], [0.19, 0.07]], '#5C5448');
   }},
   okapi: {aspect: 1.3, shade: null, draw(c, w, h) {
-    // grazing pose, head lowered, so the shoulder is the highest point
+    // The full artwork rectangle is used for the comparison height, including the raised head/ears.
     const b = '#4A2E26';
     for (const u of [0.28, 0.36, 0.7, 0.78]) R(c, w, h, u, 0.45, u + 0.06, 0.97, u === 0.36 || u === 0.78 ? '#EDE6DA' : '#F2ECE2');
     c.fillStyle = '#3A2520';
@@ -2895,12 +2895,12 @@ Object.assign(ART, {
    Every object is {id, name, height, unit: 'm'} (plus its picture and a note on how it's measured); heights are
    stored in meters and shown in feet and inches. Row: [id, emoji (null = drawn art), phrase, height in meters, how it's measured, name] */
 const RAW5 = [
-  ['polarbear',null,'a polar bear',2.6,'an adult male standing on its hind legs','Polar bear'],
+  ['polarbear',null,'a polar bear',3.05,'adult male standing on its hind legs, ground to the top of its ears','Polar bear'],
   ['gorilla','🦍','a silverback gorilla',1.7,'standing upright','Gorilla'],
   ['kangaroo','🦘','a red kangaroo',1.8,'a big male standing tall','Kangaroo'],
   ['trex','🦖','a T. rex',4,'to the top of its head, as the Sue skeleton stands','T. rex'],
   ['fridge',null,'a refrigerator',1.78,'a standard 70-inch fridge','Refrigerator'],
-  ['hoop',null,'a basketball hoop',3.96,'to the top of the backboard; the rim is at 10 ft','Basketball hoop'],
+  ['hoop',null,'a basketball hoop',3.99,'ground to the top of the backboard (about 13 ft)','Basketball hoop'],
   ['house','🏠','a house',6,'a one-story house, ground to roof peak','House'],
   ['suv','🚙','an SUV',1.8,'a midsize SUV, to the roof','SUV'],
   ['gameboy',null,'an original Game Boy',0.148,'1989 model, standing up','Game Boy'],
@@ -3106,12 +3106,10 @@ Object.assign(ART, {
 });
 
 /* ---------------- standardized items ----------------
-   One representative height per thing, in feet, with how it's measured. These values are for gameplay, not
-   universal truths: animals vary, so each row names the convention (shoulder height, standing height, ...).
+   One representative height per thing, in feet. Measurements and artwork use the same rule: baseline to the
+   highest visible point, including features such as ears, horns, antennae, and backboards.
    Row: [id, picture (emoji, null = drawn art under the same id, 'art:key' = reuse drawn art), phrase, height in ft,
-         measurement, name, category, familiarity 1-10, measured point as a share of the picture's height]
-   The last column is for pictures that rise above the measured point: an elephant's head above its shoulder, the
-   Empire State Building's antenna above its roof. The measuring line stops at the measured point. */
+         measurement, name, category, familiarity 1-10] */
 const FT = 0.3048;
 const STD = [
   // Party expansion: everyday, sports, and recognizable tech.
@@ -3121,8 +3119,8 @@ const STD = [
   ["winebottle", null, "a wine bottle", 0.3 / FT, "representative 750 ml bottle, base to top", "Wine Bottle", "everyday", 9],
   ["desk", null, "an office desk", 0.74 / FT, "representative desk, floor to desktop", "Office Desk", "everyday", 10],
   ["washer", null, "a washing machine", 0.85 / FT, "representative front-loader, overall height", "Washing Machine", "everyday", 10],
-  ["counter", null, "a kitchen counter", 0.9144 / FT, "standard counter, floor to worktop", "Kitchen Counter", "everyday", 10],
-  ["ttable", null, "a ping-pong table", 0.76 / FT, "floor to playing surface, net excluded", "Ping-pong Table", "sports", 9],
+  ["counter", null, "a kitchen counter", 1.097 / FT, "floor to the top of the visible backsplash", "Kitchen Counter", "everyday", 10],
+  ["ttable", null, "a ping-pong table", 0.9144 / FT, "floor to the top of the net", "Ping-pong Table", "sports", 9],
   ["hockeygoal", null, "a hockey goal", 1.2192 / FT, "regulation opening, floor to crossbar", "Hockey Goal", "sports", 9],
   ["hurdle", null, "a hurdles-race barrier", 1.067 / FT, "senior men’s 110 m race, ground to top", "Track Hurdle", "sports", 8],
   ["tennisnet", null, "a tennis net", 1.0668 / FT, "height at the posts, not the center", "Tennis Net", "sports", 10],
@@ -3145,7 +3143,7 @@ const STD = [
   ['door', '🚪', 'a door', 6.67, 'a standard door, floor to the top of the frame', 'Standard Door', 'everyday', 10],
   ['fridge', null, 'a refrigerator', 5.8, 'overall height of a standard fridge', 'Refrigerator', 'everyday', 10],
   ['vending', null, 'a vending machine', 6.0, 'overall height', 'Vending Machine', 'everyday', 9],
-  ['hoop', null, 'a basketball hoop', 10.0, 'rim height (the backboard rises above it)', 'Basketball Hoop', 'everyday', 10, 0.77],
+  ['hoop', null, 'a basketball hoop', 13.0, 'ground to the top of the backboard', 'Basketball Hoop', 'everyday', 10],
   ['atm', null, 'an ATM', 5.0, 'overall height of a walk-up machine', 'ATM', 'everyday', 8],
   ['portapotty', null, 'a portable toilet', 7.5, 'overall height', 'Portable Toilet', 'everyday', 8],
   ['container', null, 'a shipping container', 8.5, 'standard container sitting on the ground', 'Shipping Container', 'everyday', 8],
@@ -3173,21 +3171,21 @@ const STD = [
   ['dorothy', '👠', 'Dorothy', 4.5, 'standing height', 'Dorothy', 'popculture', 9],
   ['santa', '🎅', 'Santa Claus', 6.0, 'estimated standing height', 'Santa Claus', 'popculture', 10],
   // animals
-  ['giraffe', '🦒', 'a giraffe', 18.0, 'adult male standing height, to the top of its head', 'Giraffe', 'animals', 10],
+  ['giraffe', '🦒', 'a giraffe', 18.0, 'adult male standing height, ground to the top of its ossicones', 'Giraffe', 'animals', 10],
   ['ostrich', null, 'an ostrich', 9.0, 'adult male standing height', 'Ostrich', 'animals', 9],
-  ['elephant', '🐘', 'an African elephant', 10.5, 'adult bull, shoulder height', 'African Elephant', 'animals', 10, 0.85],
-  ['moose', null, 'a moose', 6.5, 'adult bull, shoulder height (antlers above)', 'Moose', 'animals', 8, 0.7],
-  ['horse', '🐎', 'a horse', 5.3, 'height at the withers (base of the neck)', 'Horse', 'animals', 10, 0.62],
-  ['camel', '🐪', 'a camel', 6.5, 'to the top of the hump', 'Camel', 'animals', 9],
-  ['bison', '🦬', 'an American bison', 6.0, 'adult bull, to the top of the hump', 'American Bison', 'animals', 8],
+  ['elephant', '🐘', 'an African elephant', 12.0, 'adult bull, ground to the top of its head and ears', 'African Elephant', 'animals', 10],
+  ['moose', null, 'a moose', 8.0, 'adult bull, ground to the top of its antlers', 'Moose', 'animals', 8],
+  ['horse', '🐎', 'a horse', 6.75, 'standing, ground to the top of its ears', 'Horse', 'animals', 10],
+  ['camel', '🐪', 'a camel', 7.5, 'standing, ground to the top of its ears', 'Camel', 'animals', 9],
+  ['bison', '🦬', 'an American bison', 6.3, 'adult bull, ground to the top of its horns', 'American Bison', 'animals', 8],
   ['gorilla', '🦍', 'a gorilla', 5.5, 'silverback standing upright', 'Gorilla', 'animals', 9],
-  ['polarbear', null, 'a polar bear', 9.5, 'adult male standing on its hind legs', 'Polar Bear', 'animals', 9],
-  ['grizzly', null, 'a grizzly bear', 8.0, 'adult male standing on its hind legs', 'Grizzly Bear', 'animals', 8],
+  ['polarbear', null, 'a polar bear', 10.0, 'adult male standing on its hind legs, ground to the top of its ears', 'Polar Bear', 'animals', 9],
+  ['grizzly', null, 'a grizzly bear', 8.5, 'adult male standing on its hind legs, ground to the top of its ears', 'Grizzly Bear', 'animals', 8],
   ['kangaroo', '🦘', 'a red kangaroo', 6.0, 'adult male standing tall', 'Red Kangaroo', 'animals', 8],
   ['penguin', '🐧', 'an emperor penguin', 4.0, 'adult standing height', 'Emperor Penguin', 'animals', 8],
-  ['lion', null, 'a lion', 4.0, 'adult male, shoulder height (mane above)', 'Lion', 'animals', 10, 0.7],
-  ['tiger', '🐅', 'a tiger', 3.5, 'shoulder height (head raised above)', 'Tiger', 'animals', 9, 0.62],
-  ['greatdane', null, 'a Great Dane', 2.8, 'male, shoulder height', 'Great Dane', 'animals', 7, 0.78],
+  ['lion', null, 'a lion', 5.25, 'adult male, ground to the top of its mane', 'Lion', 'animals', 10],
+  ['tiger', '🐅', 'a tiger', 4.25, 'standing, ground to the top of its ears', 'Tiger', 'animals', 9],
+  ['greatdane', null, 'a Great Dane', 3.7, 'male, standing, ground to the top of its ears', 'Great Dane', 'animals', 7],
   ['flamingo', '🦩', 'a flamingo', 4.5, 'standing height', 'Flamingo', 'animals', 8],
   // vehicles
   ['car', '🚗', 'a sedan', 4.8, 'overall vehicle height', 'Sedan', 'vehicles', 10],
@@ -3206,7 +3204,7 @@ const STD = [
   ['arch', null, 'the Gateway Arch', 630, 'total height', 'Gateway Arch', 'landmarks', 8],
   ['goldengate', null, 'a Golden Gate Bridge tower', 746, 'tower height above the water', 'Golden Gate Tower', 'landmarks', 9],
   ['eiffel', null, 'the Eiffel Tower', 1083, 'total height, antennas included', 'Eiffel Tower', 'landmarks', 10],
-  ['empire', null, 'the Empire State Building', 1250, 'architectural height to the roof (the antenna rises above)', 'Empire State Building', 'landmarks', 10, 0.86],
+  ['empire', null, 'the Empire State Building', 1454, 'ground to the top of its antenna', 'Empire State Building', 'landmarks', 10],
   ['onewtc', null, 'One World Trade Center', 1776, 'architectural height, spire included', 'One World Trade Center', 'landmarks', 9],
   ['burj', null, 'the Burj Khalifa', 2717, 'architectural height', 'Burj Khalifa', 'landmarks', 9],
   ['washington', null, 'the Washington Monument', 555, 'total height', 'Washington Monument', 'landmarks', 9],
@@ -3215,19 +3213,19 @@ const STD = [
   ['ferriswheel', '🎡', 'a Ferris wheel', 150, 'a typical big fairground wheel', 'Ferris Wheel', 'rides', 9],
   ['londoneye', '🎡', 'the London Eye', 443, 'total height', 'London Eye', 'rides', 8],
   ['kingdaka', 'art:topthrill', 'the Kingda Ka roller coaster', 456, 'top of the tower (the ride ran 2005-2024)', 'Kingda Ka', 'rides', 7],
-  ['fury325', null, 'the Fury 325 roller coaster', 325, 'top of the lift hill', 'Fury 325', 'rides', 6],
+  ['fury325', null, 'the Fury 325 roller coaster', 335, 'ground to the top of the decorative marker above the lift hill (approximate)', 'Fury 325', 'rides', 6],
   ['celltower', null, 'a cell tower', 150, 'a typical lattice tower', 'Cell Tower', 'rides', 8],
   ['watertower', null, 'a water tower', 130, 'a typical town water tower', 'Water Tower', 'rides', 8],
   // prehistoric
   ['trex', '🦖', 'a T. rex', 12, 'standing height, to the top of its head', 'T. rex', 'dinos', 10],
   ['raptor', '🦖', 'a Velociraptor', 3, 'standing height, to the top of its head', 'Velociraptor', 'dinos', 8],
-  ['triceratops', null, 'a Triceratops', 10, 'hip height', 'Triceratops', 'dinos', 9],
+  ['triceratops', null, 'a Triceratops', 12, 'standing, ground to the top of its horns', 'Triceratops', 'dinos', 9],
   ['stegosaurus', null, 'a Stegosaurus', 14, 'to the top of its back plates', 'Stegosaurus', 'dinos', 9],
 ];
-for (const [id, pic, a, ft, measure, name, cat, fam, mfrac] of STD) {
+for (const [id, pic, a, ft, measure, name, cat, fam] of STD) {
   const o = BY[id] || {id};
   const noun = a.replace(/^(an?|the) /, '');
-  Object.assign(o, {a, noun, name, label: name, height: ft * FT, heightFt: ft, unit: 'm', note: measure, measure, cat, fam, mfrac: mfrac || 1});
+  Object.assign(o, {a, noun, name, label: name, height: ft * FT, heightFt: ft, unit: 'm', note: measure, measure, cat, fam});
   if (pic === null) { if (ART[id]) o.e = null; }   // drawn art replaces an old emoji
   else if (pic.startsWith('art:')) { o.art = pic.slice(4); o.e = null; }
   else { o.e = pic; delete o.art; }
@@ -3244,7 +3242,7 @@ const PAIRS_RAW = [
   ['xboxseriesx','ps5original','tech',1,'star'], ['bowlingpin','ps5original','tech',0,'close'],
   ['winebottle','xboxseriesx','tech',0,'close'], ['mug','xboxseriesx','tech',2,''],
   ['sodacan','ps5original','tech',2,''], ['lacktable','suitcase','everyday',2,''],
-  ['washer','counter','everyday',0,'close'], ['desk','washer','everyday',0,'close'],
+  ['washer','counter','everyday',1,''], ['desk','washer','everyday',0,'close'],
   ['person','billybookcase','everyday',0,'close'], ['cone','tennisnet','sports',1,'star'],
   ['suitcase','hockeygoal','sports',2,''], ['ttable','beam','sports',2,''],
   ['bowlingpin','lacktable','everyday',2,''], ['sodacan','winebottle','everyday',2,''],
@@ -3266,7 +3264,7 @@ const PAIRS_RAW = [
   ['suv','elephant','animals',2,''], ['horse','giraffe','animals',2,''],
   // dinosaurs
   ['person','trex','dinos',1,'star'], ['elephant','trex','dinos',0,'close'], ['giraffe','trex','dinos',2,''],
-  ['trex','brachio','dinos',2,''], ['house','brachio','dinos',3,''], ['mammoth','trex','dinos',3,''],
+  ['trex','brachio','dinos',2,''], ['house','brachio','dinos',3,''], ['mammoth','trex','dinos',1,'close'],
   ['hoop','trex','dinos',0,'close'], ['bus','trex','dinos',0,'close'], ['person','brachio','dinos',0,'giant'],
   ['elephant','brachio','dinos',2,''], ['giraffe','brachio','dinos',1,'star'],
   // everyday
@@ -3277,7 +3275,7 @@ const PAIRS_RAW = [
   ['bus','house','everyday',3,''], ['chair','door','everyday',2,''], ['toilet','person','everyday',1,''],
   ['bike','door','everyday',2,''], ['xmastree','house','everyday',3,''], ['person','fridge','everyday',0,'close'],
   ['person','vending','everyday',0,'close'], ['person','suv','everyday',0,'close'], ['person','semitruck','everyday',2,''],
-  ['semitruck','giraffe','everyday',2,''], ['elephant','semitruck','everyday',3,''], ['hoop','semitruck','vehicles',2,''],
+  ['semitruck','giraffe','everyday',2,''], ['elephant','semitruck','everyday',1,'close'], ['hoop','semitruck','vehicles',1,'close'],
   ['person','routemaster','everyday',2,''], ['suv','bus','everyday',2,''],
   // tech
   ['phone','gameboy','tech',0,'close'], ['ipod','phone','tech',2,''], ['gameboy','ipod','tech',3,''], ['sodacan','phone','tech',0,'close'],
@@ -3346,7 +3344,7 @@ function auditPair(p) {
   for (const o of [a, b]) {
     if (!artOf(o) && !o.e) issues.push(`${o.id} has no picture`);
     if (!(o.height > 0) || o.unit !== 'm') issues.push(`${o.id} has no height`);
-    if (o.fam != null && !(o.fam >= 1 && o.fam <= 10 && o.cat && o.measure && o.mfrac > 0 && o.mfrac <= 1)) issues.push(`${o.id} has incomplete standard fields`);
+    if (o.fam != null && !(o.fam >= 1 && o.fam <= 10 && o.cat && o.measure)) issues.push(`${o.id} has incomplete standard fields`);
     if (NOT_UPRIGHT.has(o.id)) issues.push(`${o.id} doesn't stand upright`);
   }
   const q = Math.max(a.height, b.height) / Math.min(a.height, b.height), rule = PAIR_RULES[p.kind];
@@ -3584,7 +3582,7 @@ function pumpArtwork() {
     img.onload = () => {
       const [x, y, w, h] = asset.bounds;
       if (!(w > 0 && h > 0 && x >= 0 && y >= 0 && x + w <= img.naturalWidth && y + h <= img.naturalHeight)) { finish(false); return; }
-      pendingArtwork[id] = {aspect: w / h, measurementFraction: asset.measurementFraction, shade: null, draw(c, dw, dh) {
+      pendingArtwork[id] = {aspect: w / h, shade: null, draw(c, dw, dh) {
         c.drawImage(img, x, y, w, h, 0, 0, dw, dh);
       }};
       if (!room || room.phase !== 'play') { activateArtwork(); redrawAll(); }
@@ -3667,9 +3665,8 @@ function label(c, x, y, align, lines, maxW) {
   }
   c.restore();
 }
-// an object's drawn shape in units of its measured size (so measured side = 1)
-// an object's picture in units of its measured height: h > 1 when the picture rises above the measured point
-function shapeOf(o) { const m = meas(o), f = artOf(o)?.measurementFraction || o.mfrac || 1; return {m, w: m.w / m.h / f, h: 1 / f}; }
+// The full visible illustration is the measurement: its baseline is 0 and its top is 1.
+function shapeOf(o) { const m = meas(o); return {m, w: m.w / m.h, h: 1}; }
 /* s: {ref, tgt, g (target size drawn, as a multiple of the reference), fit (largest target size to make room for),
        ghosts [{g, color, text, mine, alpha}], refLines, tgtLines, tgtColor, tagR, handle, actual (label on the true size)} */
 function drawStage(cv, s) {
@@ -3695,7 +3692,7 @@ function drawStage(cv, s) {
   const ghosts = s.ghosts || [];
   const pad = 30, top = 70, gap = Math.min(48, W * 0.08), extraR = 16 + ghosts.length * 7;
   const R0 = shapeOf(s.ref), T0 = shapeOf(s.tgt);
-  // 1 unit = the reference's measured size; drawings keep their own proportions
+  // 1 unit = the reference's full visible height; drawings keep their own proportions
   const k = Math.min((W - 2 * pad - gap - extraR) / (R0.w + T0.w * s.fit), (ground - top) / Math.max(R0.h, T0.h * s.fit));
   const lw = R0.w * k, rwid = T0.w * s.fit * k;
   const mid = Math.min(Math.max(W / 2, pad + lw + gap / 2), W - pad - extraR - rwid - gap / 2);
@@ -3728,7 +3725,7 @@ function drawStage(cv, s) {
   drawEmoji(c, s.tgt, T0.m, k * s.g * T0.h, x1, ground, 1);
   const tc = T[s.tgtColor || 'measure'];
   const tEnd = measureLine(c, x1, T0.w * k * s.g, k * s.g, ground, 'right', tc, false, 0, s.actual ? 2.5 : 1.5);
-  // what was drawn: measured heights (refH, tgtH) and picture heights, for tests
+  // what was drawn: full visible heights (refH, tgtH) and picture heights, for tests
   cv.drawn = {ground, refH: k, tgtH: k * s.g, refPic: k * R0.h, tgtPic: k * s.g * T0.h, refX: x0, tgtX: x1};
   if (s.handle) {
     // a grab handle on the corner that grows, so it reads as something to pull

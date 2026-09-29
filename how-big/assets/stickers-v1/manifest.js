@@ -124,8 +124,7 @@ window.HOW_BIG_SPRITES = {
       40,
       466,
       462
-    ],
-    "measurementFraction": 0.72
+    ]
   },
   "car": {
     "src": "assets/stickers-v1/car.webp",
@@ -152,8 +151,7 @@ window.HOW_BIG_SPRITES = {
       35,
       520,
       469
-    ],
-    "measurementFraction": 0.66
+    ]
   },
   "flamingo": {
     "src": "assets/stickers-v1/flamingo.webp",
@@ -180,8 +178,7 @@ window.HOW_BIG_SPRITES = {
       64,
       598,
       412
-    ],
-    "measurementFraction": 0.7
+    ]
   },
   "horse": {
     "src": "assets/stickers-v1/horse.webp",
@@ -190,8 +187,7 @@ window.HOW_BIG_SPRITES = {
       17,
       469,
       497
-    ],
-    "measurementFraction": 0.56
+    ]
   },
   "mammoth": {
     "src": "assets/stickers-v1/mammoth.webp",
@@ -200,8 +196,7 @@ window.HOW_BIG_SPRITES = {
       30,
       599,
       466
-    ],
-    "measurementFraction": 0.78
+    ]
   },
   "penguin": {
     "src": "assets/stickers-v1/penguin.webp",
@@ -237,8 +232,7 @@ window.HOW_BIG_SPRITES = {
       43,
       579,
       452
-    ],
-    "measurementFraction": 0.69
+    ]
   },
   "soccer": {
     "src": "assets/stickers-v1/soccer.webp",
@@ -274,8 +268,7 @@ window.HOW_BIG_SPRITES = {
       35,
       468,
       471
-    ],
-    "measurementFraction": 0.57
+    ]
   },
   "toilet": {
     "src": "assets/stickers-v1/toilet.webp",
@@ -338,8 +331,7 @@ window.HOW_BIG_SPRITES = {
       49,
       593,
       448
-    ],
-    "measurementFraction": 0.77
+    ]
   },
   "hollywood": {
     "src": "assets/stickers-v1/hollywood.webp",
@@ -384,8 +376,7 @@ window.HOW_BIG_SPRITES = {
       10,
       233,
       510
-    ],
-    "measurementFraction": 0.92
+    ]
   },
   "saturnv": {
     "src": "assets/stickers-v1/saturnv.webp",
@@ -448,8 +439,7 @@ window.HOW_BIG_SPRITES = {
       4,
       380,
       518
-    ],
-    "measurementFraction": 0.86
+    ]
   },
   "bogues": {
     "src": "assets/stickers-v1/bogues.webp",
@@ -485,8 +475,7 @@ window.HOW_BIG_SPRITES = {
       29,
       235,
       478
-    ],
-    "measurementFraction": 0.8
+    ]
   },
   "empire": {
     "src": "assets/stickers-v1/empire.webp",
@@ -495,8 +484,7 @@ window.HOW_BIG_SPRITES = {
       5,
       257,
       622
-    ],
-    "measurementFraction": 0.86
+    ]
   },
   "everest": {
     "src": "assets/stickers-v1/everest.webp",
@@ -649,8 +637,7 @@ window.HOW_BIG_SPRITES = {
       29,
       415,
       478
-    ],
-    "measurementFraction": 0.79
+    ]
   },
   "cone": {
     "src": "assets/stickers-v1/cone.webp",
@@ -776,8 +763,7 @@ window.HOW_BIG_SPRITES = {
       28,
       409,
       479
-    ],
-    "measurementFraction": 0.9
+    ]
   },
   "counter": {
     "src": "assets/stickers-v1/counter.webp",
@@ -786,8 +772,7 @@ window.HOW_BIG_SPRITES = {
       87,
       539,
       391
-    ],
-    "measurementFraction": 0.84
+    ]
   },
   "dbattery": {
     "src": "assets/stickers-v1/dbattery.webp",
@@ -823,8 +808,7 @@ window.HOW_BIG_SPRITES = {
       22,
       543,
       479
-    ],
-    "measurementFraction": 0.89
+    ]
   },
   "gorilla": {
     "src": "assets/stickers-v1/gorilla.webp",
@@ -842,8 +826,7 @@ window.HOW_BIG_SPRITES = {
       20,
       386,
       494
-    ],
-    "measurementFraction": 0.57
+    ]
   },
   "hurdle": {
     "src": "assets/stickers-v1/hurdle.webp",
@@ -870,8 +853,7 @@ window.HOW_BIG_SPRITES = {
       12,
       478,
       506
-    ],
-    "measurementFraction": 0.58
+    ]
   },
   "ninevolt": {
     "src": "assets/stickers-v1/ninevolt.webp",
