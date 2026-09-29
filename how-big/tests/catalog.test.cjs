@@ -27,7 +27,7 @@ test('catalog contains only generated-sprite objects and retains their metadata'
 });
 
 test('the page loads objects.js before game logic and does not duplicate catalog rows',()=>{
- const dataTag=html.indexOf('<script src="objects.js?v=2"></script>');
+ const dataTag=html.indexOf('<script src="objects.js?v=3"></script>');
  const inline=html.indexOf('<script>\n(() => {');
  assert(dataTag>=0&&dataTag<inline);
  assert.doesNotMatch(html,/const (?:RAW|RAW2|RAW3|RAW4|RAW5|STD) = \[/);
