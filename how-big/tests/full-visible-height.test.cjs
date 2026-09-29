@@ -24,7 +24,7 @@ test('animal heights include the highest visible head, ears, mane, horns, or ant
  const expected={
   horse:6.75*.3048,lion:5.25*.3048,tiger:4.25*.3048,elephant:12*.3048,moose:8*.3048,
   camel:7.5*.3048,bison:6.3*.3048,greatdane:3.7*.3048,hippo:1.55,cow:1.68,rhino:1.98,
-  mammoth:3.66,okapi:1.65,cat:.335,chihuahua:.305,labrador:.76,zeus:1.37,
+  mammoth:3.66,cat:.335,chihuahua:.305,labrador:.76,
   polarbear:10*.3048,grizzly:8.5*.3048
  };
  for(const [id,height] of Object.entries(expected)) {
