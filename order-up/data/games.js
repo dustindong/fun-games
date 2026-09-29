@@ -18,11 +18,7 @@
      src: 'First release of each game, from Nintendo and each game’s Wikipedia page.'},
     {id: 'zelda', key: 'year', filter: {tag: 'zelda'}, type: 'chronology', title: 'Zelda games', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', dir: 'asc', unit: 'year', gap: 2, year: true,
      src: 'First release of each game, from Nintendo and each game’s Wikipedia page.'},
-    {id: 'pokemon', key: 'year', filter: {tag: 'pokemon'}, type: 'chronology', title: 'Pokémon games', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', dir: 'asc', unit: 'year', gap: 2, year: true,
-     src: 'First release of each main-series Pokémon game (in Japan), from The Pokémon Company.'},
-    {id: 'gta', key: 'year', filter: {tag: 'gta'}, type: 'chronology', title: 'Grand Theft Auto games', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', dir: 'asc', unit: 'year', gap: 1, year: true,
-     src: 'First release of each game, from Rockstar Games.'},
-    {id: 'retro', key: 'year', filter: {year: [1972, 2006], fam: [4, 5]}, category: 'nostalgia', type: 'chronology', title: 'Gaming nostalgia', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', dir: 'asc', unit: 'year', gap: 3, year: true,
+            {id: 'retro', key: 'year', filter: {year: [1972, 2006], fam: [4, 5]}, category: 'nostalgia', type: 'chronology', title: 'Gaming nostalgia', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', dir: 'asc', unit: 'year', gap: 3, year: true,
      src: 'First release year anywhere, from each game’s Wikipedia page.'},
   ],
   items: [
