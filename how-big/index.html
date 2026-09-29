@@ -3364,7 +3364,7 @@ function drawStage(cv, s) {
   // Keep the stage zoom anchored to the true answer during a round. The target
   // guess and reveal animation can change `fit`, but should never resize the reference.
   const scaleFit = s.scaleFit ?? s.fit;
-  const k = 0.85 * Math.min((W - 2 * pad - gap - extraR) / (R0.w + T0.w * scaleFit), (ground - top) / Math.max(R0.h, T0.h * scaleFit));
+  const k = 0.65 * Math.min((W - 2 * pad - gap - extraR) / (R0.w + T0.w * scaleFit), (ground - top) / Math.max(R0.h, T0.h * scaleFit));
   const lw = R0.w * k, rwid = T0.w * s.fit * k;
   const mid = Math.min(Math.max(W / 2, pad + lw + gap / 2), W - pad - extraR - rwid - gap / 2);
   const x0 = mid - gap / 2 - lw, x1 = mid + gap / 2;
