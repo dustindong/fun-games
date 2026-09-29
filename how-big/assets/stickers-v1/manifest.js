@@ -1305,24 +1305,6 @@ window.HOW_BIG_SPRITES = {
       488
     ]
   },
-  "minion": {
-    "src": "assets/stickers-v1/minion.webp",
-    "bounds": [
-      0,
-      0,
-      516,
-      516
-    ]
-  },
-  "yoda": {
-    "src": "assets/stickers-v1/yoda.webp",
-    "bounds": [
-      38,
-      9,
-      397,
-      627
-    ]
-  },
   "dorothy": {
     "src": "assets/stickers-v1/dorothy.webp",
     "bounds": [
