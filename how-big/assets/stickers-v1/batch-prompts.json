@@ -494,5 +494,25 @@
   {
     "id": "stegosaurus",
     "prompt": "Use case: style-transfer. Asset: single transparent game comparison sprite. Use the attached giraffe ONLY as the exact art-style reference. Create instead ONE Stegosaurus. Object details: to the top of its back plates. Playful children's sticker artwork matching the reference: very thick smooth dark navy outlines, rounded simplified shapes, warm yellow/orange/coral plus cream, sky blue, mint and lavender palette as appropriate to recognizable subject, tiny cream gleam, minimal soft shading. Cute dot eyes and gentle smile only for living subjects. Preserve recognizable real-world silhouette and reasonable proportions, full object visible upright from its ground/base to its top, straight vertical axis, eye-level side or shallow three-quarter view. No perspective foreshortening of height. No people beside objects, no accessories, no labels, no text, no scenery, no ground, no drop shadow, no white sticker border, no watermark. Clean transparent background, generous small margin. Exactly one subject."
+  },
+  {
+    "id": "santa",
+    "prompt": "Restyle Santa as a flat, rounded full-body sticker matching the logo-inspired art board: thick navy outline, narrow cream sticker edge, simple white beard and red suit shapes, minimal highlights, transparent background. Preserve the friendly waving pose; avoid glossy 3D shading."
+  },
+  {
+    "id": "sherlock",
+    "prompt": "Restyle the full-body Victorian detective to match the logo-inspired art board: thick navy outline, narrow cream sticker edge, rounded flat brown coat and cap shapes, simple face, transparent background. Keep the magnifying glass and standing pose; remove plaid texture and fine costume detail."
+  },
+  {
+    "id": "godzilla",
+    "prompt": "Draw a friendly upright green reptile monster with a stout body, long thick tail, short arms and coral back plates. Use the logo-inspired game sticker style: rounded flat shapes, thick navy outline, cream sticker edge, minimal details, transparent background."
+  },
+  {
+    "id": "groot",
+    "prompt": "Draw an original cute walking sapling with a rounded trunk body, branch arms, root-like feet, two green leaves and a simple face. Use the logo-inspired game sticker style: rounded flat shapes, thick navy outline, cream sticker edge, minimal detail, transparent background."
+  },
+  {
+    "id": "jacksparrow",
+    "prompt": "Draw a friendly adult male pirate captain with dark shoulder-length hair, red bandana, black tricorn hat, mustache and goatee, white shirt, dark brown coat, sash and boots. Use the logo-inspired sticker style: rounded flat shapes, thick navy outline, narrow cream edge, minimal detail, transparent background; full-body upright pose."
   }
 ]

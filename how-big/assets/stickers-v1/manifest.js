@@ -1209,19 +1209,19 @@ window.HOW_BIG_SPRITES = {
   "godzilla": {
     "src": "assets/stickers-v1/godzilla.webp",
     "bounds": [
-      186,
-      6,
-      316,
-      517
+      23,
+      16,
+      548,
+      610
     ]
   },
   "groot": {
     "src": "assets/stickers-v1/groot.webp",
     "bounds": [
-      71,
-      10,
-      500,
-      513
+      149,
+      34,
+      347,
+      530
     ]
   },
   "hermione": {
@@ -1236,10 +1236,10 @@ window.HOW_BIG_SPRITES = {
   "jacksparrow": {
     "src": "assets/stickers-v1/jacksparrow.webp",
     "bounds": [
-      119,
-      15,
-      424,
-      506
+      68,
+      12,
+      291,
+      616
     ]
   },
   "kingkong": {
@@ -1372,18 +1372,18 @@ window.HOW_BIG_SPRITES = {
     "src": "assets/stickers-v1/sherlock.webp",
     "bounds": [
       76,
-      6,
-      293,
-      622
+      16,
+      290,
+      614
     ]
   },
   "santa": {
     "src": "assets/stickers-v1/santa.webp",
     "bounds": [
-      31,
+      25,
       5,
-      449,
-      630
+      467,
+      633
     ]
   }
 };
