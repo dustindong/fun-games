@@ -3193,6 +3193,86 @@ const STD = [
   ['atm', null, 'an ATM', 5.0, 'overall height of a walk-up machine', 'ATM', 'everyday', 8],
   ['portapotty', null, 'a portable toilet', 7.5, 'overall height', 'Portable Toilet', 'everyday', 8],
   ['container', null, 'a shipping container', 8.5, 'standard container sitting on the ground', 'Shipping Container', 'everyday', 8],
+  // pop culture — canonical on-screen/toy heights, rounded for quick party-game comparisons
+  ['spongebob', '🧽', 'SpongeBob SquarePants', 0.33, 'animated character height, about 4 inches', 'SpongeBob', 'popculture', 10],
+  ['minion', '🟡', 'a Minion', 3.6, 'standing height', 'Minion', 'popculture', 10],
+  ['r2d2', '🤖', 'R2-D2', 3.2, 'standing height', 'R2-D2', 'popculture', 10],
+  ['yoda', '👽', 'Yoda', 2.17, 'standing height', 'Yoda', 'popculture', 10],
+  ['et', '👽', 'E.T.', 3.0, 'standing height', 'E.T.', 'popculture', 9],
+  ['gollum', '🧌', 'Gollum', 4.0, 'standing height', 'Gollum', 'popculture', 9],
+  ['spiderman', '🕷️', 'Spider-Man', 5.10, 'standing height', 'Spider-Man', 'popculture', 10],
+  ['harrypotter', '🧙', 'Harry Potter', 5.11, 'standing height', 'Harry Potter', 'popculture', 10],
+  ['wednesday', '🖤', 'Wednesday Addams', 5.1, 'standing height', 'Wednesday Addams', 'popculture', 9],
+  ['hermione', '🪄', 'Hermione Granger', 5.5, 'standing height', 'Hermione Granger', 'popculture', 9],
+  ['ironman', '🤖', 'Iron Man', 6.1, 'standing height in armor', 'Iron Man', 'popculture', 10],
+  ['batman', '🦇', 'Batman', 6.2, 'standing height', 'Batman', 'popculture', 10],
+  ['superman', '🦸', 'Superman', 6.3, 'standing height', 'Superman', 'popculture', 10],
+  ['wonderwoman', '🦸‍♀️', 'Wonder Woman', 6.0, 'standing height', 'Wonder Woman', 'popculture', 9],
+  ['darthvader', '⚫', 'Darth Vader', 6.5, 'standing height in armor', 'Darth Vader', 'popculture', 10],
+  ['jacksparrow', '🏴‍☠️', 'Captain Jack Sparrow', 5.10, 'standing height', 'Jack Sparrow', 'popculture', 9],
+  ['shrek', '🟢', 'Shrek', 7.5, 'standing height', 'Shrek', 'popculture', 10],
+  ['chewbacca', '🟤', 'Chewbacca', 7.5, 'standing height', 'Chewbacca', 'popculture', 10],
+  ['hulk', '💚', 'the Hulk', 7.0, 'standing height', 'Hulk', 'popculture', 10],
+  ['kingkong', '🦍', 'King Kong', 25.0, 'standing height', 'King Kong', 'popculture', 9],
+  ['godzilla', '🦖', 'Godzilla', 393.0, 'standing height in the modern film version', 'Godzilla', 'popculture', 10],
+  ['groot', '🌳', 'Groot', 23.0, 'adult standing height', 'Groot', 'popculture', 9],
+  ['woody', '🤠', 'Woody from Toy Story', 1.25, 'toy height, about 15 inches', 'Woody', 'popculture', 10],
+  ['buzz', '🚀', 'Buzz Lightyear', 0.96, 'toy height, about 11.5 inches', 'Buzz Lightyear', 'popculture', 10],
+  ['barbie', '👱‍♀️', 'Barbie', 0.96, 'doll height, about 11.5 inches', 'Barbie', 'popculture', 10],
+  ['sherlock', '🔎', 'Sherlock Holmes', 6.0, 'standing height', 'Sherlock Holmes', 'popculture', 9],
+  ['dracula', '🧛', 'Dracula', 6.2, 'standing height', 'Dracula', 'popculture', 9],
+  ['frankenstein', '🧟', 'Frankenstein', 8.0, 'standing height', 'Frankenstein', 'popculture', 9],
+  ['dorothy', '👠', 'Dorothy', 4.5, 'standing height', 'Dorothy', 'popculture', 9],
+  ['mario', '🍄', 'Mario', 5.1, 'estimated standing height', 'Mario', 'popculture', 10],
+  ['luigi', '🍄', 'Luigi', 5.9, 'estimated standing height', 'Luigi', 'popculture', 9],
+  ['sonic', '🦔', 'Sonic the Hedgehog', 3.3, 'standing height', 'Sonic', 'popculture', 10],
+  ['pikachu', '⚡', 'Pikachu', 1.4, 'standing height', 'Pikachu', 'popculture', 10],
+  ['mickeymouse', '🐭', 'Mickey Mouse', 2.3, 'animated character height', 'Mickey Mouse', 'popculture', 10],
+  ['elsa', '❄️', 'Elsa', 5.7, 'standing height', 'Elsa', 'popculture', 9],
+  ['anna', '❄️', 'Anna', 5.3, 'standing height', 'Anna', 'popculture', 9],
+  ['olaf', '⛄', 'Olaf', 3.5, 'standing height', 'Olaf', 'popculture', 9],
+  ['moana', '🌊', 'Moana', 5.4, 'standing height', 'Moana', 'popculture', 9],
+  ['stitch', '👽', 'Stitch', 3.0, 'standing height', 'Stitch', 'popculture', 10],
+  ['elmo', '❤️', 'Elmo', 2.6, 'puppet character height', 'Elmo', 'popculture', 10],
+  ['bigbird', '🐤', 'Big Bird', 8.2, 'standing height', 'Big Bird', 'popculture', 10],
+  ['kermit', '🐸', 'Kermit the Frog', 2.6, 'puppet character height', 'Kermit', 'popculture', 9],
+  ['misspiggy', '🐷', 'Miss Piggy', 5.4, 'estimated standing height', 'Miss Piggy', 'popculture', 9],
+  ['shaggy', '🥪', 'Shaggy Rogers', 6.0, 'standing height', 'Shaggy', 'popculture', 9],
+  ['scoobydoo', '🐕', 'Scooby-Doo', 3.3, 'standing height', 'Scooby-Doo', 'popculture', 10],
+  ['fredflintstone', '🦴', 'Fred Flintstone', 5.10, 'estimated standing height', 'Fred Flintstone', 'popculture', 9],
+  ['barneyrubble', '🦴', 'Barney Rubble', 5.4, 'estimated standing height', 'Barney Rubble', 'popculture', 8],
+  ['homersimpson', '🍩', 'Homer Simpson', 5.9, 'animated character height', 'Homer Simpson', 'popculture', 10],
+  ['bartsimpson', '🛹', 'Bart Simpson', 4.0, 'animated character height', 'Bart Simpson', 'popculture', 9],
+  ['garfield', '🐈', 'Garfield', 1.0, 'standing height', 'Garfield', 'popculture', 10],
+  ['snoopy', '🐶', 'Snoopy', 1.8, 'standing height', 'Snoopy', 'popculture', 10],
+  ['charliebrown', '⚾', 'Charlie Brown', 5.0, 'estimated standing height', 'Charlie Brown', 'popculture', 9],
+  ['popeye', '💪', 'Popeye', 5.6, 'animated character height', 'Popeye', 'popculture', 9],
+  ['bettyboop', '💃', 'Betty Boop', 5.0, 'animated character height', 'Betty Boop', 'popculture', 8],
+  ['bugsbunny', '🥕', 'Bugs Bunny', 3.3, 'standing height', 'Bugs Bunny', 'popculture', 10],
+  ['daffyduck', '🦆', 'Daffy Duck', 3.0, 'standing height', 'Daffy Duck', 'popculture', 9],
+  ['tomcat', '🐱', 'Tom Cat', 3.0, 'standing height', 'Tom', 'popculture', 9],
+  ['jerrymouse', '🧀', 'Jerry Mouse', 0.3, 'standing height', 'Jerry', 'popculture', 9],
+  ['winniethepooh', '🍯', 'Winnie-the-Pooh', 2.0, 'standing height', 'Winnie-the-Pooh', 'popculture', 10],
+  ['tigger', '🐯', 'Tigger', 2.6, 'standing height', 'Tigger', 'popculture', 9],
+  ['piglet', '🐷', 'Piglet', 1.2, 'standing height', 'Piglet', 'popculture', 9],
+  ['eeyore', '🫏', 'Eeyore', 2.7, 'standing height', 'Eeyore', 'popculture', 8],
+  ['paddington', '🧸', 'Paddington Bear', 3.6, 'standing height', 'Paddington', 'popculture', 9],
+  ['pippi', '🧡', 'Pippi Longstocking', 4.8, 'standing height', 'Pippi', 'popculture', 8],
+  ['marypoppins', '☂️', 'Mary Poppins', 5.6, 'standing height', 'Mary Poppins', 'popculture', 9],
+  ['peterpan', '🧚', 'Peter Pan', 4.8, 'estimated standing height', 'Peter Pan', 'popculture', 9],
+  ['tinkerbell', '🧚', 'Tinker Bell', 0.5, 'fairy height, about 6 inches', 'Tinker Bell', 'popculture', 9],
+  ['captainhook', '🏴‍☠️', 'Captain Hook', 6.2, 'estimated standing height', 'Captain Hook', 'popculture', 8],
+  ['robinhood', '🏹', 'Robin Hood', 5.10, 'estimated standing height', 'Robin Hood', 'popculture', 9],
+  ['pinocchio', '🤥', 'Pinocchio', 3.6, 'standing height', 'Pinocchio', 'popculture', 9],
+  ['jiminycricket', '🦗', 'Jiminy Cricket', 1.0, 'standing height', 'Jiminy Cricket', 'popculture', 8],
+  ['snowwhite', '🍎', 'Snow White', 5.2, 'estimated standing height', 'Snow White', 'popculture', 9],
+  ['cinderella', '👠', 'Cinderella', 5.8, 'estimated standing height', 'Cinderella', 'popculture', 9],
+  ['sleepingbeauty', '🌹', 'Sleeping Beauty', 5.6, 'estimated standing height', 'Sleeping Beauty', 'popculture', 8],
+  ['belle', '📚', 'Belle', 5.5, 'estimated standing height', 'Belle', 'popculture', 9],
+  ['beast', '🦁', 'the Beast', 6.5, 'standing height', 'Beast', 'popculture', 9],
+  ['aladdin', '🧞', 'Aladdin', 5.9, 'estimated standing height', 'Aladdin', 'popculture', 9],
+  ['genie', '🧞', 'the Genie', 8.0, 'standing height', 'Genie', 'popculture', 9],
+  ['santa', '🎅', 'Santa Claus', 6.0, 'estimated standing height', 'Santa Claus', 'popculture', 10],
   // animals
   ['giraffe', '🦒', 'a giraffe', 18.0, 'adult male standing height, to the top of its head', 'Giraffe', 'animals', 10],
   ['ostrich', null, 'an ostrich', 9.0, 'adult male standing height', 'Ostrich', 'animals', 9],
@@ -3260,7 +3340,7 @@ for (const [id, pic, a, ft, measure, name, cat, fam, mfrac] of STD) {
    should be guessable. Row: [reference (left), resized (right), theme, level 1 easy .. 3 harder, tags]
    tags: star = memorable enough for the last round; giant / tiny / close = special rounds (see PAIR_RULES). */
 const THEMES = {animals: 'Animals', dinos: 'Prehistoric', everyday: 'Everyday stuff', vehicles: 'Vehicles', tech: 'Tech', landmarks: 'Landmarks',
-  rides: 'Structures & rides', rockets: 'Rockets', people: 'People', sports: 'Sports'};
+  rides: 'Structures & rides', rockets: 'Rockets', people: 'People', sports: 'Sports', popculture: 'Pop culture'};
 const PAIRS_RAW = [
   ['xboxseriesx','ps5original','tech',1,'star'], ['bowlingpin','ps5original','tech',0,'close'],
   ['winebottle','xboxseriesx','tech',0,'close'], ['mug','xboxseriesx','tech',2,''],
@@ -3516,24 +3596,49 @@ function activateArtwork() {
     SPRITE_ART[id] = art; delete mCache[id]; delete pendingArtwork[id];
   }
 }
-function loadArtwork() {
-  return Promise.all(Object.entries(window.HOW_BIG_SPRITES || {}).map(([id, asset]) => new Promise(resolve => {
+const artworkRequests = new Map(), artworkQueue = [];
+let artworkDownloads = 0;
+function loadArtwork(ids = Object.keys(window.HOW_BIG_SPRITES || {}), priority = false) {
+  const promises = ids.map(id => {
+    const asset = (window.HOW_BIG_SPRITES || {})[id];
+    if (!asset) return Promise.resolve(false);
+    if (!artworkRequests.has(id)) {
+      let resolve;
+      const promise = new Promise(done => { resolve = done; });
+      artworkRequests.set(id, promise);
+      artworkQueue.push({id, asset, resolve});
+    }
+    return artworkRequests.get(id);
+  });
+  if (priority) artworkQueue.sort((a, b) => Number(ids.includes(b.id)) - Number(ids.includes(a.id)));
+  pumpArtwork();
+  return Promise.all(promises);
+}
+function pumpArtwork() {
+  // Keep startup responsive on phones; queued rounds can jump ahead of prefetches.
+  while (artworkDownloads < 4 && artworkQueue.length) {
+    const {id, asset, resolve} = artworkQueue.shift();
+    artworkDownloads++;
     const img = new Image();
     img.decoding = 'async';
-    const timer = setTimeout(() => resolve(false), 4000);
-    img.onerror = () => { clearTimeout(timer); resolve(false); };
+    let finished = false;
+    const finish = ok => {
+      if (finished) return;
+      finished = true; clearTimeout(timer); artworkDownloads--; resolve(ok); pumpArtwork();
+    };
+    const timer = setTimeout(() => finish(false), 10000);
+    img.onerror = () => finish(false);
     img.onload = () => {
-      clearTimeout(timer);
       const [x, y, w, h] = asset.bounds;
-      if (!(w > 0 && h > 0 && x >= 0 && y >= 0 && x + w <= img.naturalWidth && y + h <= img.naturalHeight)) { resolve(false); return; }
-      pendingArtwork[id] = {aspect: w / h, shade: null, draw(c, dw, dh) {
+      if (!(w > 0 && h > 0 && x >= 0 && y >= 0 && x + w <= img.naturalWidth && y + h <= img.naturalHeight)) { finish(false); return; }
+      pendingArtwork[id] = {aspect: w / h, measurementFraction: asset.measurementFraction, shade: null, draw(c, dw, dh) {
         c.drawImage(img, x, y, w, h, 0, 0, dw, dh);
       }};
       if (!room || room.phase !== 'play') { activateArtwork(); redrawAll(); }
-      resolve(true);
+      finish(true);
     };
     img.src = asset.src;
-  })));
+  }
 }
 
 function drawArt(c, o, hPx, left, ground, alpha) {
@@ -3611,7 +3716,7 @@ function label(c, x, y, align, lines, maxW) {
 }
 // an object's drawn shape in units of its measured size (so measured side = 1)
 // an object's picture in units of its measured height: h > 1 when the picture rises above the measured point
-function shapeOf(o) { const m = meas(o), f = o.mfrac || 1; return {m, w: m.w / m.h / f, h: 1 / f}; }
+function shapeOf(o) { const m = meas(o), f = artOf(o)?.measurementFraction || o.mfrac || 1; return {m, w: m.w / m.h / f, h: 1 / f}; }
 /* s: {ref, tgt, g (target size drawn, as a multiple of the reference), fit (largest target size to make room for),
        ghosts [{g, color, text, mine, alpha}], refLines, tgtLines, tgtColor, tagR, handle, actual (label on the true size)} */
 function drawStage(cv, s) {
@@ -4146,6 +4251,7 @@ function syncLocal() {
   const key = `${room.game}|${room.round}`;
   if (local.key === key) return;
   activateArtwork();
+  loadArtwork((room.rounds || []).slice(room.round, room.round + 2).flatMap(key => key.split('|').slice(0, 2)), true);
   const rec = scoreRec(mine(), room.round);
   local = {selectedPid: null, revealVersion: null, countdownAt: 0, key, start: performance.now(), g: 1, touched: false, locked: !!rec, submitted: !!rec, revealAt: 0, anim: null};
   if (rec) { local.g = rec.g ?? 1; local.touched = rec.g != null; }

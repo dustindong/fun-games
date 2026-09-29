@@ -5,3 +5,17 @@ function setup(phase){const imgs=[],ctx=vm.createContext({Image:class {construct
 test('loaded art uses visible bounds and clears cached emoji geometry',async()=>{const {ctx,imgs}=setup();const ready=ctx.loadArtwork();Object.assign(imgs[0],{naturalWidth:200,naturalHeight:200});imgs[0].onload();await ready;assert.equal(ctx.SPRITE_ART.person.aspect,.3);assert.equal(ctx.mCache.person,undefined);let args;ctx.SPRITE_ART.person.draw({drawImage(...a){args=a}},60,200);assert.deepEqual(args.slice(1),[10,20,30,100,0,0,60,200]);});
 test('late image does not change active guessing round',async()=>{const {ctx,imgs}=setup('play');const ready=ctx.loadArtwork();Object.assign(imgs[0],{naturalWidth:200,naturalHeight:200});imgs[0].onload();await ready;assert.equal(ctx.SPRITE_ART.person,undefined);assert(ctx.mCache.person.old);ctx.activateArtwork();assert.equal(ctx.SPRITE_ART.person.aspect,.3);});
 test('failed and invalid images keep the fallback',async()=>{for(const fail of [true,false]){const {ctx,imgs}=setup();const ready=ctx.loadArtwork();if(fail)imgs[0].onerror();else{Object.assign(imgs[0],{naturalWidth:20,naturalHeight:20});imgs[0].onload();}await ready;assert.equal(ctx.SPRITE_ART.person,undefined);assert(ctx.mCache.person.old);}});
+test('downloads are bounded, deduplicated, and prioritize upcoming objects',async()=>{
+  const {ctx,imgs}=setup();
+  for(let i=0;i<8;i++) ctx.window.HOW_BIG_SPRITES['item'+i]={src:'item'+i+'.webp',bounds:[0,0,10,10]};
+  const ready=ctx.loadArtwork();
+  assert.equal(imgs.length,4);
+  ctx.loadArtwork(['item7'],true);
+  assert.equal(imgs.length,4);
+  Object.assign(imgs[0],{naturalWidth:200,naturalHeight:200});imgs[0].onload();
+  assert.equal(imgs[4].src,'item7.webp');
+  for(let i=1;i<imgs.length;i++){Object.assign(imgs[i],{naturalWidth:200,naturalHeight:200});imgs[i].onload();}
+  await ready;
+  assert.equal(imgs.length,9);
+  assert.equal(Object.keys(ctx.SPRITE_ART).length,9);
+});
