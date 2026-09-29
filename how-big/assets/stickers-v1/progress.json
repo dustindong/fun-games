@@ -144,8 +144,6 @@
     "spongebob",
     "harrypotter",
     "wonderwoman",
-    "minion",
-    "yoda",
     "sherlock",
     "dracula",
     "frankenstein",
@@ -246,5 +244,9 @@
     "charliebrown": "Image tool rejected the character-specific generation; emoji fallback retained.",
     "popeye": "Image tool rejected the character-specific generation; emoji fallback retained.",
     "bettyboop": "Image tool rejected the character-specific generation; emoji fallback retained."
-  }
+  },
+  "excluded": [
+    "minion",
+    "yoda"
+  ]
 }
