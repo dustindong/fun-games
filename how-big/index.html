@@ -2575,7 +2575,7 @@ for (const [id, e, a, h, note, name] of RAW5) {
   const o = {id, e, a, name: name || cap0(noun), height: h, unit: 'm', note, noun, label: name || cap0(noun)};
   OBJ.push(o); BY[id] = o;
 }
-// These legacy poses are skipped in ordinary pairs; coverage rows explicitly opt them into the expanded catalog.
+// All remaining catalog entries have an installed generated sprite.
 const NOT_UPRIGHT = new Set(NOT_UPRIGHT_IDS);
 const SPRITE_ART = {}, pendingArtwork = {};
 const artOf = o => SPRITE_ART[o.id] || ART[o.art || o.id];
@@ -2785,7 +2785,7 @@ for (const [id, pic, a, ft, measure, name, cat, fam] of STD) {
 }
 
 /* ---------------- curated comparisons ----------------
-   Curated rows preserve the existing comparisons; coverage rows make the remaining catalog entries reachable.
+   Curated rows preserve the comparisons between sprite-backed objects.
    Row: [reference (left), resized (right), theme, level 1 easy .. 3 harder, tags]
    tags: star = memorable enough for the last round; giant / tiny / close = special rounds; coverage marks added pairs. */
 const THEMES = {animals: 'Animals', dinos: 'Prehistoric', everyday: 'Everyday stuff', vehicles: 'Vehicles', tech: 'Tech', landmarks: 'Landmarks',
@@ -2858,121 +2858,6 @@ const PAIRS_RAW = [
   ['soccer','bucket','sports',2,''], ['baseball','basketball','sports',1,''], ['basketball','bucket','sports',2,''],
   ['basketball','trophy','sports',2,''], ['person','goal','sports',1,''], ['goal','hoop','sports',2,''],
   // Extra catalog entries, paired so every database object can appear in an eligible round.
-  ['elcastillo','horseshoe','landmarks',2,'coverage'], // El Castillo vs Horseshoe Falls
-  ['seljalandsfoss','atomium','landmarks',2,'coverage'], // Seljalandsfoss vs Atomium
-  ['dover','kuwaittowers','landmarks',2,'coverage'], // White Cliffs of Dover vs Kuwait Towers
-  ['kinabalu','aconcagua','landmarks',2,'coverage'], // Mount Kinabalu vs Aconcagua
-  ['transamerica','willis','landmarks',2,'coverage'], // Transamerica Pyramid vs Willis Tower
-  ['salesforce','lotte','landmarks',2,'coverage'], // Salesforce Tower vs Lotte World Tower
-  ['milad','yosemitefalls','landmarks',2,'coverage'], // Milad Tower vs Yosemite Falls
-  ['multnomah','burjalarab','landmarks',2,'coverage'], // Multnomah Falls vs Burj Al Arab
-  ['flagpole','olympiaturm','landmarks',2,'coverage'], // Jeddah Flagpole vs Olympiaturm
-  ['hercules','flatiron','landmarks',2,'coverage'], // Tower of Hercules vs Flatiron Building
-  ['thor','mitchell','landmarks',2,'coverage'], // Mount Thor vs Mount Mitchell
-  ['akashi','taipei101','landmarks',2,'coverage'], // Akashi Kaikyō Bridge vs Taipei 101
-  ['bridalveil','chrysler','landmarks',2,'coverage'], // Bridalveil Fall vs Chrysler Building
-  ['kaieteur','kyivtv','landmarks',2,'coverage'], // Kaieteur Falls vs Kyiv TV Tower
-  ['sthelens','shasta','landmarks',2,'coverage'], // Mount St. Helens vs Mount Shasta
-  ['sutherland','tugela','landmarks',2,'coverage'], // Sutherland Falls vs Tugela Falls
-  ['nelson','capitol','landmarks',2,'coverage'], // Nelson's Column vs US Capitol
-  ['gherkin','jinping','landmarks',2,'coverage'], // The Gherkin vs Jinping-I Dam
-  ['petronas','gocta','landmarks',2,'coverage'], // Petronas Towers vs Gocta Falls
-  ['threegorges','sydneytower','landmarks',2,'coverage'], // Three Gorges Dam vs Sydney Tower
-  ['rainbowbridge','dubaiframe','landmarks',2,'coverage'], // Rainbow Bridge vs Dubai Frame
-  ['brandenburg','dettifoss','landmarks',2,'coverage'], // Brandenburg Gate vs Dettifoss
-  ['towerbridge','forthbridge','landmarks',2,'coverage'], // Tower Bridge vs Forth Bridge
-  ['macau','ballspyramid','landmarks',2,'coverage'], // Macau Tower vs Ball's Pyramid
-  ['ostankino','elcapitan','landmarks',2,'coverage'], // Ostankino Tower vs El Capitan
-  ['harbourbridge','americas','landmarks',2,'coverage'], // Sydney Harbour Bridge vs Tower of the Americas
-  ['victoriafalls','euromast','landmarks',2,'coverage'], // Victoria Falls vs Euromast
-  ['skytree','tablemtn','landmarks',2,'coverage'], // Tokyo Skytree vs Table Mountain
-  ['snowdon','grandcanyon','landmarks',2,'coverage'], // Snowdon vs Grand Canyon
-  ['djoser','bassrock','landmarks',2,'coverage'], // Pyramid of Djoser vs Bass Rock
-  ['delicatearch','whitetower','landmarks',2,'coverage'], // Delicate Arch vs White Tower
-  ['olympuswa','maunaloa','landmarks',2,'coverage'], // Mount Olympus (WA) vs Mauna Loa
-  ['teide','chimborazo','landmarks',2,'coverage'], // Mount Teide vs Chimborazo
-  ['redpyramid','sigiriya','landmarks',2,'coverage'], // Red Pyramid vs Sigiriya
-  ['sugarloaf','merdeka','landmarks',2,'coverage'], // Sugarloaf Mountain vs Merdeka 118
-  ['jogfalls','gibraltar','landmarks',2,'coverage'], // Jog Falls vs Rock of Gibraltar
-  ['moher','bankofchina','landmarks',2,'coverage'], // Cliffs of Moher vs Bank of China Tower
-  ['arctriomphe','brooklyn','landmarks',2,'coverage'], // Arc de Triomphe vs Brooklyn Bridge
-  ['berlintv','shanghai','landmarks',2,'coverage'], // Berlin TV Tower vs Shanghai Tower
-  ['swfc','vinnufossen','landmarks',2,'coverage'], // Shanghai World Financial Center vs Vinnufossen
-  ['hood','kilimanjaro','landmarks',2,'coverage'], // Mount Hood vs Kilimanjaro
-  ['pontdugard','iguazu','landmarks',2,'coverage'], // Pont du Gard vs Iguazu Falls
-  ['uluru','pingan','landmarks',2,'coverage'], // Uluru vs Ping An Finance Centre
-  ['olympus','vinson','landmarks',2,'coverage'], // Mount Olympus vs Mount Vinson
-  ['ararat','k2','landmarks',2,'coverage'], // Mount Ararat vs K2
-  ['itaipu','ailsacraig','landmarks',2,'coverage'], // Itaipu Dam vs Ailsa Craig
-  ['turningtorso','skytower','landmarks',2,'coverage'], // Turning Torso vs Sky Tower
-  ['oldmanofhoy','seoultower','landmarks',2,'coverage'], // Old Man of Hoy vs N Seoul Tower
-  ['kosciuszko','aoraki','landmarks',2,'coverage'], // Mount Kosciuszko vs Aoraki / Mount Cook
-  ['gatewayindia','twelveapostles','landmarks',2,'coverage'], // Gateway of India vs Twelve Apostles
-  ['gullfoss','titanic','landmarks',2,'coverage'], // Gullfoss vs Titanic
-  ['trollwall','mtwashington','landmarks',2,'coverage'], // Troll Wall vs Mount Washington
-  ['woolworth','jinmao','landmarks',2,'coverage'], // Woolworth Building vs Jin Mao Tower
-  ['sanjacinto','kingdomcentre','landmarks',2,'coverage'], // San Jacinto Monument vs Kingdom Centre
-  ['hoover','hudsonyards','landmarks',2,'coverage'], // Hoover Dam vs 30 Hudson Yards
-  ['kenya','kangchenjunga','landmarks',2,'coverage'], // Mount Kenya vs Kangchenjunga
-  ['devilstower','lakhta','landmarks',2,'coverage'], // Devils Tower vs Lakhta Center
-  ['stacanarmin','millau','landmarks',2,'coverage'], // Stac an Armin vs Millau Viaduct
-  ['montblanc','makalu','landmarks',2,'coverage'], // Mont Blanc vs Makalu
-  ['canton','angelfalls','landmarks',2,'coverage'], // Canton Tower vs Angel Falls
-  ['preikestolen','scafell','landmarks',2,'coverage'], // Preikestolen vs Scafell Pike
-  ['reunion','shard','landmarks',2,'coverage'], // Reunion Tower vs The Shard
-  ['eiger','denali','landmarks',2,'coverage'], // Eiger vs Denali
-  ['greatwall','giantscauseway','landmarks',2,'coverage'], // Great Wall vs Giant's Causeway
-  ['matterhorn','lhotse','landmarks',2,'coverage'], // Matterhorn vs Lhotse
-  ['zugspitze','elbrus','landmarks',2,'coverage'], // Zugspitze vs Mount Elbrus
-  ['contra','kltower','landmarks',2,'coverage'], // Contra Dam vs KL Tower
-  ['kvly','diablo','landmarks',2,'coverage'], // KVLY-TV mast vs Mount Diablo
-  ['belem','skogafoss','landmarks',2,'coverage'], // Belém Tower vs Skógafoss
-  ['verrazzano','park432','landmarks',2,'coverage'], // Verrazzano Bridge vs 432 Park Avenue
-  ['maunakea','logan','landmarks',2,'coverage'], // Mauna Kea vs Mount Logan
-  ['plitvice','beachyhead','landmarks',2,'coverage'], // Veliki Slap (Plitvice) vs Beachy Head
-  ['pikes','cotopaxi','landmarks',1,'coverage'], // Pikes Peak vs Cotopaxi
-  ['peritomoreno','grandcoulee','landmarks',2,'coverage'], // Perito Moreno Glacier vs Grand Coulee Dam
-  ['hatteras','spasskaya','landmarks',0,'close,coverage'], // Cape Hatteras Light vs Spasskaya Tower
-  ['shiprock','mansfield','landmarks',3,'coverage'], // Shiprock vs Mount Mansfield
-  ['shoshone','opera','landmarks',0,'close,coverage'], // Shoshone Falls vs Sydney Opera House
-  ['centralpark','bennevis','landmarks',3,'coverage'], // Central Park Tower vs Ben Nevis
-  ['rainier','whitney','landmarks',0,'close,coverage'], // Mount Rainier vs Mount Whitney
-  ['luxor','rhinefalls','landmarks',0,'close,coverage'], // Luxor Obelisk vs Rhine Falls
-  ['everest','olympusmons','landmarks',2,'coverage'], // Mount Everest vs Olympus Mons (Mars)
-  ['orientalpearl','burj','landmarks',2,'coverage'], // Oriental Pearl Tower vs Burj Khalifa
-  ['clark','zeng','people',1,'coverage'], // Caitlin Clark vs Zeng Jinlian
-  ['bolt','wadlow','people',1,'coverage'], // Usain Bolt vs Robert Wadlow
-  ['f35','minetruck','vehicles',2,'coverage'], // F-35 jet vs Mining truck
-  ['a380','hindenburg','vehicles',2,'coverage'], // Airbus A380 vs Hindenburg
-  ['b737','b747','vehicles',2,'coverage'], // Boeing 737 vs Boeing 747-8
-  ['wrightflyer','b2','vehicles',2,'coverage'], // Wright Flyer vs B-2 bomber
-  ['bagger','jetdeau','vehicles',2,'coverage'], // Bagger 288 vs Jet d'Eau
-  ['lrv','rover','vehicles',2,'coverage'], // Lunar rover vs Perseverance rover
-  ['cessna','sr71','vehicles',2,'coverage'], // Cessna 172 vs SR-71 Blackbird
-  ['blimp','an225','vehicles',0,'close,coverage'], // Zeppelin NT airship vs An-225 Mriya
-  ['abrams','semitruck','vehicles',2,'coverage'], // M1 Abrams tank vs Semi Truck
-  ['cube','crayon','everyday',0,'tiny,coverage'], // Puzzle cube vs a crayon
-  ['pencil','ruler','everyday',2,'coverage'], // a pencil vs Ruler
-  ['brick','creditcard','everyday',0,'tiny,coverage'], // Brick vs Credit card
-  ['stickynote','paper','everyday',0,'tiny,coverage'], // Sticky note vs Letter paper
-  ['atm','phonebox','everyday',2,'coverage'], // ATM vs Red phone box
-  ['macaw','sarus','animals',2,'coverage'], // Scarlet macaw vs Sarus crane
-  ['zeus','emu','animals',0,'close,coverage'], // Zeus (Great Dane) vs an emu
-  ['ostrichegg','okapi','animals',0,'giant,coverage'], // an ostrich egg vs an okapi
-  ['bat','badminton','sports',2,'coverage'], // Baseball bat vs Badminton net
-  ['diving','goalpost','sports',1,'coverage'], // Diving platform vs NFL goalpost
-  ['puck','golftee','sports',0,'tiny,coverage'], // a hockey puck vs a golf tee
-  ['racket','stumps','sports',0,'close,coverage'], // Tennis racket vs Cricket stumps
-  ['vnet','highjump','sports',0,'close,coverage'], // Volleyball net vs High jump record
-  ['greenmonster','wembley','sports',0,'giant,coverage'], // Green Monster vs Wembley arch
-  ['bowlingball','bowlingpin','sports',2,'coverage'], // a bowling ball vs Bowling Pin
-  ['blackpool','strat','rides',2,'coverage'], // Blackpool Tower vs The Strat
-  ['fury325','topthrill','rides',1,'coverage'], // Fury 325 vs Top Thrill 2 coaster
-  ['cbattery','sputnik','tech',0,'giant,coverage'], // C battery vs Sputnik 1
-  ['ps5original','clockface','tech',0,'giant,coverage'], // Original PlayStation 5 vs Big Ben clock face
-  ['ariane6','newglenn','rockets',2,'coverage'], // Ariane 6 vs New Glenn rocket
-  ['apollolm','v2','rockets',2,'coverage'], // Apollo lunar module vs V-2 rocket
-  ['orbiter','soyuz','rockets',3,'coverage'], // Shuttle orbiter vs Soyuz rocket
 ];
 // what each kind of round allows (ratio = the taller height over the shorter one)
 const PAIR_RULES = {
