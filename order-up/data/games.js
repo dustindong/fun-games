@@ -11,7 +11,7 @@
      src: 'First release year anywhere, from each game’s Wikipedia page.'},
     {key: 'sold', type: 'popularity', title: 'Video game sales', ask: 'Most copies sold to fewest', hi: 'Most sold', lo: 'Fewest sold', unit: 'mcopies', gap: 1.3, about: true,
      src: 'Wikipedia’s list of best-selling video games, all platforms combined. Publishers report these at different times, so every game in a round sold at least 1.3× more than the next.'},
-    {key: 'meta', type: 'ranking', weight: 0.6, title: 'Video game reviews', ask: 'Best Metacritic score to worst', hi: 'Best reviewed', lo: 'Worst reviewed', unit: 'meta', gap: 5, abs: true,
+    {key: 'meta', type: 'ranking', weight: 0.4, title: 'Video game reviews', ask: 'Best Metacritic score to worst', hi: 'Best reviewed', lo: 'Worst reviewed', unit: 'meta', gap: 5, abs: true,
      src: 'Critic score on Metacritic, using the platform the game is best known on. Every game in a round scored at least 5 points apart.'},
     // themed subsets: series in order are great "I sort of remember" rounds
     {id: 'mario', key: 'year', filter: {tag: 'mario'}, type: 'chronology', title: 'Mario games', ask: 'Oldest to newest', hi: 'Came out first', lo: 'Came out last', dir: 'asc', unit: 'year', gap: 2, year: true,
@@ -143,5 +143,14 @@
     {name: 'Pokémon Sun & Moon', tags: ['pokemon'], fam: 4, year: 2016},
     {name: 'Grand Theft Auto', note: 'the first one', tags: ['gta'], fam: 4, year: 1997},
     {name: 'Grand Theft Auto IV', tags: ['gta'], fam: 4, year: 2008},
+    {name: 'Zelda II: The Adventure of Link', note: 'The Legend of Zelda', tags: ['zelda'], fam: 4, year: 1987},
+    {name: 'Oracle of Ages', note: 'The Legend of Zelda', tags: ['zelda'], fam: 3, year: 2001},
+    {name: 'Oracle of Seasons', note: 'The Legend of Zelda', tags: ['zelda'], fam: 3, year: 2001},
+    {name: 'Four Swords', note: 'The Legend of Zelda', tags: ['zelda'], fam: 3, year: 2002},
+    {name: 'The Minish Cap', note: 'The Legend of Zelda', tags: ['zelda'], fam: 3, year: 2004},
+    {name: 'Phantom Hourglass', note: 'The Legend of Zelda', tags: ['zelda'], fam: 3, year: 2007},
+    {name: 'Spirit Tracks', note: 'The Legend of Zelda', tags: ['zelda'], fam: 3, year: 2009},
+    {name: 'A Link Between Worlds', note: 'The Legend of Zelda', tags: ['zelda'], fam: 4, year: 2013},
+    {name: 'Tri Force Heroes', note: 'The Legend of Zelda', tags: ['zelda'], fam: 2, year: 2015},
   ],
 });
