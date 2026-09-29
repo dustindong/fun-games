@@ -32,27 +32,32 @@ test('the page loads objects.js before game logic and does not duplicate catalog
  assert.match(html,/window\.HOW_BIG_OBJECTS/);
 });
 
-test('every catalog object is referenced by a comparison or eligible standard pair generation',()=>{
+test('every unordered pair of catalog objects is represented exactly once',()=>{
  const from=html.indexOf('const PAIRS_RAW = ['),to=html.indexOf('\n];',from)+3;
  const pairContext=vm.createContext({});
  vm.runInContext(html.slice(from,to).replace('const PAIRS_RAW','globalThis.PAIRS_RAW'),pairContext);
- const covered=new Set(pairContext.PAIRS_RAW.flatMap(row=>[row[0],row[1]]));
- const meterRows=data.STD.map(([id,pic,phrase,ft,note,name,cat,fam])=>({id,pic,height:ft*.3048,fam}));
- for(let i=0;i<meterRows.length;i++)for(let j=i+1;j<meterRows.length;j++){
-  const a=meterRows[i],b=meterRows[j],q=Math.max(a.height,b.height)/Math.min(a.height,b.height),f=Math.min(a.fam,b.fam);
-  if((q>=1.15&&q<=2.5&&f>=6)||(q<1.15&&f>=8)){covered.add(a.id);covered.add(b.id);}
+ const byId=Object.fromEntries(rawRows.map(([id,e,a,height])=>[id,{id,e,height,unit:'m'}]));
+ for(const [id,pic,phrase,ft,note,name,cat,fam] of data.STD){
+  const o=byId[id]||{id}; Object.assign(o,{height:ft*.3048,unit:'m',cat,fam}); if(pic)o.e=pic; byId[id]=o;
  }
- assert.equal(pairContext.PAIRS_RAW.filter(row=>row[4].includes('coverage')).length,0);
- assert.deepEqual([...allIds].filter(id=>!covered.has(id)),[]);
- const byId=new Map(rawRows.map(row=>[row[0],{height:row[3],e:row[1]}]));
- for(const [id,pic,phrase,ft] of data.STD){const o=byId.get(id)||{};o.height=ft*.3048;o.e=pic||o.e;byId.set(id,o);}
- for(const [a,b,theme,level,tags] of pairContext.PAIRS_RAW.filter(row=>row[4].includes('coverage'))){
-  const x=byId.get(a),y=byId.get(b),q=Math.max(x.height,y.height)/Math.min(x.height,y.height);
-  assert(x&&y&&x.height>0&&y.height>0,`${a}|${b} uses catalog entries with heights`);
-  assert(['animals','dinos','everyday','vehicles','tech','landmarks','rides','rockets','people','sports','popculture'].includes(theme));
-  if(tags.includes('close')) assert(q<=1.25+1e-9,`${a}|${b} is a close pair`);
-  else if(tags.includes('tiny')) assert(q>=1.25&&q<=4&&Math.max(x.height,y.height)<=.3,`${a}|${b} is a tiny pair`);
-  else if(tags.includes('giant')) assert(q>=4&&q<=30,`${a}|${b} is a giant pair`);
-  else assert(q>1.25&&q<=4,`${a}|${b} is a normal pair`);
+ const genStart=html.indexOf('function genPairs()'),genEnd=html.indexOf('\nconst PAIRS =',genStart);
+ assert(genStart>=0&&genEnd>genStart,'pair generator exists');
+ const genContext=vm.createContext({BY:byId,PAIRS_RAW:pairContext.PAIRS_RAW});
+ vm.runInContext(\`${html.slice(genStart,genEnd)}; globalThis.generated=genPairs();\`,genContext);
+ const curated=pairContext.PAIRS_RAW.map(([a,b])=>[a,b]);
+ const generated=genContext.generated.map(p=>[p.ref,p.tgt]);
+ const pairs=[...curated,...generated], key=([a,b])=>[a,b].sort().join('|');
+ assert.equal(new Set(curated.map(key)).size,curated.length,'curated pairs have no duplicate unordered pair');
+ assert.equal(new Set(pairs.map(key)).size,pairs.length,'no pair is duplicated');
+ assert.equal(pairs.length,allIds.size*(allIds.size-1)/2);
+ assert.deepEqual([...new Set(pairs.flatMap(([a,b])=>[a,b]))].sort(),[...allIds].sort());
+ const kinds=new Map(genContext.generated.map(p=>[key([p.ref,p.tgt]),p.kind]));
+ for(const [a,b] of generated){
+  const q=Math.max(byId[a].height,byId[b].height)/Math.min(byId[a].height,byId[b].height),kind=kinds.get(key([a,b]));
+  assert(['close','normal','giant'].includes(kind),\`${a}|${b} has a supported round kind\`);
+  if(kind==='close')assert(q<=1.25+1e-9,\`${a}|${b} is within the close-call range\`);
+  if(kind==='normal')assert(q>1.25&&q<=4,\`${a}|${b} is within the normal range\`);
+  if(kind==='giant')assert(q>4,\`${a}|${b} is within the giant range\`);
  }
+ assert.match(html,/giant: \{min: 4, max: Infinity,/,'giant rounds admit every height ratio');
 });
