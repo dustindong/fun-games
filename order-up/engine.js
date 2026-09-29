@@ -66,6 +66,7 @@ function matches(it, f) {
 const typeOf = c => c.type || (c.year ? 'chronology' : 'measure');
 
 const SETS = {}, VIEWS = {};
+const DISABLED_VIEW_IDS = new Set(['movies.hp']);
 function addSet(ds) {
   if (SETS[ds.id]) throw new Error(`duplicate dataset ${ds.id}`);
   SETS[ds.id] = ds;
@@ -76,6 +77,7 @@ function addSet(ds) {
   const hasFam = items.some(it => it.fam != null);
   for (const c of ds.comparisons) {
     const id = `${ds.id}.${c.id || c.key}`;
+    if (DISABLED_VIEW_IDS.has(id)) continue;
     if (VIEWS[id]) throw new Error(`duplicate comparison ${id}: give filtered comparisons their own id`);
     // an item takes part in a comparison only when it passes the filter and has a real value for it
     const list = items.filter(it => typeof it[c.key] === 'number' && isFinite(it[c.key]) && matches(it, c.filter)).map(it => ({
