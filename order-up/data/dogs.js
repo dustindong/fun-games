@@ -9,7 +9,7 @@
      src: 'Typical adult weight: the middle of each breed’s American Kennel Club standard. Every breed in a round is at least 1.35× heavier than the next.'},
     {key: 'in', type: 'measure', weight: 0.6, title: 'Dog breed height', ask: 'Tallest breed to shortest', hi: 'Tallest', lo: 'Shortest', unit: 'in', gap: 1.2, about: true,
      src: 'Height at the shoulder: the middle of each breed’s American Kennel Club standard. Every breed in a round is at least 1.2× taller than the next.'},
-    {key: 'life', type: 'age', weight: 0.7, title: 'Dog breed lifespan', ask: 'Longest life to shortest', hi: 'Longest life', lo: 'Shortest life', unit: 'yrs', gap: 2, abs: true,
+    {key: 'life', type: 'age', weight: 0.5, title: 'Dog breed lifespan', ask: 'Longest life to shortest', hi: 'Longest life', lo: 'Shortest life', unit: 'yrs', gap: 2, abs: true,
      src: 'Typical lifespan: the middle of the range the American Kennel Club gives for each breed. Every breed in a round is at least 2 years apart.'},
   ],
   items: [
