@@ -43,7 +43,7 @@ test('every unordered pair of catalog objects is represented exactly once',()=>{
  const genStart=html.indexOf('function genPairs()'),genEnd=html.indexOf('\nconst PAIRS =',genStart);
  assert(genStart>=0&&genEnd>genStart,'pair generator exists');
  const genContext=vm.createContext({BY:byId,PAIRS_RAW:pairContext.PAIRS_RAW});
- vm.runInContext(\`${html.slice(genStart,genEnd)}; globalThis.generated=genPairs();\`,genContext);
+ vm.runInContext(`${html.slice(genStart,genEnd)}; globalThis.generated=genPairs();`,genContext);
  const curated=pairContext.PAIRS_RAW.map(([a,b])=>[a,b]);
  const generated=genContext.generated.map(p=>[p.ref,p.tgt]);
  const pairs=[...curated,...generated], key=([a,b])=>[a,b].sort().join('|');
@@ -54,10 +54,10 @@ test('every unordered pair of catalog objects is represented exactly once',()=>{
  const kinds=new Map(genContext.generated.map(p=>[key([p.ref,p.tgt]),p.kind]));
  for(const [a,b] of generated){
   const q=Math.max(byId[a].height,byId[b].height)/Math.min(byId[a].height,byId[b].height),kind=kinds.get(key([a,b]));
-  assert(['close','normal','giant'].includes(kind),\`${a}|${b} has a supported round kind\`);
-  if(kind==='close')assert(q<=1.25+1e-9,\`${a}|${b} is within the close-call range\`);
-  if(kind==='normal')assert(q>1.25&&q<=4,\`${a}|${b} is within the normal range\`);
-  if(kind==='giant')assert(q>4,\`${a}|${b} is within the giant range\`);
+  assert(['close','normal','giant'].includes(kind),`${a}|${b} has a supported round kind`);
+  if(kind==='close')assert(q<=1.25+1e-9,`${a}|${b} is within the close-call range`);
+  if(kind==='normal')assert(q>1.25&&q<=4,`${a}|${b} is within the normal range`);
+  if(kind==='giant')assert(q>4,`${a}|${b} is within the giant range`);
  }
  assert.match(html,/giant: \{min: 4, max: Infinity,/,'giant rounds admit every height ratio');
 });
