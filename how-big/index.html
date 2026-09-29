@@ -3335,7 +3335,7 @@ function label(c, x, y, align, lines, maxW) {
 }
 // The full visible illustration is the measurement: its baseline is 0 and its top is 1.
 function shapeOf(o) { const m = meas(o); return {m, w: m.w / m.h, h: 1}; }
-/* s: {ref, tgt, g (target size drawn, as a multiple of the reference), fit (largest target size to make room for), scaleFit (stable zoom anchor),
+/* s: {ref, tgt, g (target size drawn, as a multiple of the reference), fit (largest target size to make room for),
        ghosts [{g, color, text, mine, alpha}], refLines, tgtLines, tgtColor, tagR, handle, actual (label on the true size)} */
 function drawStage(cv, s) {
   const W = cv.clientWidth, H = cv.clientHeight;
@@ -3361,10 +3361,7 @@ function drawStage(cv, s) {
   const pad = 30, top = 70, gap = Math.min(48, W * 0.08), extraR = 16 + ghosts.length * 7;
   const R0 = shapeOf(s.ref), T0 = shapeOf(s.tgt);
   // 1 unit = the reference's full visible height; drawings keep their own proportions
-  // Keep the stage zoom anchored to the true answer during a round. The target
-  // guess and reveal animation can change `fit`, but should never resize the reference.
-  const scaleFit = s.scaleFit ?? s.fit;
-  const k = 0.65 * Math.min((W - 2 * pad - gap - extraR) / (R0.w + T0.w * scaleFit), (ground - top) / Math.max(R0.h, T0.h * scaleFit));
+  const k = 0.65 * Math.min((W - 2 * pad - gap - extraR) / (R0.w + T0.w * s.fit), (ground - top) / Math.max(R0.h, T0.h * s.fit));
   const lw = R0.w * k, rwid = T0.w * s.fit * k;
   const mid = Math.min(Math.max(W / 2, pad + lw + gap / 2), W - pad - extraR - rwid - gap / 2);
   const x0 = mid - gap / 2 - lw, x1 = mid + gap / 2;
@@ -3981,10 +3978,10 @@ function stageState() {
     const mineG = selected ? selectedGuess : local.touched ? local.g : null;
     const tgtLines = done ? [[fmtHeight(tgt), 'green']] : [['? tall', 'measure']];
     if (mineG != null) tgtLines.push([`${selected ? selected.name : 'you'}: ${fmtLen(mineG * ref.height)}`, 'red']);
-    return {ref, tgt, g, fit, scaleFit: r, ghosts, refLines, tgtLines, tgtColor: done ? 'green' : 'measure', tagR: done ? 'ACTUAL SIZE' : 'REVEALING…',
+    return {ref, tgt, g, fit, ghosts, refLines, tgtLines, tgtColor: done ? 'green' : 'measure', tagR: done ? 'ACTUAL SIZE' : 'REVEALING…',
       actual: done ? `Actual: ${fmtLen(tgt.height)}` : null};
   }
-  return {ref, tgt, g: local.g, fit: local.g, scaleFit: r, ghosts: [], refLines, tgtLines: [['? tall', 'measure']], tgtColor: 'measure',
+  return {ref, tgt, g: local.g, fit: local.g, ghosts: [], refLines, tgtLines: [['? tall', 'measure']], tgtColor: 'measure',
     handle: !local.locked};
 }
 
