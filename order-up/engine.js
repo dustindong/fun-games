@@ -270,6 +270,14 @@ const goodMix = (t, got) => {
   if (t.capFamous === undefined) t.capFamous = t.list.filter(i => i.tier !== 0).length >= t.list.length * 0.3;
   return famous >= 2 && (famous <= 4 || !t.capFamous) && hard <= 1;
 };
+const idealMix = (t, got) => {
+  if (!t.famous) return true;
+  const famous = got.filter(i => i.tier === 0).length;
+  const medium = got.filter(i => i.tier === 1).length;
+  const hard = got.filter(i => i.tier === 2).length;
+  const hasMedium = t.list.some(i => i.tier === 1);
+  return famous >= 2 && famous <= 3 && hard <= 1 && (!hasMedium || medium >= 1);
+};
 /* five items for a round. Options (all optional) tune it for the round's place in the game:
    - win: the neighbor window as a share of the sorted pool (default 0.55); smaller means closer values
    - min: the smallest window (default 10)
@@ -290,7 +298,9 @@ function pick5(t, o = {}) {
       if (got.length === N) break;
     }
     if (got.length !== N) continue;
-    if (mixOK(got) || (!o.strict && (tries >= 200 || (tries >= 160 && goodMix(t, got))))) return got;
+    if ((idealMix(t, got) && mixOK(got)) ||
+        (!o.strict && tries >= 160 && mixOK(got)) ||
+        (!o.strict && tries >= 220 && goodMix(t, got))) return got;
   }
   return null;
 }
@@ -316,18 +326,41 @@ const isPerfect = p => p === ROUND_MAX;
      tech) get a small head start; curated sequences are capped at about one round in five
    - two rounds from one dataset in a game can't share three or more items (Pixar movies, then all movies)
    Then five items are picked with the value gap and familiarity mix, and a round (view + the same five items)
-   never repeats within a game and is avoided if seen recently. */
+   never repeats within a game and is avoided if seen recently.
+   Session memory also cools down recently used topics, comparison types and individual items. */
 // the most rounds of one type in a 10-round game before it gets pushed back hard
 const TYPE_CAP = {chronology: 3, measure: 3, popularity: 3};
 const SEQ_SHARE = 0.2;
 const STATS = new Set(['measure', 'nutrition']);
 const roundKey = (view, five) => view.id + '|' + five.map(x => x.id).sort().join(',');
-function newHistory() { return {used: new Set(), order: [], cmpUse: {}, catUse: {}}; }
-function remember(hist, key, view) {
+function newHistory() {
+  return {used: new Set(), order: [], cmpUse: {}, catUse: {}, recentViews: [], recentTypes: [], recentItems: [], recentItemSet: new Set()};
+}
+function remember(hist, key, view, five = []) {
   hist.used.add(key); hist.order.push(key);
   if (hist.order.length > 400) hist.used.delete(hist.order.shift());
   hist.cmpUse[view.id] = (hist.cmpUse[view.id] || 0) + 1;
   if (hist.catUse) hist.catUse[view.cat.id] = (hist.catUse[view.cat.id] || 0) + 1;
+
+  hist.recentViews = hist.recentViews || [];
+  hist.recentTypes = hist.recentTypes || [];
+  hist.recentItems = hist.recentItems || [];
+  hist.recentItemSet = hist.recentItemSet || new Set();
+
+  hist.recentViews.push(view.id);
+  if (hist.recentViews.length > 8) hist.recentViews.shift();
+  hist.recentTypes.push(view.type);
+  if (hist.recentTypes.length > 5) hist.recentTypes.shift();
+
+  for (const item of five) {
+    const itemKey = view.set.id + '/' + item.id;
+    hist.recentItems.push(itemKey);
+    hist.recentItemSet.add(itemKey);
+  }
+  while (hist.recentItems.length > 60) {
+    const old = hist.recentItems.shift();
+    if (!hist.recentItems.includes(old)) hist.recentItemSet.delete(old);
+  }
 }
 /* PACING AND SPECIAL ROUNDS. A game has a light arc without fixed slots:
    - rounds 1-2 lean on very familiar pools and five-item picks with 3+ famous things, no Wild Cards or trivia
@@ -365,6 +398,17 @@ function makeRounds(n, cats, hist = newHistory()) {
     s += t * 22 + (t >= (TYPE_CAP[v.type] ?? 2) ? 180 : 0);
     s += (useSet[v.set.id] || 0) * 45 + (useView[v.id] || 0) * 400;
     s += (hist.cmpUse[v.id] || 0) * 25; // spread a session across all of a category's comparisons
+    const recentViews = hist.recentViews || [];
+    const viewAgo = recentViews.slice().reverse().indexOf(v.id);
+    if (viewAgo === 0) s += 900;
+    else if (viewAgo === 1) s += 650;
+    else if (viewAgo >= 2 && viewAgo <= 3) s += 350;
+    else if (viewAgo >= 4) s += 120;
+    const recentTypes = hist.recentTypes || [];
+    const lastType = recentTypes[recentTypes.length - 1];
+    const prevType = recentTypes[recentTypes.length - 2];
+    if (lastType === v.type) s += 160;
+    if (lastType === v.type && prevType === v.type) s += 300;
     s += (hist.catUse?.[v.cat.id] || 0) * 15; // and rotate which category gets the extra round in a game
     s += (1 - v.weight) * 70;
     if (v.subset) s -= 25; // themed subsets (Pixar, Taylor Swift, sitcoms) are the most fun version of a dataset
@@ -381,6 +425,11 @@ function makeRounds(n, cats, hist = newHistory()) {
       if (!five) return null;
       const key = roundKey(view, five);
       if (inGame.has(key) || (strict && hist.used.has(key))) continue;
+      const recentItemSet = hist.recentItemSet || new Set();
+      const recentCount = five.filter(x => recentItemSet.has(view.set.id + '/' + x.id)).length;
+      // Prefer completely fresh items; relaxed passes may reuse one when a small pool makes that unavoidable.
+      if (strict && recentCount > 0) continue;
+      if (!strict && recentCount > 1) continue;
       // two rounds from one dataset (say Pixar and all movies) shouldn't show mostly the same things
       if (strict && (picked[view.set.id] || []).some(ids => five.filter(x => ids.has(x.id)).length >= 3)) continue;
       return {view, five, key};
@@ -419,7 +468,7 @@ function makeRounds(n, cats, hist = newHistory()) {
     }
     if (flag && flag !== 'final') { specials++; if (flag === 'close') closeDone = true; if (flag === 'throwback') throwDone = true; }
     pass = pass.filter(c => c !== v.cat.id);
-    inGame.add(got.key); remember(hist, got.key, v);
+    inGame.add(got.key); remember(hist, got.key, v, got.five);
     (picked[v.set.id] = picked[v.set.id] || []).push(new Set(got.five.map(x => x.id)));
     if (v.set.sequence) seqs++;
     useView[v.id] = (useView[v.id] || 0) + 1; useSet[v.set.id] = (useSet[v.set.id] || 0) + 1; useType[v.type] = (useType[v.type] || 0) + 1;
