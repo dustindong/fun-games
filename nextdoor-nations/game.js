@@ -140,6 +140,27 @@ function drawArrow(ctx, x1, y1, x2, y2, color) {
 }
 
 function roundFeature(r, key) { return featureFor(r[key]); }
+
+function nearestProjectedPoint(feature, projection, origin) {
+  if (!feature || !feature.geometry) return null;
+  let best = null, bestD = Infinity;
+
+  function visit(coords) {
+    if (!Array.isArray(coords)) return;
+    if (typeof coords[0] === 'number') {
+      const p = projection(coords);
+      if (!p || !Number.isFinite(p[0]) || !Number.isFinite(p[1])) return;
+      const dx = p[0] - origin[0], dy = p[1] - origin[1];
+      const d = dx * dx + dy * dy;
+      if (d < bestD) { bestD = d; best = p; }
+      return;
+    }
+    for (const c of coords) visit(c);
+  }
+
+  visit(feature.geometry.coordinates);
+  return best;
+}
 function mainLand(f) {
   if (!f || !f.geometry || f.geometry.type !== 'MultiPolygon') return f;
   let best = null, area = -1;
@@ -206,21 +227,14 @@ function drawRoundMap(canvas, r, reveal) {
   }
 
   const city = projection([r.lon, r.lat]);
-  const target = projection(d3.geoCentroid(toMain));
+  const target = city ? nearestProjectedPoint(toMain, projection, city) : null;
   if (city && target && Number.isFinite(city[0]) && Number.isFinite(target[0])) {
     const dx = target[0]-city[0], dy = target[1]-city[1], mag = Math.hypot(dx,dy) || 1;
-
-    // Point toward the target without letting the arrow disappear beyond the viewport.
-    const desired = Math.min(130, Math.max(82, mag * .72));
-    const edgePad = 22;
     const ux = dx/mag, uy = dy/mag;
-    let maxLen = desired;
-    if (ux > 0) maxLen = Math.min(maxLen, (w-edgePad-city[0])/ux);
-    if (ux < 0) maxLen = Math.min(maxLen, (edgePad-city[0])/ux);
-    if (uy > 0) maxLen = Math.min(maxLen, (h-edgePad-city[1])/uy);
-    if (uy < 0) maxLen = Math.min(maxLen, (edgePad-city[1])/uy);
-    const len = Math.max(48, maxLen);
 
+    // Keep this deliberately short: it is only a directional clue.
+    // Aim at the nearest edge of the chosen neighboring country, not its center.
+    const len = Math.min(62, Math.max(48, Math.min(w,h) * .105));
     const startX = city[0] + ux*11, startY = city[1] + uy*11;
     const endX = city[0] + ux*len, endY = city[1] + uy*len;
     drawArrow(ctx,startX,startY,endX,endY,css('--yellow'));
