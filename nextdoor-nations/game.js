@@ -106,14 +106,31 @@ function prepareCanvas(canvas) {
 }
 
 function drawArrow(ctx, x1, y1, x2, y2, color) {
-  const a = Math.atan2(y2-y1, x2-x1), head = 12;
+  const a = Math.atan2(y2 - y1, x2 - x1);
+  const head = 15;
   ctx.save();
-  ctx.strokeStyle = color;
-  ctx.fillStyle = color;
-  ctx.lineWidth = 4;
   ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  // dark halo keeps the direction readable over country borders
+  ctx.strokeStyle = 'rgba(0,0,0,.48)';
+  ctx.lineWidth = 10;
   ctx.beginPath();
   ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+
+  ctx.fillStyle = 'rgba(0,0,0,.48)';
+  ctx.beginPath();
+  ctx.moveTo(x2 + Math.cos(a) * 2, y2 + Math.sin(a) * 2);
+  ctx.lineTo(x2-head*Math.cos(a-Math.PI/6)-2*Math.sin(a), y2-head*Math.sin(a-Math.PI/6)+2*Math.cos(a));
+  ctx.lineTo(x2-head*Math.cos(a+Math.PI/6)+2*Math.sin(a), y2-head*Math.sin(a+Math.PI/6)-2*Math.cos(a));
+  ctx.closePath(); ctx.fill();
+
+  ctx.fillStyle = color;
   ctx.beginPath();
   ctx.moveTo(x2,y2);
   ctx.lineTo(x2-head*Math.cos(a-Math.PI/6), y2-head*Math.sin(a-Math.PI/6));
@@ -138,17 +155,29 @@ function drawRoundMap(canvas, r, reveal) {
   if (!mapReady || !canvas || !r) return;
   const fromF = roundFeature(r, 'from'), toF = roundFeature(r, 'to');
   if (!fromF || !toF) return;
+
   const fromMain = mainLand(fromF), toMain = mainLand(toF);
   const s = prepareCanvas(canvas), ctx = s.ctx, w = s.w, h = s.h;
-  const padX = Math.max(30, w * .08), padY = Math.max(24, h * .08);
-  const projection = d3.geoMercator().fitExtent([[padX,padY],[w-padX,h-padY]], fromMain);
-  projection.scale(projection.scale() * .72);
+  const padX = Math.max(42, w * .075), padY = Math.max(34, h * .085);
+
+  // Frame the starting country, the destination neighbor and the city together.
+  // This guarantees the clue can never be projected off-screen.
+  const focus = {
+    type: 'FeatureCollection',
+    features: [
+      fromMain,
+      toMain,
+      {type:'Feature', properties:{}, geometry:{type:'Point', coordinates:[r.lon,r.lat]}}
+    ]
+  };
+  const projection = d3.geoMercator().fitExtent([[padX,padY],[w-padX,h-padY]], focus);
   const path = d3.geoPath(projection, ctx);
 
   ctx.save();
   ctx.beginPath(); ctx.rect(0,0,w,h); ctx.clip();
   ctx.fillStyle = css('--map'); ctx.fillRect(0,0,w,h);
 
+  // Draw the world underneath, but fade it so the clue countries dominate.
   ctx.lineJoin = 'round';
   ctx.lineWidth = 1;
   for (const f of features) {
@@ -157,39 +186,62 @@ function drawRoundMap(canvas, r, reveal) {
     ctx.strokeStyle = css('--line'); ctx.stroke();
   }
 
-  if (reveal) {
-    ctx.beginPath(); path(toF);
-    ctx.fillStyle = css('--greenBg'); ctx.fill();
-    ctx.strokeStyle = css('--green'); ctx.lineWidth = 2.2; ctx.stroke();
-  }
-
+  // Strong start-country treatment: bright fill, blue outline and glow.
+  ctx.save();
+  ctx.shadowColor = css('--blue');
+  ctx.shadowBlur = 14;
   ctx.beginPath(); path(fromF);
   ctx.fillStyle = css('--blue2'); ctx.fill();
-  ctx.strokeStyle = css('--blue'); ctx.lineWidth = 2.4; ctx.stroke();
+  ctx.strokeStyle = css('--blue'); ctx.lineWidth = 4; ctx.stroke();
+  ctx.restore();
+
+  if (reveal) {
+    ctx.save();
+    ctx.shadowColor = css('--green');
+    ctx.shadowBlur = 12;
+    ctx.beginPath(); path(toF);
+    ctx.fillStyle = css('--greenBg'); ctx.fill();
+    ctx.strokeStyle = css('--green'); ctx.lineWidth = 3.5; ctx.stroke();
+    ctx.restore();
+  }
 
   const city = projection([r.lon, r.lat]);
-  const tc = projection(d3.geoCentroid(toMain));
-  if (city && tc && Number.isFinite(city[0]) && Number.isFinite(tc[0])) {
-    const dx = tc[0]-city[0], dy = tc[1]-city[1], mag = Math.hypot(dx,dy) || 1;
-    const len = Math.min(Math.max(72, Math.min(w,h)*.24), 112);
-    const startX = city[0] + dx/mag*10, startY = city[1] + dy/mag*10;
-    const endX = city[0] + dx/mag*len, endY = city[1] + dy/mag*len;
+  const target = projection(d3.geoCentroid(toMain));
+  if (city && target && Number.isFinite(city[0]) && Number.isFinite(target[0])) {
+    const dx = target[0]-city[0], dy = target[1]-city[1], mag = Math.hypot(dx,dy) || 1;
+
+    // Point toward the target without letting the arrow disappear beyond the viewport.
+    const desired = Math.min(130, Math.max(82, mag * .72));
+    const edgePad = 22;
+    const ux = dx/mag, uy = dy/mag;
+    let maxLen = desired;
+    if (ux > 0) maxLen = Math.min(maxLen, (w-edgePad-city[0])/ux);
+    if (ux < 0) maxLen = Math.min(maxLen, (edgePad-city[0])/ux);
+    if (uy > 0) maxLen = Math.min(maxLen, (h-edgePad-city[1])/uy);
+    if (uy < 0) maxLen = Math.min(maxLen, (edgePad-city[1])/uy);
+    const len = Math.max(48, maxLen);
+
+    const startX = city[0] + ux*11, startY = city[1] + uy*11;
+    const endX = city[0] + ux*len, endY = city[1] + uy*len;
     drawArrow(ctx,startX,startY,endX,endY,css('--yellow'));
 
+    // Large city halo + dot.
+    ctx.beginPath(); ctx.arc(city[0],city[1],12,0,Math.PI*2);
+    ctx.fillStyle = 'rgba(244,190,54,.22)'; ctx.fill();
     ctx.beginPath(); ctx.arc(city[0],city[1],7,0,Math.PI*2);
     ctx.fillStyle = css('--yellow'); ctx.fill();
-    ctx.strokeStyle = css('--yellowInk'); ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = css('--yellowInk'); ctx.lineWidth = 2.5; ctx.stroke();
 
     ctx.font = '600 12px "IBM Plex Mono", monospace';
     const label = r.city;
     const tw = ctx.measureText(label).width;
-    let lx = city[0] + 11, ly = city[1] - 15;
-    if (lx + tw + 14 > w) lx = city[0] - tw - 23;
-    if (ly < 18) ly = city[1] + 24;
+    let lx = city[0] + 13, ly = city[1] - 17;
+    if (lx + tw + 16 > w) lx = city[0] - tw - 25;
+    if (ly < 18) ly = city[1] + 27;
     ctx.fillStyle = css('--surface');
     ctx.strokeStyle = css('--line');
     ctx.lineWidth = 1;
-    const bx = lx-6, by = ly-13, bw = tw+12, bh = 20;
+    const bx = lx-6, by = ly-13, bw = tw+12, bh = 21;
     if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,4); ctx.fill(); ctx.stroke(); }
     else { ctx.fillRect(bx,by,bw,bh); ctx.strokeRect(bx,by,bw,bh); }
     ctx.fillStyle = css('--ink'); ctx.fillText(label,lx,ly+1);
