@@ -83,7 +83,7 @@ h1,h2,p{margin:0}
 .tagline{font-size:clamp(17px,2.3vw,21px);max-width:64ch;line-height:1.35}
 
 /* ---------- game cards ---------- */
-.games{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .game{display:grid;grid-template-rows:auto 1fr;background:var(--surface);border:1px solid var(--line);border-radius:10px;
   box-shadow:var(--shadow);overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
 a.game:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:var(--muted)}
@@ -127,7 +127,13 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 .game-hb .meta span{background:color-mix(in srgb,var(--tape) 20%,var(--surface))}
 .game-ou .meta span{background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
 .game-nn .meta span{background:color-mix(in srgb,var(--measure) 14%,var(--surface))}
-.game-hb .preview,.game-ou .preview,.game-nn .preview{background:none;border-bottom:0}
+.game-ww{background:color-mix(in srgb,#6C5CE7 7%,var(--surface));border-color:color-mix(in srgb,#6C5CE7 35%,var(--line))}
+.game-ww .meta span{background:color-mix(in srgb,#6C5CE7 14%,var(--surface))}
+.game-hb .preview,.game-ou .preview,.game-nn .preview,.game-ww .preview{background:none;border-bottom:0}
+.game-ww .body{justify-items:center;text-align:center;padding-top:0}
+.game-ww .name{margin:-25px 0 5px;position:relative;z-index:1;padding:9px 15px 8px;border:3px solid var(--ink);border-radius:12px;background:var(--surface);box-shadow:4px 5px 0 color-mix(in srgb,#6C5CE7 70%,var(--ink));font-size:31px;line-height:.82;transform:rotate(1.5deg)}
+.game-ww .meta{justify-content:center}.game-ww .play{justify-self:center;background:#6C5CE7;color:#fff}
+.ww-paper{fill:var(--surface);stroke:color-mix(in srgb,#6C5CE7 42%,var(--line));stroke-width:1.5}.ww-line{font:700 18px var(--body);fill:var(--ink)}.ww-choice{fill:var(--surface);stroke:var(--line)}.ww-choice-ok{fill:color-mix(in srgb,#6C5CE7 16%,var(--surface));stroke:#6C5CE7;stroke-width:1.8}.ww-label{font:700 10px var(--mono);fill:var(--muted)}.ww-check{fill:#6C5CE7}
 .game-nn .body{justify-items:center;text-align:center;padding-top:0}
 .game-nn .name{margin:-25px 0 5px;position:relative;z-index:1;padding:9px 15px 8px;border:3px solid var(--ink);border-radius:12px;background:var(--surface);box-shadow:4px 5px 0 color-mix(in srgb,var(--measure) 70%,var(--ink));font-size:31px;line-height:.82;transform:rotate(-2deg)}
 .game-nn .meta{justify-content:center}
@@ -247,6 +253,28 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
         <p class="desc">Follow the arrow from a city and name the neighboring country it points toward.</p>
         <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>352 directions</span></div>
         <span class="play">Play Nextdoor Nations
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </a>
+
+    <!-- Where in the Word? -->
+    <a class="game game-ww" href="where-in-the-word/">
+      <svg class="preview ww" viewBox="0 0 400 200" role="img" aria-label="A language phrase with four country choices">
+        <rect class="ww-paper" x="53" y="28" width="294" height="76" rx="10"/>
+        <text class="ww-label" x="74" y="50">LANGUAGE CLUE</text>
+        <text class="ww-line" x="200" y="80" text-anchor="middle">Dziękuję bardzo.</text>
+        <rect class="ww-choice" x="70" y="119" width="118" height="27" rx="7"/><text class="ww-label" x="129" y="137" text-anchor="middle">CZECHIA</text>
+        <rect class="ww-choice-ok" x="212" y="119" width="118" height="27" rx="7"/><text class="ww-label" x="271" y="137" text-anchor="middle">POLAND</text>
+        <rect class="ww-choice" x="70" y="154" width="118" height="27" rx="7"/><text class="ww-label" x="129" y="172" text-anchor="middle">HUNGARY</text>
+        <rect class="ww-choice" x="212" y="154" width="118" height="27" rx="7"/><text class="ww-label" x="271" y="172" text-anchor="middle">SLOVAKIA</text>
+        <circle class="ww-check" cx="318" cy="130" r="7"/><path d="M314 130l3 3 5-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="body">
+        <h2 class="name">Where in<br>the Word?</h2>
+        <p class="desc">Read the language, pick the country, and score more the faster you recognize it.</p>
+        <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>45 languages</span></div>
+        <span class="play">Play Where in the Word?
           <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
       </div>
