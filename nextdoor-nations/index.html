@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Nextdoor Nations">
-<meta name="description" content="Nextdoor Nations is a multiplayer geography party game. Follow the arrow from a city and name the neighboring country.">
+<meta name="description" content="Nextdoor Nations is a multiplayer geography party game. Follow the arrow toward a neighboring country’s capital and name the country.">
 <title>Nextdoor Nations</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M4 6h24v20H4z' fill='%232D69AC'/%3E%3Ccircle cx='12' cy='17' r='3' fill='%23F2B21B'/%3E%3Cpath d='M14 15l10-6-5 10z' fill='%23F2B21B'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -73,12 +73,12 @@ input[type=text]{width:100%;border:1px solid var(--line);background:var(--surfac
     <div class="hero">
       <h1 class="title">Nextdoor <span>Nations</span></h1>
       <div class="route-strip" aria-hidden="true"></div>
-      <p class="tagline">You know the country you're standing in. Follow the arrow from a city and name the neighboring nation it points toward.</p>
+      <p class="tagline">You know the country you're standing in. The arrow points in the direction of a bordering country's capital. Name that country.</p>
     </div>
     <div class="home-grid">
       <figure class="card demo" style="margin:0">
         <canvas class="map-canvas" id="demo" aria-label="Example Nextdoor Nations map"></canvas>
-        <figcaption>Example: France is shown in full. The city dot is Paris. Which neighboring country is the arrow pointing toward?</figcaption>
+        <figcaption>Example: France is shown in full. From Paris, the arrow points toward the capital of a bordering country. Which country is it?</figcaption>
       </figure>
       <div class="card play">
         <div class="field"><label for="nm">Your name</label><input type="text" id="nm" maxlength="16" autocomplete="nickname" placeholder="e.g. Dustin"></div>
@@ -92,7 +92,7 @@ input[type=text]{width:100%;border:1px solid var(--line);background:var(--surfac
     </div>
     <div class="rules">
       <div class="rule"><b>1. Read the map</b><p>The blue country is shown in full. Nearby countries peek in around the edges with no labels.</p></div>
-      <div class="rule"><b>2. Follow the arrow</b><p>A real city is marked with a dot. The arrow points toward one country that shares a land border.</p></div>
+      <div class="rule"><b>2. Follow the arrow</b><p>A real city is marked with a dot. The arrow shows the direction of the capital of one country that shares a land border.</p></div>
       <div class="rule"><b>3. Name the neighbor</b><p>Type to search every country, choose from autocomplete, and lock in before 25 seconds run out.</p></div>
     </div>
   </section>
@@ -123,8 +123,8 @@ input[type=text]{width:100%;border:1px solid var(--line);background:var(--surfac
       <div class="timer" id="timer"><div class="timer-fill" id="timer-fill"></div><span class="timer-sec" id="timer-sec">25s</span></div>
       <div class="stat right"><span class="eyebrow">Score</span><b id="rb-score">0</b></div>
     </div>
-    <div class="ask"><div><span class="eyebrow">From <span id="from-name"></span></span><h2 class="prompt">Which country is the arrow <em>pointing to?</em></h2></div><span class="difficulty" id="difficulty"></span></div>
-    <div class="card stage"><canvas class="map-canvas" id="game-map" aria-label="Country outline with a city and directional arrow"></canvas><div class="map-overlay" id="map-overlay"></div></div>
+    <div class="ask"><div><span class="eyebrow">From <span id="from-name"></span> · Arrow points toward a neighboring capital</span><h2 class="prompt">Which neighboring <em>country</em> is it?</h2></div><span class="difficulty" id="difficulty"></span></div>
+    <div class="card stage"><canvas class="map-canvas" id="game-map" aria-label="Country outline with a city and a short arrow pointing toward the capital of a neighboring country"></canvas><div class="map-overlay" id="map-overlay"></div></div>
     <div id="play-ui">
       <div class="answer-row">
         <div class="answerbox">
