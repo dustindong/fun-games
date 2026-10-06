@@ -462,9 +462,9 @@ function syncLocal(){
 
 async function submit(manual){
   if(local.submitted||!room||room.phase==='final')return;
-  const a=manual?(local.selected||resolveCountry($('#answer').value)):null;
+  const a=local.selected||resolveCountry($('#answer').value);
   if(manual&&!a){$('#answer').focus();toast('Choose a country from the list first.');return;}
-  local.locked=true;local.submitted=true;renderRound();
+  hideSuggestions();local.locked=true;local.submitted=true;renderRound();
   const ms=Math.max(0,Math.min(SECONDS*1000,Date.now()-(room.at||Date.now())));
   const p=scoreAnswer(a,room.rounds[room.round],ms);
   const body={scores:{[room.game]:{['r'+room.round]:{a:a,p:p,ms:ms}}}};
