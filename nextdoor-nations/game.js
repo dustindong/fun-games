@@ -123,14 +123,25 @@ function drawArrow(ctx, x1, y1, x2, y2, color) {
 }
 
 function roundFeature(r, key) { return featureFor(r[key]); }
+function mainLand(f) {
+  if (!f || !f.geometry || f.geometry.type !== 'MultiPolygon') return f;
+  let best = null, area = -1;
+  for (const coords of f.geometry.coordinates) {
+    const p = {type:'Feature', properties:f.properties, geometry:{type:'Polygon', coordinates:coords}};
+    const a = d3.geoArea(p);
+    if (a > area) { area = a; best = p; }
+  }
+  return best || f;
+}
 
 function drawRoundMap(canvas, r, reveal) {
   if (!mapReady || !canvas || !r) return;
   const fromF = roundFeature(r, 'from'), toF = roundFeature(r, 'to');
   if (!fromF || !toF) return;
+  const fromMain = mainLand(fromF), toMain = mainLand(toF);
   const s = prepareCanvas(canvas), ctx = s.ctx, w = s.w, h = s.h;
   const padX = Math.max(30, w * .08), padY = Math.max(24, h * .08);
-  const projection = d3.geoMercator().fitExtent([[padX,padY],[w-padX,h-padY]], fromF);
+  const projection = d3.geoMercator().fitExtent([[padX,padY],[w-padX,h-padY]], fromMain);
   projection.scale(projection.scale() * .72);
   const path = d3.geoPath(projection, ctx);
 
@@ -147,17 +158,17 @@ function drawRoundMap(canvas, r, reveal) {
   }
 
   if (reveal) {
-    ctx.beginPath(); path(toF);
+    ctx.beginPath(); path(toMain);
     ctx.fillStyle = css('--greenBg'); ctx.fill();
     ctx.strokeStyle = css('--green'); ctx.lineWidth = 2.2; ctx.stroke();
   }
 
-  ctx.beginPath(); path(fromF);
+  ctx.beginPath(); path(fromMain);
   ctx.fillStyle = css('--blue2'); ctx.fill();
   ctx.strokeStyle = css('--blue'); ctx.lineWidth = 2.4; ctx.stroke();
 
   const city = projection([r.lon, r.lat]);
-  const tc = projection(d3.geoCentroid(toF));
+  const tc = projection(d3.geoCentroid(toMain));
   if (city && tc && Number.isFinite(city[0]) && Number.isFinite(tc[0])) {
     const dx = tc[0]-city[0], dy = tc[1]-city[1], mag = Math.hypot(dx,dy) || 1;
     const len = Math.min(Math.max(72, Math.min(w,h)*.24), 112);
@@ -371,7 +382,7 @@ function exitToHome(){
   stopSubs();clearTimeout(hostT.t);hostT={key:null,t:null,busy:false};cleanupPeer();
   code=null;room=null;players=[];local={key:null};mode=null;db=null;show('home');setNet();
 }
-async function withBusy(btn,fn){btn.disabled=true;try{await fn();}finally{setNet();}}
+async function withBusy(btn,fn){btn.disabled=true;try{await fn();}finally{btn.disabled=false;setNet();}}
 function readName(){
   const n=$('#nm').value.trim().replace(/\s+/g,' ').slice(0,16);
   if(!n){homeErr('Add your name first.');$('#nm').focus();return false;}
