@@ -567,7 +567,12 @@ function renderRound(){
   $('#rb-num').textContent=room.round+1;$('#rb-of').textContent='/'+room.rounds.length;
   $('#rb-score').textContent=totalOf(mine())-(reveal||!rec?0:(rec.p||0));
   $('#from-name').textContent=r.from;$('#difficulty').textContent=difficultyText(r.d);
-  $('#map-overlay').textContent=r.city+' • '+r.from+(reveal?' → '+r.to:' → ?');
+  {
+    const cap = capitalFor(r.to);
+    $('#map-overlay').textContent = reveal
+      ? r.city+' • '+r.from+' → '+(cap ? cap.name+', ' : '')+r.to
+      : r.city+' • '+r.from+' · arrow bearing: neighboring capital';
+  }
   drawRoundMap($('#game-map'),r,reveal);
 
   $('#play-ui').hidden=reveal;$('#reveal').hidden=!reveal;
@@ -583,7 +588,10 @@ function renderRound(){
     $('#rv-answer').textContent=r.to;
     $('#rv-yours').innerHTML=a?'You chose <strong>'+esc(a)+'</strong>.':'You did not lock in an answer.';
     $('#rv-points').textContent='+'+p+' pts';
-    $('#rv-note').textContent=r.city+', '+r.from+' points toward '+r.to+'. Correct answers are worth 100 points plus up to 50 for speed.';
+    {
+      const cap = capitalFor(r.to);
+      $('#rv-note').textContent = 'From '+r.city+', '+r.from+', the arrow was aimed toward '+(cap ? cap.name+', the capital of ' : 'the capital of ')+r.to+'. Correct answers are worth 100 points plus up to 50 for speed.';
+    }
     const rows=players.map(pl=>({pl:pl,rec:scoreRec(pl,room.round)})).sort((a,b)=>(b.rec&&b.rec.p||-1)-(a.rec&&a.rec.p||-1));
     $('#rv-list').innerHTML=rows.map(x=>'<li><i class="dot" style="background:'+esc(x.pl.color)+'"></i><span class="nm">'+esc(x.pl.name)+'</span><span class="ans">'+esc(x.rec&&x.rec.a||'No answer')+'</span><span class="pts">'+(x.rec&&x.rec.p||0)+'</span></li>').join('');
     const last=room.round+1>=room.rounds.length;
