@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=IBM+Plex+Mono:wght@500;600&family=Instrument+Sans:wght@400;500;600;700&display=swap">
 <style>
 :root{
-  --paper:#EDF1F4; --paper-top:#F5F8FA; --pool-a:rgba(242,178,27,.12); --pool-b:rgba(238,94,51,.08); --surface:#FFFFFF; --surface-2:#F1F4F6;
+  --paper:#EDF1F4; --paper-top:#F5F8FA; --pool-a:rgba(242,178,27,.12); --pool-b:rgba(238,94,51,.08); --pool-c:rgba(45,105,172,.09); --surface:#FFFFFF; --surface-2:#F1F4F6;
   --ink:#14212C; --muted:#3F4E5A; --line:#C8D2D9;
   --tape:#F2B21B; --tape-ink:#261C02; --measure:#2D69AC;
   --stage:#F8FAFB; --stage-grid:#E5EBEF; --focus:#2D69AC; --figure:#9AA6B1; --accent:#EE5E33; --accent-ink:#2A0C02;
@@ -34,7 +34,7 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#0F1D2B; --paper-top:#1B2E43; --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.12); --surface:#122130; --surface-2:#172a3b;
+    --paper:#0F1D2B; --paper-top:#1B2E43; --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.12); --pool-c:rgba(114,170,232,.12); --surface:#122130; --surface-2:#172a3b;
     --ink:#E3EBF1; --muted:#B3C2CE; --line:#26394B;
     --tape:#F4BE36; --tape-ink:#261C02; --measure:#72AAE8;
     --stage:#0F1E2C; --stage-grid:#182B3D; --focus:#72AAE8; --figure:#5E7080; --accent:#F7815C; --accent-ink:#2A0C02;
@@ -44,7 +44,7 @@
   }
 }
 :root[data-theme="dark"]{
-  --paper:#0F1D2B; --paper-top:#1B2E43; --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.12); --surface:#122130; --surface-2:#172a3b;
+  --paper:#0F1D2B; --paper-top:#1B2E43; --pool-a:rgba(244,190,54,.12); --pool-b:rgba(247,129,92,.12); --pool-c:rgba(114,170,232,.12); --surface:#122130; --surface-2:#172a3b;
   --ink:#E3EBF1; --muted:#B3C2CE; --line:#26394B;
   --tape:#F4BE36; --tape-ink:#261C02; --measure:#72AAE8;
   --stage:#0F1E2C; --stage-grid:#182B3D; --focus:#72AAE8; --figure:#5E7080; --accent:#F7815C; --accent-ink:#2A0C02;
@@ -57,10 +57,11 @@ html{background:var(--paper)}
 body{
   margin:0;
   min-height:100vh;
-  /* two soft pools of color behind the cards (yellow for How Big?, coral for Order Up!) over a navy that lifts toward the top */
+  /* soft color pools echo each game's accent */
   background:
-    radial-gradient(ellipse 58% 62% at 22% 64%,var(--pool-a),transparent 70%),
-    radial-gradient(ellipse 58% 62% at 78% 64%,var(--pool-b),transparent 70%),
+    radial-gradient(ellipse 42% 58% at 16% 64%,var(--pool-a),transparent 72%),
+    radial-gradient(ellipse 42% 58% at 50% 64%,var(--pool-b),transparent 72%),
+    radial-gradient(ellipse 42% 58% at 84% 64%,var(--pool-c),transparent 72%),
     linear-gradient(var(--paper-top),var(--paper) 640px) var(--paper);
   color:var(--ink); font:15px/1.5 var(--body);
   padding-inline:max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
@@ -82,7 +83,7 @@ h1,h2,p{margin:0}
 .tagline{font-size:clamp(17px,2.3vw,21px);max-width:64ch;line-height:1.35}
 
 /* ---------- game cards ---------- */
-.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.games{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .game{display:grid;grid-template-rows:auto 1fr;background:var(--surface);border:1px solid var(--line);border-radius:10px;
   box-shadow:var(--shadow);overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
 a.game:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:var(--muted)}
@@ -122,9 +123,16 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 /* each card carries a light wash of its button color */
 .game-hb{background:color-mix(in srgb,var(--tape) 9%,var(--surface));border-color:color-mix(in srgb,var(--tape) 40%,var(--line))}
 .game-ou{background:color-mix(in srgb,var(--accent) 7%,var(--surface));border-color:color-mix(in srgb,var(--accent) 35%,var(--line))}
+.game-nn{background:color-mix(in srgb,var(--measure) 7%,var(--surface));border-color:color-mix(in srgb,var(--measure) 35%,var(--line))}
 .game-hb .meta span{background:color-mix(in srgb,var(--tape) 20%,var(--surface))}
 .game-ou .meta span{background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
-.game-hb .preview,.game-ou .preview{background:none;border-bottom:0}
+.game-nn .meta span{background:color-mix(in srgb,var(--measure) 14%,var(--surface))}
+.game-hb .preview,.game-ou .preview,.game-nn .preview{background:none;border-bottom:0}
+.game-nn .body{justify-items:center;text-align:center;padding-top:0}
+.game-nn .name{margin:-25px 0 5px;position:relative;z-index:1;padding:9px 15px 8px;border:3px solid var(--ink);border-radius:12px;background:var(--surface);box-shadow:4px 5px 0 color-mix(in srgb,var(--measure) 70%,var(--ink));font-size:31px;line-height:.82;transform:rotate(-2deg)}
+.game-nn .meta{justify-content:center}
+.game-nn .play{justify-self:center;background:var(--measure);color:#fff}
+.nn-land{fill:var(--surface);stroke:var(--line);stroke-width:1.2}.nn-home{fill:color-mix(in srgb,var(--measure) 24%,var(--surface));stroke:var(--measure);stroke-width:2}.nn-city{fill:var(--tape);stroke:var(--tape-ink);stroke-width:1.5}.nn-arrow{stroke:var(--tape);stroke-width:4;stroke-linecap:round;fill:none}.nn-head{fill:var(--tape)}.nn-tag{font:700 9px var(--mono);letter-spacing:.08em;fill:var(--muted)}
 
 /* previews: drawn on the card's own wash, with its color as the only accent */
 .emo{font-family:var(--emoji)}
@@ -154,8 +162,9 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 
 @media (max-width:700px){
   body{background:
-    radial-gradient(ellipse 80% 22% at 50% 42%,var(--pool-a),transparent 72%),
-    radial-gradient(ellipse 80% 22% at 50% 80%,var(--pool-b),transparent 72%),
+    radial-gradient(ellipse 80% 18% at 50% 34%,var(--pool-a),transparent 72%),
+    radial-gradient(ellipse 80% 18% at 50% 63%,var(--pool-b),transparent 72%),
+    radial-gradient(ellipse 80% 18% at 50% 88%,var(--pool-c),transparent 72%),
     linear-gradient(var(--paper-top),var(--paper) 480px) var(--paper)}
   .wrap{padding-block:16px 32px}
   .hero{margin-bottom:20px}
@@ -215,6 +224,29 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
         <p class="desc">Five things. Forty-five seconds. Can you put them in order?</p>
         <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>34 kinds of rounds</span></div>
         <span class="play play-alt">Play Order Up!
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </a>
+
+    <!-- Nextdoor Nations -->
+    <a class="game game-nn" href="nextdoor-nations/">
+      <svg class="preview nn" viewBox="0 0 400 200" role="img" aria-label="A highlighted country with a city dot and arrow pointing toward a neighboring nation">
+        <path class="nn-land" d="M0 42L62 35 90 52 116 48 135 73 121 101 128 138 96 157 64 149 42 169 0 165Z"/>
+        <path class="nn-land" d="M299 13L400 3 400 94 367 103 342 88 316 91 291 68Z"/>
+        <path class="nn-land" d="M309 111L347 101 400 114 400 200 286 200 278 169Z"/>
+        <path class="nn-home" d="M135 73L169 61 188 72 218 64 244 84 272 91 283 119 266 143 239 150 222 172 188 164 171 144 144 137 128 111Z"/>
+        <circle class="nn-city" cx="184" cy="111" r="6"/>
+        <path class="nn-arrow" d="M192 106L259 70"/>
+        <path class="nn-head" d="M259 70L245 70 252 82Z"/>
+        <text class="nn-tag" x="173" y="132">CITY</text>
+        <text class="nn-tag" x="290" y="62" font-size="16">?</text>
+      </svg>
+      <div class="body">
+        <h2 class="name">Nextdoor<br>Nations</h2>
+        <p class="desc">Follow the arrow from a city and name the neighboring country it points toward.</p>
+        <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>352 directions</span></div>
+        <span class="play">Play Nextdoor Nations
           <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
       </div>
