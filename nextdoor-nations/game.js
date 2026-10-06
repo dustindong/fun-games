@@ -107,35 +107,48 @@ function prepareCanvas(canvas) {
 
 function drawArrow(ctx, x1, y1, x2, y2, color) {
   const a = Math.atan2(y2 - y1, x2 - x1);
-  const head = 15;
+  const head = 14;
+  const neckX = x2 - Math.cos(a) * 10;
+  const neckY = y2 - Math.sin(a) * 10;
+
   ctx.save();
-  ctx.lineCap = 'round';
+  ctx.lineCap = 'butt';
   ctx.lineJoin = 'round';
 
-  // dark halo keeps the direction readable over country borders
+  // dark halo behind the shaft
   ctx.strokeStyle = 'rgba(0,0,0,.48)';
   ctx.lineWidth = 10;
   ctx.beginPath();
-  ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.moveTo(x1,y1);
+  ctx.lineTo(neckX,neckY);
+  ctx.stroke();
 
+  // yellow shaft stops cleanly at the base of the arrowhead
   ctx.strokeStyle = color;
   ctx.lineWidth = 5;
   ctx.beginPath();
-  ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.moveTo(x1,y1);
+  ctx.lineTo(neckX,neckY);
+  ctx.stroke();
 
+  // arrowhead shadow
   ctx.fillStyle = 'rgba(0,0,0,.48)';
   ctx.beginPath();
-  ctx.moveTo(x2 + Math.cos(a) * 2, y2 + Math.sin(a) * 2);
-  ctx.lineTo(x2-head*Math.cos(a-Math.PI/6)-2*Math.sin(a), y2-head*Math.sin(a-Math.PI/6)+2*Math.cos(a));
-  ctx.lineTo(x2-head*Math.cos(a+Math.PI/6)+2*Math.sin(a), y2-head*Math.sin(a+Math.PI/6)-2*Math.cos(a));
-  ctx.closePath(); ctx.fill();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-head*Math.cos(a-Math.PI/6), y2-head*Math.sin(a-Math.PI/6));
+  ctx.lineTo(x2-head*Math.cos(a+Math.PI/6), y2-head*Math.sin(a+Math.PI/6));
+  ctx.closePath();
+  ctx.fill();
 
+  // clean arrowhead
   ctx.fillStyle = color;
   ctx.beginPath();
   ctx.moveTo(x2,y2);
   ctx.lineTo(x2-head*Math.cos(a-Math.PI/6), y2-head*Math.sin(a-Math.PI/6));
   ctx.lineTo(x2-head*Math.cos(a+Math.PI/6), y2-head*Math.sin(a+Math.PI/6));
-  ctx.closePath(); ctx.fill();
+  ctx.closePath();
+  ctx.fill();
+
   ctx.restore();
 }
 
