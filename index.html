@@ -77,7 +77,7 @@ h1,h2,p{margin:0}
 .tagline{font-size:clamp(17px,2.3vw,21px);max-width:40ch;line-height:1.35}
 
 /* ---------- game cards ---------- */
-.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.games{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .game{display:grid;grid-template-rows:auto 1fr;background:var(--surface);border:1px solid var(--line);border-radius:10px;
   box-shadow:var(--shadow);overflow:hidden;color:inherit;text-decoration:none;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
 a.game:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:var(--muted)}
@@ -121,10 +121,13 @@ a.game:hover .play svg{transform:translateX(3px)}
 .slide{animation:slide 4.2s ease-in-out infinite}
 @keyframes slide{0%,18%{transform:translate(18px,-12px)}42%,100%{transform:translate(0,0)}}
 .play-alt{background:var(--accent);color:var(--accent-ink)}
+.play-map{background:var(--measure);color:#fff}
+.nn-land{fill:var(--surface);stroke:var(--line);stroke-width:1.2}.nn-home{fill:color-mix(in srgb,var(--measure) 22%,var(--surface));stroke:var(--measure);stroke-width:2}.nn-city{fill:var(--tape);stroke:var(--tape-ink);stroke-width:1.5}.nn-arrow{stroke:var(--tape);stroke-width:4;stroke-linecap:round;fill:none}.nn-head{fill:var(--tape)}
 .grow{transform-box:fill-box;transform-origin:0 100%;animation:grow 4.2s ease-in-out infinite}
 @keyframes grow{0%,100%{transform:scale(.62)}50%{transform:scale(1)}}
 @media (prefers-reduced-motion: reduce){ .grow,.slide{animation:none} .game,.play svg{transition:none} }
 
+@media (max-width:860px){.games{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:700px){
   .wrap{padding-block:16px 32px}
   .hero{margin-bottom:20px}
@@ -199,6 +202,34 @@ a.game:hover .play svg{transform:translateX(3px)}
         <p class="desc">Five things, one topic. Sort them from highest to lowest before the 30 seconds run out. Closest order wins.</p>
         <div class="meta"><span>Solo or up to 16</span><span>10 rounds</span><span>16 topics</span></div>
         <span class="play play-alt">Play Order Up!
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </a>
+
+    <!-- Nextdoor Nations -->
+    <a class="game" href="nextdoor-nations/">
+      <svg class="preview" viewBox="0 0 400 200" role="img" aria-label="A country outline with a city dot and arrow pointing toward a neighboring country">
+        <rect class="stage-bg" width="400" height="200"/>
+        <g class="stage-grid" stroke-width="1">
+          <path d="M24 0V200M48 0V200M72 0V200M96 0V200M120 0V200M144 0V200M168 0V200M192 0V200M216 0V200M240 0V200M264 0V200M288 0V200M312 0V200M336 0V200M360 0V200M384 0V200"/>
+          <path d="M0 26H400M0 50H400M0 74H400M0 98H400M0 122H400M0 146H400M0 170H400"/>
+        </g>
+        <path class="nn-land" d="M0 42L62 35 90 52 116 48 135 73 121 101 128 138 96 157 64 149 42 169 0 165Z"/>
+        <path class="nn-land" d="M299 13L400 3 400 94 367 103 342 88 316 91 291 68Z"/>
+        <path class="nn-land" d="M309 111L347 101 400 114 400 200 286 200 278 169Z"/>
+        <path class="nn-home" d="M135 73L169 61 188 72 218 64 244 84 272 91 283 119 266 143 239 150 222 172 188 164 171 144 144 137 128 111Z"/>
+        <circle class="nn-city" cx="184" cy="111" r="6"/>
+        <path class="nn-arrow" d="M192 106L259 70"/>
+        <path class="nn-head" d="M259 70L245 70 252 82Z"/>
+        <text class="tag" x="174" y="130">CITY</text>
+        <text class="tag" x="288" y="62">?</text>
+      </svg>
+      <div class="body">
+        <h2 class="name">Nextdoor Nations</h2>
+        <p class="desc">Follow an arrow from a city and name the neighboring country it points toward. Type to search every country.</p>
+        <div class="meta"><span>Solo or up to 16</span><span>10 rounds</span><span>89 routes</span></div>
+        <span class="play play-map">Play Nextdoor Nations
           <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
       </div>
