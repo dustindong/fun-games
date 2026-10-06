@@ -158,12 +158,12 @@ function drawRoundMap(canvas, r, reveal) {
   }
 
   if (reveal) {
-    ctx.beginPath(); path(toMain);
+    ctx.beginPath(); path(toF);
     ctx.fillStyle = css('--greenBg'); ctx.fill();
     ctx.strokeStyle = css('--green'); ctx.lineWidth = 2.2; ctx.stroke();
   }
 
-  ctx.beginPath(); path(fromMain);
+  ctx.beginPath(); path(fromF);
   ctx.fillStyle = css('--blue2'); ctx.fill();
   ctx.strokeStyle = css('--blue'); ctx.lineWidth = 2.4; ctx.stroke();
 
