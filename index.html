@@ -186,6 +186,19 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
   .name{font-size:34px}
   .play{padding:14px 20px}
 }
+
+/* Price Check! */
+.game-pc{background:color-mix(in srgb,#0D8068 7%,var(--surface));border-color:color-mix(in srgb,#0D8068 35%,var(--line))}
+.game-pc .meta span{background:color-mix(in srgb,#0D8068 14%,var(--surface))}
+.game-pc .preview{background:none;border-bottom:0}
+.game-pc .body{justify-items:center;text-align:center;padding-top:0}
+.game-pc .name{margin:-25px 0 5px;position:relative;z-index:1;padding:9px 17px 8px;border:3px solid var(--ink);border-radius:12px;background:var(--surface);box-shadow:4px 5px 0 color-mix(in srgb,#0D8068 70%,var(--ink));font-size:37px;line-height:.82;transform:rotate(1.5deg)}
+.game-pc .meta{justify-content:center}.game-pc .play{justify-self:center;background:#0D8068;color:#fff}
+.pc-tag{fill:#F2B21B;stroke:#B58B19;stroke-width:2}.pc-hole{fill:var(--surface)}
+.pc-price{fill:#292008;font:900 49px var(--display)}
+.pc-copy{fill:#292008;font:700 12px var(--mono)}
+.pc-sub{fill:var(--ink);font:700 12px var(--body)}
+
 </style>
 </head>
 <body>
@@ -310,6 +323,31 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 
     <!-- To add another game, copy one of the cards above and point its href at the new game's folder. -->
 <a class="game game-nn" href="pinpoint/"><svg class="preview" viewBox="0 0 400 200" role="img" aria-label="Map guessing game"><rect width="400" height="200" fill="#d5e7e5"/><path d="M0 90L72 48 118 70 148 42 202 62 190 108 130 118 108 175 38 153 0 171Z M255 0L320 28 380 18 400 46 400 147 356 160 309 118 260 135 236 83Z" fill="#80b69b"/><path d="M195 39C157 39 157 96 195 131C233 96 233 39 195 39Z" fill="#ed684b" stroke="#203748" stroke-width="4"/><circle cx="195" cy="71" r="13" fill="white"/><circle cx="288" cy="146" r="24" fill="none" stroke="#203748" stroke-width="4" stroke-dasharray="7 6"/><circle cx="288" cy="146" r="7" fill="#ffca49"/></svg><div class="body"><h2 class="name">Pinpoint!</h2><p class="desc">Drop a pin on the world map. Closest guesses score the most points.</p><div class="meta"><span>1–16 players</span><span>5–15 rounds</span><span>60 locations</span></div><span class="play">Play Pinpoint! →</span></div></a>
+
+    <!-- Price Check! -->
+    <a class="game game-pc" href="price-check/">
+      <svg class="preview" viewBox="0 0 400 200" role="img" aria-label="A grocery price guessing card with a hidden price tag">
+        <rect x="49" y="24" width="188" height="132" rx="10" fill="#DFF2E9" stroke="#8EBDA8" stroke-width="2"/>
+        <text x="140" y="40" font-family="sans-serif" font-size="11" text-anchor="middle" font-weight="700" fill="#0D8068">WHAT DOES IT COST?</text>
+        <text x="141" y="119" font-family="sans-serif" font-size="68" text-anchor="middle">🍌</text>
+        <g transform="rotate(8 287 95)">
+          <path class="pc-tag" d="M248 31H316L349 61V151H248Z"/>
+          <circle class="pc-hole" cx="318" cy="59" r="6"/>
+          <path d="M318 59Q336 39 357 41" fill="none" stroke="#B58B19" stroke-width="2"/>
+          <text class="pc-copy" x="291" y="92" text-anchor="middle">PRICE</text>
+          <text class="pc-price" x="295" y="136" text-anchor="middle">$?</text>
+        </g>
+        <text x="140" y="178" class="pc-sub" text-anchor="middle">ONE POUND</text>
+      </svg>
+      <div class="body">
+        <h2 class="name">Price Check!</h2>
+        <p class="desc">Guess what things cost, from everyday groceries to ridiculous luxuries.</p>
+        <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>130 price clues</span></div>
+        <span class="play">Play Price Check!
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </a>
   </section>
 
 </main>
