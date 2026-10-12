@@ -489,7 +489,7 @@ function handleHost(msg,id){
   }else if(msg.t==='guess'&&phase==='guess'&&msg.round===round){
     if(submissions.has(id)||!players.some(p=>p.id===id))return;
     let value=msg.value;
-    if(!Number.isFinite(value)||value<.01||value>MAX_GUESS||Math.round(value*100)!==value*100)return;
+    if(!Number.isFinite(value)||value<.01||value>MAX_GUESS||Math.abs(Math.round(value*100)-value*100)>0.000001)return;
     submissions.set(id,value);sendProgress();
     if(submissions.size===players.length)revealRound();
   }
@@ -533,7 +533,8 @@ function createRoom(){
       history.replaceState(null,'','?room='+room);renderLobby();
     });
     instance.on('connection',c=>{
-      c.on('open',()=>{connections.set(c.peer,c)});
+      connections.set(c.peer,c);
+      c.on('open',()=>{connections.set(c.peer,c);if(phase==='lobby'&&players.some(p=>p.id===c.peer))c.send(snapshot())});
       c.on('data',msg=>handleHost(msg,c.peer));
       c.on('close',()=>closedGuest(c.peer));
       c.on('error',()=>closedGuest(c.peer));
