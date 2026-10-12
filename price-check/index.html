@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F8FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#172725" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Price Check!">
+<meta name="description" content="Price Check! A multiplayer price-guessing party game. Guess the sticker price, score for accuracy, and beat your friends. Online rooms and solo practice.">
+<title>Price Check! — Little Games</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%230D8068' d='M4 4h16l9 12-13 13L4 17z'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%23fff'/%3E%3Cpath d='M14 16l5 5' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Instrument+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --paper:#F0F3F1;--paper-top:#F8FAF8;--surface:#fff;--surface2:#F1F5F3;--ink:#152623;--muted:#567069;--line:#CDDAD4;
+  --green:#0D8068;--green2:#DDF3E8;--accent:#F2B21B;--accent-ink:#292008;--red:#C14537;
+  --shadow:0 1px 0 rgba(10,35,27,.04),0 12px 29px -18px rgba(16,47,37,.28);
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media(prefers-color-scheme:dark){:root{
+  --paper:#11221F;--paper-top:#1A302A;--surface:#19312A;--surface2:#214138;--ink:#EAF5EF;--muted:#B0C8BE;--line:#345C4F;
+  --green:#5DD9AE;--green2:#184F3C;--accent:#F4BE36;--accent-ink:#292008;--red:#FF9988;
+  --shadow:0 1px 0 rgba(0,0,0,.15),0 12px 28px -16px rgba(0,0,0,.55);color-scheme:dark;
+}}
+*{box-sizing:border-box}
+html{background:var(--paper)}
+body{margin:0;color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased;background:
+  radial-gradient(ellipse 60% 40% at 8% 42%,rgba(33,150,111,.1),transparent 80%),
+  radial-gradient(ellipse 55% 35% at 95% 84%,rgba(242,178,27,.09),transparent 80%),
+  linear-gradient(var(--paper-top),var(--paper) 610px);
+  padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3,p,figure,ul{margin:0}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.wrap{max-width:940px;margin:auto;padding:10px 0 55px}
+.eyebrow{font:600 11px/1.3 var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--muted)}
+.header{display:flex;align-items:center;justify-content:space-between;gap:9px;min-height:44px;margin-bottom:10px}
+.brand{display:flex;align-items:center;gap:9px;font:900 23px/1 var(--display);text-transform:uppercase;letter-spacing:.02em}
+.brand-mark{display:grid;place-items:center;width:25px;height:25px;transform:rotate(-12deg);border-radius:4px;background:var(--green);font:800 17px var(--display);color:#fff}
+.head-right{display:flex;align-items:center;gap:8px}
+.chip{font:600 12px/1 var(--mono);background:var(--surface);border:1px solid var(--line);padding:8px 9px;border-radius:4px}
+.btn{appearance:none;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:11px 16px;font-weight:700;line-height:1.15;transition:transform .1s,background .16s,border-color .16s}
+.btn:hover:not(:disabled){border-color:var(--muted)}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
+@media(prefers-color-scheme:dark){.btn.primary{color:#10241E}}
+.btn.primary:hover:not(:disabled){filter:brightness(1.05)}
+.btn.small{padding:7px 10px;font-size:13px}
+.btn.link{background:none;border:0;color:var(--muted);padding:4px 0;text-decoration:underline;text-underline-offset:3px;justify-self:start}
+a.btn{display:inline-flex;align-items:center;color:inherit;text-decoration:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+input[type=text],select{width:100%;font-size:16px;min-width:0;border:1px solid var(--line);border-radius:6px;background:var(--surface2);padding:11px 12px;outline:none}
+input[type=text]:focus,select:focus{background:var(--surface);border-color:var(--green)}
+.field{display:grid;gap:6px}
+.field label{font-weight:700;font-size:13px}
+.note,.muted{font-size:13px;color:var(--muted)}
+.err{font-size:13px;color:var(--red);font-weight:700}
+.hero{display:grid;gap:14px;margin:13px 0 23px}
+.title{font:900 clamp(85px,16vw,156px)/.79 var(--display);letter-spacing:-.015em;text-transform:uppercase}
+.title span{color:var(--green)}
+.ticket-strip{height:34px;background:var(--accent);position:relative;overflow:hidden;border-radius:3px}
+.ticket-strip:before{content:"";position:absolute;left:15px;right:15px;top:15px;border-top:2px dashed var(--accent-ink)}
+.ticket-strip:after{content:"$  ?  $  ?  $  ?  $  ?  $  ?  $  ?  $  ?  $";color:var(--accent-ink);font:800 20px/1 var(--display);position:absolute;inset:7px auto auto 20px;background:var(--accent);letter-spacing:10px}
+.tagline{font-size:clamp(17px,2.3vw,21px);max-width:45ch;line-height:1.35}
+.home-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;align-items:start}
+.display{display:grid;gap:0;overflow:hidden}
+.display-label{font:700 11px/1.2 var(--mono);letter-spacing:.12em;color:#217359;text-transform:uppercase}
+.display-top{padding:18px 21px 0}
+.display-top p{color:var(--muted);font-size:13px;margin-top:4px}
+.demo-stage{display:flex;align-items:center;justify-content:center;gap:25px;min-height:225px;padding:16px 20px 27px;position:relative}
+.demo-emoji{font-size:clamp(78px,13vw,133px);filter:drop-shadow(0 12px 11px rgba(5,39,24,.10))}
+.demo-tag{width:170px;min-height:148px;padding:22px 12px 12px;background:var(--accent);color:var(--accent-ink);clip-path:polygon(0 0,77% 0,100% 23%,100% 100%,0 100%);transform:rotate(6deg);display:grid;align-content:end;gap:9px;box-shadow:0 5px 0 rgba(0,0,0,.09)}
+.demo-tag small{font:800 14px/1 var(--mono);letter-spacing:.12em}
+.demo-tag strong{font:900 75px/.85 var(--display)}
+.demo-strip{border-top:1px dashed var(--line);padding:12px 18px;font-size:13px;color:var(--muted)}
+.play{padding:18px;display:grid;gap:12px}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}
+.or:before,.or:after{content:"";height:1px;background:var(--line);flex:1}
+.join{display:flex;gap:8px}
+.join #code-in{text-transform:uppercase;letter-spacing:.22em;font:700 17px var(--mono)}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+.rule{display:grid;gap:6px;align-content:start;border-top:2px solid var(--ink);padding-top:11px}
+.rule b{font:800 20px/1.05 var(--display);text-transform:uppercase}
+.rule p{font-size:14px;color:var(--muted)}
+.lobby{display:grid;gap:18px}
+.lobby-head{display:flex;flex-wrap:wrap;gap:18px 28px;align-items:end;justify-content:space-between}
+.code{display:inline-flex;gap:4px;margin-top:7px}
+.code span{width:clamp(51px,11vw,72px);height:clamp(65px,15vw,86px);display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font:900 clamp(40px,9vw,58px)/1 var(--display);border-radius:3px}
+.invite{display:grid;gap:9px;flex:1 1 285px;max-width:460px}
+.invite p{font-size:14px;color:var(--muted)}
+.invite input{font:500 12px/1.2 var(--mono)}
+.player-list{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:8px;margin-top:10px}
+.player-list li{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:8px;min-width:0}
+.player-list li.offline{opacity:.55}
+.dot{width:12px;height:12px;border-radius:50%;flex:none;background:var(--green)}
+.player-list li:nth-child(4n+2) .dot{background:var(--accent)}
+.player-list li:nth-child(4n+3) .dot{background:#7473C4}
+.player-list li:nth-child(4n+4) .dot{background:#E57D50}
+.nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.tag{font:600 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:4px 6px;border-radius:3px;margin-left:auto;white-space:nowrap}
+.lobby-foot{padding:16px;display:flex;gap:16px;justify-content:space-between;align-items:end;flex-wrap:wrap}
+.facts{display:flex;gap:20px;flex-wrap:wrap}
+.facts>div{display:grid;gap:5px}
+.facts b{font:800 28px/1 var(--display)}
+.host-settings{display:flex;flex-wrap:wrap;gap:10px}
+.host-settings .field{min-width:135px}
+.host-settings label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.host-settings select{padding:8px 10px;font-size:14px}
+.foot-actions{display:grid;gap:7px;justify-items:end}
+.game-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.progress{font:700 12px/1.2 var(--mono);letter-spacing:.07em;text-transform:uppercase}
+.timer{width:125px;height:29px;border-radius:5px;background:var(--surface);border:1px solid var(--line);position:relative;overflow:hidden}
+.timer-fill{position:absolute;inset:0 auto 0 0;width:100%;background:var(--accent);transition:width .15s linear}
+.timer.low .timer-fill{background:#F08067}
+.timer-text{font:700 12px/1 var(--mono);position:absolute;right:8px;top:8px;color:var(--accent-ink)}
+.timer-badge{font:600 11px/1 var(--mono);color:var(--muted);padding:9px 11px;border-radius:4px;border:1px dashed var(--line)}
+.scores{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0 0 12px}
+.scores li{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:13px}
+.scores strong{color:var(--green)}
+.round-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+.product{display:grid;justify-items:center;align-content:start;text-align:center;overflow:hidden;min-height:400px}
+.product-top{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding:14px 17px}
+.category-pill{font:700 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;background:var(--green2);color:var(--green);padding:7px 9px;border-radius:4px}
+.sku{font:600 10px var(--mono);color:var(--muted)}
+.product-emoji{font-size:clamp(88px,14vw,150px);line-height:1.4;padding:12px 0 0;filter:drop-shadow(0 10px 9px rgba(10,40,30,.09))}
+.product h2{font:900 clamp(35px,5.2vw,58px)/.95 var(--display);text-transform:uppercase;max-width:92%;padding:2px 0 8px}
+.product-variant{color:var(--muted);font-size:14px;padding:0 20px 12px;font-weight:600}
+.price-hidden{width:100%;margin-top:auto;background:var(--surface2);border-top:1px dashed var(--line);padding:13px 17px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.price-hidden span{font:700 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.price-hidden b{font:900 36px/1 var(--display);letter-spacing:.07em}
+.price-hidden.revealed{background:var(--green2)}
+.price-hidden.revealed b{color:var(--green)}
+.guess-panel{padding:20px;display:grid;gap:16px;align-content:start}
+.guess-panel h3{font:900 33px/1 var(--display);text-transform:uppercase}
+.guess-panel>p{font-size:14px;color:var(--muted)}
+.price-field{display:flex;gap:0;align-items:stretch;border:2px solid var(--line);border-radius:8px;background:var(--surface2);overflow:hidden}
+.price-field:focus-within{border-color:var(--green)}
+.price-field .dollar{font:900 34px/1 var(--display);padding:13px 2px 13px 14px;color:var(--green);align-self:center}
+.price-field input{border:0;background:transparent;width:100%;min-width:0;padding:12px 14px;font:900 38px/1 var(--display);outline:none;color:var(--ink);font-variant-numeric:tabular-nums}
+.price-field input:disabled{opacity:.65}
+.price-field input::placeholder{color:var(--muted);opacity:.5}
+.guess-panel .btn.primary{width:100%;padding-block:15px}
+.status{padding:11px 13px;border:1px dashed var(--line);border-radius:6px;background:var(--surface2);color:var(--muted);font-size:13px;min-height:44px}
+.result-summary{display:grid;gap:10px;border-top:1px dashed var(--line);padding-top:14px}
+.result-summary .big{font:900 43px/1 var(--display);color:var(--green)}
+.result-summary .mini{font:700 12px var(--mono);color:var(--muted)}
+.result-summary .earned{font:900 36px/1 var(--display)}
+.result-table{margin-top:16px;padding:17px}
+.result-table h3{font:900 26px var(--display);text-transform:uppercase}
+.result-list{list-style:none;padding:0;display:grid;gap:0;margin-top:8px}
+.result-list li{display:grid;grid-template-columns:minmax(100px,1fr) auto auto;gap:12px;align-items:center;padding:11px 1px;border-bottom:1px solid var(--line);font-size:13px}
+.result-list .who{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.result-list .who.you{color:var(--green)}
+.result-list .their-guess{color:var(--muted);font-family:var(--mono)}
+.result-list .their-score{color:var(--green);font-weight:800;font-variant-numeric:tabular-nums}
+.round-actions{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-top:14px}
+.end{padding:22px;display:grid;gap:15px}
+.end h2{font:900 clamp(46px,10vw,76px)/.9 var(--display);text-transform:uppercase}
+.end-stat{font-size:15px;color:var(--muted)}
+.standings{width:100%;border-collapse:collapse}
+.standings td,.standings th{text-align:left;padding:12px 9px;border-bottom:1px solid var(--line)}
+.standings td:last-child,.standings th:last-child{text-align:right}
+.end-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+@media(max-width:730px){
+  .home-grid,.round-grid{grid-template-columns:1fr}
+  .rules{grid-template-columns:1fr;gap:12px}
+  .rule{padding-top:10px}
+  .product{min-height:310px}
+  .product-emoji{font-size:103px}
+  .demo-stage{min-height:195px}
+  .foot-actions{justify-items:stretch;width:100%}
+  .foot-actions .btn{width:100%}
+  .lobby-foot{align-items:start}
+  .title{font-size:clamp(75px,17vw,130px)}
+}
+@media(max-width:430px){
+  .code span{width:clamp(41px,11vw,52px);height:61px;font-size:41px}
+  .round-actions{justify-content:stretch}
+  .round-actions .btn{flex:1}
+  .head-right .btn.small{padding:7px 8px}
+  .result-list li{grid-template-columns:minmax(70px,1fr) auto;gap:5px}
+  .result-list .their-score{text-align:right}
+  .result-list .their-guess{grid-column:1/-1;grid-row:2}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="header">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">$</span><span>Price Check!</span></div>
+    <div class="head-right">
+      <a class="btn small" href="../">All games</a>
+      <span class="chip" id="room-chip" hidden></span>
+      <button class="btn small" id="btn-leave" hidden>Leave room</button>
+    </div>
+  </header>
+  <section id="scr-home">
+    <div class="hero">
+      <h1 class="title">Price <span>Check!</span></h1>
+      <div class="ticket-strip" aria-hidden="true"></div>
+      <p class="tagline">Think you know what things cost? Guess the price of everything from groceries to absurd luxuries. Closest guesses win!</p>
+    </div>
+    <div class="home-grid">
+      <figure class="card display">
+        <div class="display-top"><span class="display-label">Example round · Price unknown</span><p>What's the sticker price?</p></div>
+        <div class="demo-stage" aria-hidden="true"><div class="demo-emoji">🎧</div><div class="demo-tag"><small>YOUR GUESS</small><strong>$???</strong></div></div>
+        <figcaption class="demo-strip">Same idea as a price tag, but it's blank. Can you guess what belongs there?</figcaption>
+      </figure>
+      <div class="card play">
+        <div class="field">
+          <label for="nm">Your name</label><input type="text" id="nm" maxlength="16" autocomplete="nickname" placeholder="e.g. Alex">
+        </div>
+        <button class="btn primary" id="btn-create">Create a room</button>
+        <div class="or">or join a friend's room</div>
+        <div class="join"><input type="text" id="code-in" maxlength="4" placeholder="CODE" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Room code"><button class="btn" id="btn-join">Join</button></div>
+        <p class="err" id="home-error" role="alert" hidden></p>
+        <p class="note" id="net-note">Online rooms · 1–16 players</p>
+        <button class="btn link" id="btn-solo">Practice solo</button>
+      </div>
+    </div>
+    <div class="rules">
+      <div class="rule"><b>1. Name your price</b><p>Each round shows an item and its exact model, size, or experience.</p></div>
+      <div class="rule"><b>2. Lock it in</b><p>Type your best estimate in dollars. Online rounds give you 40 seconds.</p></div>
+      <div class="rule"><b>3. Reveal & score</b><p>Earn up to 5,000 points based on percentage accuracy, not speed.</p></div>
+    </div>
+    <p class="note" style="margin-top:18px">Prices are fixed, illustrative U.S. game references, not live checkout prices. Retailer, location and date can change the real cost.</p>
+  </section>
+
+  <section id="scr-lobby" class="lobby" hidden>
+    <div class="lobby-head">
+      <div><span class="eyebrow">Room code</span><div class="code" id="lb-code" aria-label="Room code"></div></div>
+      <div class="invite"><span class="eyebrow">Invite friends</span><p>Share a code or link so everyone can play on their own device.</p><div class="join"><input type="text" id="lb-link" readonly aria-label="Room invite link"><button class="btn" id="btn-copy">Copy link</button></div></div>
+    </div>
+    <div><span class="eyebrow" id="lb-player-label">Players</span><ul id="lb-players" class="player-list"></ul></div>
+    <div class="card lobby-foot">
+      <div class="facts">
+        <div><span class="eyebrow">Rounds</span><b id="lb-round-count">10</b></div>
+        <div><span class="eyebrow">Game mix</span><b id="lb-game-mix">Mixed</b></div>
+        <div><span class="eyebrow">Players</span><b id="lb-total">1/16</b></div>
+      </div>
+      <div class="host-settings" id="host-settings">
+        <div class="field"><label for="category">Category</label><select id="category">
+          <option value="all">Mixed bag</option>
+          <option value="g">Groceries</option><option value="m">Takeout & treats</option><option value="t">Technology</option>
+          <option value="h">Home & style</option><option value="w">Wild cards</option>
+        </select></div>
+        <div class="field"><label for="rounds">Rounds</label><select id="rounds"><option value="5">5</option><option value="10" selected>10</option><option value="15">15</option></select></div>
+      </div>
+      <div class="foot-actions"><button class="btn primary" id="btn-start">Start game →</button><span class="note" id="lb-wait" hidden>Waiting for the host to start…</span></div>
+    </div>
+    <p class="err" id="lobby-error" role="alert" hidden></p>
+    <p class="note">Host needs to keep their browser open while the game is running.</p>
+  </section>
+
+  <section id="scr-game" hidden>
+    <div class="game-top">
+      <span class="progress" id="progress">ROUND 1 / 10</span>
+      <div class="timer" id="timer"><span class="timer-fill" id="timer-fill"></span><span class="timer-text" id="timer-text">40s</span></div>
+      <span class="timer-badge" id="solo-badge" hidden>UNTIMED PRACTICE</span>
+    </div>
+    <ul class="scores" id="scores" aria-label="Leaderboard"></ul>
+    <div class="round-grid">
+      <article class="card product">
+        <div class="product-top"><span class="category-pill" id="item-category">GROCERIES</span><span class="sku" id="item-sku">ITEM 001</span></div>
+        <div class="product-emoji" id="item-emoji" aria-hidden="true">🍌</div>
+        <h2 id="item-title">What does it cost?</h2>
+        <p class="product-variant" id="item-variant">Reference size / model</p>
+        <div class="price-hidden" id="price-bar"><span>Reference price</span><b id="price-reveal">???</b></div>
+      </article>
+      <div class="card guess-panel">
+        <div><span class="eyebrow">Put a number on it</span><h3>What's your price?</h3></div>
+        <p>Estimate the reference sticker price in U.S. dollars.</p>
+        <form id="guess-form">
+          <label for="guess-input" class="eyebrow" style="display:block;margin-bottom:8px">Your estimate (USD)</label>
+          <div class="price-field"><span class="dollar">$</span><input type="text" id="guess-input" inputmode="decimal" autocomplete="off" placeholder="0.00" aria-label="Your price in U.S. dollars" maxlength="12"></div>
+          <button class="btn primary" id="btn-lock" disabled style="margin-top:12px">Lock in price →</button>
+        </form>
+        <p class="status" id="status" aria-live="polite">Type your best guess.</p>
+        <section class="result-summary" id="reveal-summary" hidden>
+          <span class="eyebrow">The answer</span>
+          <div class="big" id="reveal-price">$0.00</div>
+          <span class="mini" id="reveal-diff">You were 10% away</span>
+          <div class="earned" id="reveal-points">+0 pts</div>
+        </section>
+        <p class="note" id="round-note">Closer by percentage means more points — an extra dollar matters more for a banana than for a car.</p>
+      </div>
+    </div>
+    <section class="card result-table" id="result-table" hidden>
+      <h3>Everyone's receipts</h3>
+      <ul class="result-list" id="result-list"></ul>
+      <div class="round-actions"><span class="note" id="round-wait" hidden>Waiting for the host to continue…</span><button class="btn primary" id="btn-next" hidden>Next round →</button></div>
+    </section>
+    <p class="err" id="game-error" role="alert" hidden style="margin-top:12px"></p>
+  </section>
+
+  <section id="scr-end" class="card end" hidden>
+    <span class="eyebrow">Final receipt</span>
+    <h2 id="winner">Game over!</h2>
+    <p class="end-stat" id="final-subtitle"></p>
+    <table class="standings"><thead><tr><th>Player</th><th>Points</th></tr></thead><tbody id="finalscores"></tbody></table>
+    <div class="end-actions"><button class="btn primary" id="btn-again" hidden>Play again →</button><span class="muted" id="end-wait" hidden>Waiting for the host to start another game…</span><a class="btn" href="../">All games</a></div>
+  </section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script>
+const RAW=[["Bananas","1 pound, loose fruit",0.69,"g","🍌"],["Hass avocado","1 medium avocado",1.29,"g","🥑"],["Whole milk","1 gallon",4.19,"g","🥛"],["Large eggs","1 dozen",3.69,"g","🥚"],["White sandwich bread","20-ounce loaf",3.49,"g","🍞"],["Dry spaghetti","1-pound box",1.79,"g","🍝"],["Creamy peanut butter","16-ounce jar",3.49,"g","🥜"],["Nutella hazelnut spread","13-ounce jar",4.99,"g","🍫"],["Pasta sauce","24-ounce jar",2.99,"g","🍅"],["Kraft Mac & Cheese","7.25-ounce box",1.49,"g","🧀"],["Coca-Cola cans","12-pack, 12 ounces each",8.99,"g","🥤"],["Coca-Cola bottle","20 fluid ounces",2.49,"g","🥤"],["Orange juice","1 gallon, refrigerated",7.49,"g","🍊"],["Ben & Jerry's ice cream","1 pint",5.79,"g","🍨"],["Bottled spring water","12-pack, 16.9 ounces each",3.99,"g","💧"],["Lay's Classic potato chips","8-ounce bag",4.99,"g","🥔"],["Salted butter","1 pound / four sticks",4.99,"g","🧈"],["White rice","5-pound bag",5.49,"g","🍚"],["Frozen pepperoni pizza","One full-size grocery store pizza",6.49,"g","🍕"],["Cheddar cheese","8-ounce block",2.89,"g","🧀"],["Cheerios cereal","18-ounce family-size box",5.49,"g","🥣"],["Fresh blueberries","1 pint",4.99,"g","🫐"],["Gala apples","3-pound bag",4.99,"g","🍎"],["Fresh strawberries","1-pound carton",3.49,"g","🍓"],["All-purpose flour","5-pound bag",3.29,"g","🌾"],["Granulated sugar","4-pound bag",3.59,"g","🍬"],["80/20 ground beef","1 pound",6.49,"g","🥩"],["Sliced bacon","1-pound package",6.99,"g","🥓"],["Tide liquid laundry detergent","Approximately 92 fluid ounces",16.99,"g","🧺"],["Toilet paper","12 standard-sized rolls",11.99,"g","🧻"],["Costco hot dog and soda","One food-court combo",1.5,"m","🌭"],["McDonald's large fries","One large order",4.49,"m","🍟"],["Chick-fil-A chicken sandwich","Original sandwich, à la carte",5.49,"m","🥪"],["Starbucks grande latte","Hot latte, 16 ounces",5.45,"m","☕"],["Subway footlong sandwich","One standard footlong",12.99,"m","🥖"],["Chipotle chicken burrito","One regular burrito",10.95,"m","🌯"],["Domino's large pizza","One large, one topping",14.99,"m","🍕"],["Taco Bell crunchy taco","One à la carte taco",2.49,"m","🌮"],["McDonald's Chicken McNuggets","20-piece order",8.99,"m","🍗"],["New York pizza slice","One plain cheese slice",4,"m","🍕"],["Movie theater popcorn","One large tub",9.49,"m","🍿"],["Airport bottled water","One 20-ounce bottle",4.99,"m","💧"],["Dunkin' medium iced coffee","One medium, black",3.99,"m","🧋"],["Glazed donuts","Six-pack from a doughnut shop",8.49,"m","🍩"],["IKEA Swedish meatballs","One food-court plate",8.99,"m","🧆"],["Cinnabon Classic Roll","One full-size roll",6.99,"m","🥮"],["Shake Shack cheeseburger","One single cheeseburger",7.99,"m","🍔"],["Panera broccoli cheddar soup","One cup",7.49,"m","🥣"],["7-Eleven Slurpee","One large cup",2.49,"m","🧊"],["Jersey Mike's regular sub","One regular-size sandwich",10.95,"m","🥪"],["Starbucks venti Frappuccino","One blended drink, 24 ounces",6.95,"m","🥤"],["Auntie Anne's original pretzel","One soft pretzel",5.49,"m","🥨"],["Cheesecake Factory cheesecake","One restaurant slice",9.99,"m","🍰"],["Stadium draft beer","One pint at a major sports venue",13.99,"m","🍺"],["Bowling shoe rental","One person's shoe rental",5.49,"m","🎳"],["Apple AirTag","One tracking tag, launch list price",29,"t","📍"],["Apple AirTag 4-pack","Four tracking tags, launch list price",99,"t","🧳"],["Apple Pencil Pro","One stylus, launch list price",129,"t","✏️"],["Apple Magic Mouse","USB-C model, list price",79,"t","🖱️"],["Apple TV 4K","64 GB Wi-Fi model, launch price",129,"t","📺"],["Apple HomePod mini","One smart speaker, list price",99,"t","🔊"],["Apple iPad (A16)","11-inch, 128 GB, 2025 launch price",349,"t","📱"],["AirPods Pro (2nd generation)","One pair, original list price",249,"t","🎧"],["Nintendo Switch OLED","One console, original list price",349.99,"t","🎮"],["PlayStation 5","Disc console, U.S. launch price",499.99,"t","🎮"],["Xbox Series S","512 GB console, launch price",299.99,"t","🎮"],["PlayStation DualSense controller","One standard wireless controller, list price",74.99,"t","🎮"],["PlayStation 5 Pro","Console, U.S. launch price",699.99,"t","🎮"],["Logitech MX Master 3S","Wireless mouse, list price",99.99,"t","🖱️"],["Sony WH-1000XM5","Wireless headphones, launch price",399.99,"t","🎧"],["Kindle Paperwhite","16 GB, 2024 launch price",159.99,"t","📖"],["GoPro HERO13 Black","Action camera, launch price",399.99,"t","📷"],["Fujifilm Instax Mini 12","Instant camera, list price",79.95,"t","📸"],["Meta Quest 3S","128 GB headset, launch price",299.99,"t","🥽"],["Steam Deck OLED","512 GB handheld, launch price",549,"t","🎮"],["Roku Streaming Stick 4K","Streaming stick, list price",49.99,"t","📺"],["Raspberry Pi 5","8 GB single-board computer, list price",80,"t","💻"],["Apple MacBook Air (M4)","13-inch, entry model, launch price",999,"t","💻"],["Apple Vision Pro","Headset, U.S. launch price",3499,"t","🥽"],["Nintendo Sound Clock Alarmo","Interactive alarm clock, launch price",99.99,"t","⏰"],["IKEA BILLY bookcase","One standard tall bookcase",69.99,"h","📚"],["IKEA KALLAX shelving unit","2×2 square cube unit",39.99,"h","🗃️"],["IKEA POÄNG armchair","One chair with cushion",129,"h","🪑"],["Yankee Candle large jar","22-ounce scented candle",31,"h","🕯️"],["Dyson V15 Detect","Cordless vacuum, original list price",749.99,"h","🧹"],["Keurig K-Mini","Single-serve coffee maker, list price",89.99,"h","☕"],["Vitamix E310 Explorian","Blender, list price",349.95,"h","🥤"],["Ninja AF101 air fryer","Four-quart air fryer, list price",89.99,"h","🍟"],["Instant Pot Duo","Six-quart pressure cooker, list price",99.95,"h","🍲"],["OXO POP storage containers","Three-piece starter set",44.99,"h","🫙"],["Everyday bath towel","One standard cotton towel",12.99,"h","🛀"],["Queen sheet set","Four-piece, 1000-thread-count",89.99,"h","🛏️"],["LED light bulbs","Four-pack, 60W equivalents",12.99,"h","💡"],["Basic coffee maker","12-cup drip coffee maker",39.99,"h","☕"],["French press coffee maker","One 34-ounce press",24.99,"h","☕"],["Weighted blanket","15-pound blanket",49.99,"h","🛏️"],["Queen foam mattress","One bed-in-a-box, basic model",399.99,"h","🛌"],["Ring Video Doorbell","Entry-level doorbell camera, list price",99.99,"h","🔔"],["Brita water pitcher","Ten-cup pitcher, list price",35.99,"h","🚰"],["Vornado 660 air circulator","Whole-room fan, list price",99.99,"h","🌀"],["Dyson Supersonic hair dryer","One dryer, list price",429.99,"h","💨"],["Squishmallows plush toy","One 16-inch plush",24.99,"h","🧸"],["Crocs Classic Clog","One adult pair, list price",49.99,"h","🩴"],["Stanley Quencher tumbler","40-ounce insulated cup, list price",45,"h","🥤"],["LEGO Botanicals Orchid","Set 10311, original list price",49.99,"h","🌸"],["LEGO Titanic","Set 10294, original list price",679.99,"w","🚢"],["LEGO UCS Millennium Falcon","Set 75192, original list price",849.99,"w","🚀"],["LEGO Nintendo Entertainment System","Set 71374, original list price",229.99,"w","🎮"],["Golden Goose sneakers","One pair, designer price reference",595,"w","👟"],["Air Jordan 1 Retro High OG","One pair, adult retail reference",180,"w","👟"],["Birkenstock Boston suede clogs","One pair, retail reference",165,"w","👞"],["Canada Goose Expedition Parka","One adult coat, premium retail reference",1795,"w","🧥"],["Tesla Cybertruck","Rear-wheel-drive model, original launch price",60990,"w","🛻"],["Porsche 911 Carrera","Base coupe, 2025 U.S. starting MSRP",120100,"w","🏎️"],["Rolex Oyster Perpetual 36","Steel watch, price reference",6350,"w","⌚"],["Louis Vuitton Neverfull MM","Monogram tote, price reference",2030,"w","👜"],["YETI Tundra 45 cooler","One hard cooler, list price",325,"w","🧊"],["Bugaboo Fox 5 stroller","One complete stroller, list price",1299,"w","👶"],["Herman Miller Aeron chair","One fully configured chair, reference price",1805,"w","🪑"],["Peloton Bike+","One connected stationary bike, list price",2495,"w","🚲"],["Theragun PRO","One massage gun, reference list price",599,"w","💆"],["Canon EOS R5 Mark II","Camera body, U.S. launch price",4299,"w","📷"],["Leica M11","Camera body, U.S. launch price",8995,"w","📸"],["Dyson Airwrap multi-styler","One styling set, reference price",599.99,"w","💇"],["RIMOWA Original Cabin suitcase","One aluminum carry-on, price reference",1430,"w","🧳"],["Tiffany Return to Tiffany bracelet","Silver heart-tag bracelet, price reference",425,"w","💎"],["A5 Japanese Wagyu steak","One pound, specialty retailer reference",150,"w","🥩"],["Small private jet charter","One hour of flight, example reference",6000,"w","✈️"],["NBA courtside ticket","One premium game ticket, example reference",2500,"w","🏀"],["Designer sunglasses","One luxury-brand pair, example reference",450,"w","🕶️"]];
+
+(() => {
+'use strict';
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
+const CATS={g:'Groceries',m:'Takeout & treats',t:'Technology',h:'Home & style',w:'Wild cards'};
+const LABELS={all:'Mixed',g:'Groceries',m:'Takeout',t:'Tech',h:'Home',w:'Wild'};
+const MAX_PLAYERS=16,ROUND_SECONDS=40,PEER_PREFIX='price-check-party-v1-';
+const MAX_GUESS=10000000;
+let mode='home',phase='home',room='',peer=null,hostConn=null,connections=new Map(),myId='',players=[];
+let settings={category:'all',rounds:10},deck=[],round=0,totalRounds=10,current=null,deadline=0,timer=null;
+let submissions=new Map(),submitted=false,busy=false,joinTimer=null,started=false;
+const ITEMS=RAW.map((r,id)=>({id,name:r[0],variant:r[1],price:Number(r[2]),category:r[3],emoji:r[4]}));
+const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[ch]));
+function shuffle(array){let a=[...array];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function parsePrice(value){let s=String(value||'').replace(/[,$\s]/g,'');if(!/^\d+(?:\.\d{0,2})?$/.test(s))return null;let n=Number(s);return n>=.01&&n<=MAX_GUESS&&Number.isFinite(n)?n:null}
+function calcPoints(guess,actual){return Math.round(5000*Math.exp(-2*Math.abs(Math.log(guess/actual))))}
+function itemPrompt(item){return {id:item.id,name:item.name,variant:item.variant,category:item.category,emoji:item.emoji}}
+function makeDeck(cat,count){
+  if(cat!=='all')return shuffle(ITEMS.filter(x=>x.category===cat)).slice(0,count);
+  let groups=shuffle(Object.keys(CATS)),buckets={};
+  for(let c of groups)buckets[c]=shuffle(ITEMS.filter(x=>x.category===c));
+  let chosen=[];while(chosen.length<count){for(let c of groups){if(chosen.length===count)break;let pick=buckets[c].shift();if(pick)chosen.push(pick)}groups=groups.slice(1).concat(groups[0])}
+  return chosen;
+}
+function show(screen){for(let name of ['home','lobby','game','end'])$('scr-'+name).hidden=name!==screen;
+  $('room-chip').hidden=screen==='home'||mode==='solo';$('btn-leave').hidden=screen==='home';$('btn-leave').textContent=mode==='solo'?'Exit practice':'Leave room';
+}
+function error(id,s){$(id).textContent=s;$(id).hidden=!s}
+function netError(s){if(phase==='home')error('home-error',s);else if(phase==='lobby')error('lobby-error',s);else{error('game-error',s);$('btn-lock').disabled=true}}
+function saveName(s){try{localStorage.setItem('price-check-name',s)}catch(e){}}
+function nameFromHome(solo){let s=$('nm').value.trim().slice(0,16);if(!s&&!solo){error('home-error','Enter your name first.');$('nm').focus();return null}
+  if(s)saveName(s);error('home-error','');return s||'You';
+}
+function setRoomCode(){room=Array.from(crypto.getRandomValues(new Uint8Array(4)),b=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b%32]).join('')}
+function roomUrl(){return location.origin+location.pathname+'?room='+room}
+function sendAll(message){for(let c of connections.values())if(c.open){try{c.send(message)}catch(e){console.warn(e)}}}
+function snapshot(){return {t:'lobby',room,players,settings}}
+function renderLobby(){
+  phase='lobby';show('lobby');$('room-chip').textContent=room;
+  $('lb-code').innerHTML=room.split('').map(x=>'<span>'+esc(x)+'</span>').join('');
+  $('lb-link').value=roomUrl();$('lb-player-label').textContent='Players · '+players.length+'/'+MAX_PLAYERS;
+  $('lb-players').innerHTML=players.map((p,i)=>'<li'+(p.connected===false?' class="offline"':'')+'><span class="dot"></span><span class="nm">'+esc(p.name)+'</span>'+ (i===0?'<span class="tag">Host</span>':p.id===myId?'<span class="tag">You</span>':p.connected===false?'<span class="tag">Left</span>':'')+'</li>').join('');
+  $('lb-round-count').textContent=settings.rounds;$('lb-game-mix').textContent=LABELS[settings.category]||'Mixed';$('lb-total').textContent=players.length+'/'+MAX_PLAYERS;
+  $('host-settings').hidden=mode!=='host';$('btn-start').hidden=mode!=='host';$('lb-wait').hidden=mode==='host';
+  if(mode==='host'){$('category').value=settings.category;$('rounds').value=settings.rounds}
+  error('lobby-error','');
+}
+function lobbySettings(){if(mode!=='host'||phase!=='lobby')return;settings={category:$('category').value,rounds:Number($('rounds').value)};sendAll(snapshot());renderLobby()}
+function scores(){$('scores').innerHTML=players.map(p=>'<li>'+esc(p.name)+(p.connected===false?' <small>(left)</small>':'')+': <strong>'+Number(p.points||0).toLocaleString()+'</strong></li>').join('')}
+function stopTimer(){if(timer!==null){clearInterval(timer);timer=null}}
+function timeLeft(){return Math.max(0,Math.ceil((deadline-Date.now())/1000))}
+function updateTimer(){
+  if(mode==='solo')return;
+  let sec=timeLeft();$('timer-text').textContent=sec+'s';$('timer-fill').style.width=(sec/ROUND_SECONDS*100)+'%';$('timer').classList.toggle('low',sec<=10);
+  if(sec===0&&phase==='guess'){
+    if(mode==='host')revealRound();
+    else{$('guess-input').disabled=true;$('btn-lock').disabled=true;phase='waiting';$('status').textContent=submitted?'Price locked. Waiting for results…':'Time is up. Waiting for the host to reveal prices…'}
+  }
+}
+function renderRound(prompt,cutoff){
+  phase='guess';submitted=false;current=prompt;deadline=cutoff||0;error('game-error','');
+  show('game');$('progress').textContent='ROUND '+(round+1)+' / '+totalRounds;
+  $('item-category').textContent=CATS[prompt.category]||'MIXED';$('item-sku').textContent='ITEM '+String(prompt.id+1).padStart(3,'0');
+  $('item-emoji').textContent=prompt.emoji;$('item-title').textContent=prompt.name;$('item-variant').textContent=prompt.variant;
+  $('price-bar').classList.remove('revealed');$('price-reveal').textContent='$ ? ? ?';
+  $('guess-input').value='';$('guess-input').disabled=false;$('btn-lock').disabled=true;$('btn-lock').hidden=false;
+  $('status').textContent=mode==='solo'?'Take your time. How much do you think it costs?':'40 seconds. Type your best estimate.';
+  $('reveal-summary').hidden=true;$('result-table').hidden=true;$('result-list').innerHTML='';
+  $('btn-next').hidden=true;$('round-wait').hidden=true;
+  $('timer').hidden=mode==='solo';$('solo-badge').hidden=mode!=='solo';
+  $('round-note').textContent='A perfect guess earns 5,000 points. Accuracy is measured by percentage difference.';
+  scores();stopTimer();
+  if(mode!=='solo'){updateTimer();timer=setInterval(updateTimer,200)}
+}
+function startRound(){
+  if(mode==='guest')return;
+  submissions.clear();let item=deck[round];let cutoff=mode==='solo'?0:Date.now()+ROUND_SECONDS*1000;
+  let prompt=itemPrompt(item);
+  if(mode==='host')sendAll({t:'round',round,totalRounds,deadline:cutoff,prompt,players});
+  renderRound(prompt,cutoff);
+  if(mode==='host')for(let p of players)if(p.connected===false)submissions.set(p.id,null);
+  if(mode==='host'&&submissions.size===players.length)revealRound();
+}
+function beginGame(){
+  round=0;players.forEach(p=>p.points=0);totalRounds=deck.length;
+  show('game');startRound();
+}
+function beginClientGame(msg){
+  players=msg.players;totalRounds=msg.totalRounds;round=0;phase='between';show('game');stopTimer();
+  $('progress').textContent='GAME STARTING';$('item-title').textContent='First item incoming…';
+}
+function submit(){
+  if(phase!=='guess'||submitted)return;
+  let value=parsePrice($('guess-input').value);
+  if(value===null){$('status').textContent='Enter a valid price greater than $0, using at most two decimals.';return}
+  submitted=true;$('btn-lock').disabled=true;$('guess-input').disabled=true;
+  if(mode==='solo'){
+    submissions.set('solo',value);revealRound();return;
+  }
+  $('status').textContent='Locked: '+money(value)+' · Waiting for the other estimates…';
+  if(mode==='host'){submissions.set('host',value);sendProgress();if(submissions.size===players.length)revealRound()}
+  else if(hostConn?.open){phase='waiting';hostConn.send({t:'guess',round,value})}
+  else netError('The host connection was lost. Leave the room to play again.');
+}
+function sendProgress(){if(mode==='host')sendAll({t:'progress',round,count:submissions.size,total:players.length});
+  if(submitted&&mode==='host')$('status').textContent='Locked · '+submissions.size+'/'+players.length+' estimates in.'}
+function revealRound(){
+  if(!['host','solo'].includes(mode)||phase!=='guess')return;
+  stopTimer();let item=deck[round],results=players.map(p=>{
+    let g=submissions.get(p.id);
+    if(!g)return {id:p.id,name:p.name,missed:true,guess:null,earned:0,percent:null};
+    let earned=calcPoints(g,item.price),percent=Math.abs(g-item.price)/item.price*100;
+    p.points+=earned;return {id:p.id,name:p.name,missed:false,guess:g,earned,percent};
+  });
+  let message={t:'reveal',round,answer:item.price,results,players};
+  if(mode==='host')sendAll(message);
+  reveal(message);
+}
+function reveal(msg){
+  phase='reveal';submitted=true;stopTimer();
+  players=msg.players;
+  $('price-bar').classList.add('revealed');$('price-reveal').textContent=money(msg.answer);
+  $('guess-input').disabled=true;$('btn-lock').hidden=true;
+  $('reveal-summary').hidden=false;$('reveal-price').textContent=money(msg.answer);
+  let mine=msg.results.find(p=>p.id===myId);
+  let pct=mine&&!mine.missed?mine.percent:null;
+  $('reveal-diff').textContent=pct===null?'No estimate submitted':pct<=.01?'Perfect price!':pct<5?'Nailed it! '+pct.toFixed(1)+'% off':pct<20?'Very close! '+pct.toFixed(1)+'% off':pct.toFixed(1)+'% away from the reference price';
+  $('reveal-points').textContent='+'+(mine?mine.earned:0).toLocaleString()+' pts';
+  $('status').textContent='The reference price is '+money(msg.answer)+'.';
+  $('round-note').textContent='Prices are reference amounts for this game, not live store quotes.';
+  $('result-table').hidden=false;
+  $('result-list').innerHTML=[...msg.results].sort((a,b)=>b.earned-a.earned).map(p=>
+    '<li><span class="who'+(p.id===myId?' you':'')+'">'+esc(p.name)+(p.id===myId?' (you)':'')+'</span><span class="their-guess">'+(p.missed?'No guess':money(p.guess))+'</span><span class="their-score">+'+p.earned.toLocaleString()+'</span></li>'
+  ).join('');
+  $('btn-next').hidden=mode==='guest';$('btn-next').textContent=round===totalRounds-1?'Final scores →':'Next round →';
+  $('round-wait').hidden=mode!=='guest';
+  scores();
+}
+function advance(){
+  if(!['host','solo'].includes(mode)||phase!=='reveal')return;
+  if(round===totalRounds-1){if(mode==='host')sendAll({t:'end',players});finish();return}
+  round++;startRound();
+}
+function finish(){
+  stopTimer();phase='end';show('end');
+  let rank=[...players].sort((a,b)=>b.points-a.points);
+  const winners=rank.filter(p=>p.points===rank[0].points);
+  $('winner').textContent=mode==='solo'?'Practice complete!':winners.length===1?rank[0].name+' wins!':'It’s a tie!';
+  $('final-subtitle').textContent=mode==='solo'?'Your total: '+Number(rank[0].points).toLocaleString()+' points over '+totalRounds+' rounds.':totalRounds+' rounds checked. Highest total wins.';
+  $('finalscores').innerHTML=rank.map((p,i)=>'<tr><td>'+(i+1)+'. '+esc(p.name)+'</td><td>'+Number(p.points).toLocaleString()+'</td></tr>').join('');
+  $('btn-again').hidden=mode==='guest';$('btn-again').textContent=mode==='solo'?'Practice again →':'Play again →';
+  $('end-wait').hidden=mode!=='guest';
+}
+function again(){
+  if(phase!=='end'||mode==='guest')return;
+  if(mode==='solo'){deck=makeDeck('all',10);beginGame();return}
+  players=players.filter(p=>p.connected!==false);
+  players.forEach(p=>p.points=0);
+  sendAll(snapshot());renderLobby();
+}
+function handleHost(msg,id){
+  if(!msg||typeof msg!=='object'||mode!=='host')return;
+  const conn=connections.get(id);
+  if(msg.t==='join'){
+    if(phase!=='lobby'||players.length>=MAX_PLAYERS){conn?.send({t:'error',message:phase!=='lobby'?'This room has already started.':'This room is full.'});return}
+    if(players.some(p=>p.id===id)){conn?.send(snapshot());return}
+    let name=String(msg.name||'').trim().slice(0,16);
+    if(!name){conn?.send({t:'error',message:'Please enter a player name.'});return}
+    players.push({id,name,points:0,connected:true});
+    sendAll(snapshot());renderLobby();
+  }else if(msg.t==='guess'&&phase==='guess'&&msg.round===round){
+    if(submissions.has(id)||!players.some(p=>p.id===id))return;
+    let value=msg.value;
+    if(!Number.isFinite(value)||value<.01||value>MAX_GUESS||Math.round(value*100)!==value*100)return;
+    submissions.set(id,value);sendProgress();
+    if(submissions.size===players.length)revealRound();
+  }
+}
+function handleGuest(msg){
+  if(!msg||typeof msg!=='object')return;
+  if(msg.t==='lobby'){players=msg.players;room=msg.room;settings=msg.settings;renderLobby()}
+  else if(msg.t==='start')beginClientGame(msg);
+  else if(msg.t==='round'){
+    round=msg.round;totalRounds=msg.totalRounds;players=msg.players;renderRound(msg.prompt,msg.deadline);
+  }else if(msg.t==='progress'){
+    if(msg.round===round&&phase==='waiting')$('status').textContent='Locked · '+msg.count+'/'+msg.total+' estimates in.';
+  }else if(msg.t==='reveal'){
+    if(msg.round===round)reveal(msg);
+  }else if(msg.t==='end'){players=msg.players;finish()}
+  else if(msg.t==='error')netError(msg.message||'Unable to join room.');
+}
+function closedGuest(id){
+  if(!connections.has(id))return;connections.delete(id);
+  if(phase==='lobby'){players=players.filter(p=>p.id!==id);sendAll(snapshot());renderLobby()}
+  else if(['guess','reveal'].includes(phase)){
+    let p=players.find(x=>x.id===id);if(p)p.connected=false;
+    if(phase==='guess'&&!submissions.has(id)){submissions.set(id,null);sendProgress();if(submissions.size===players.length)revealRound()}
+    scores();
+  }
+}
+function createRoom(){
+  if(busy)return;const name=nameFromHome(false);if(!name)return;
+  if(!window.Peer){error('home-error','Online rooms could not load. Check your internet connection.');return}
+  busy=true;$('btn-create').disabled=true;$('net-note').textContent='Creating room…';
+  mode='host';myId='host';players=[{id:'host',name,points:0,connected:true}];settings={category:'all',rounds:10};
+  let attempts=0;
+  const fail=message=>{busy=false;$('btn-create').disabled=false;error('home-error',message);$('net-note').textContent='Online rooms · 1–16 players'};
+  function create(){
+    setRoomCode();let ready=false;
+    let instance=new window.Peer(PEER_PREFIX+room.toLowerCase(),{debug:0});peer=instance;
+    let timeout=setTimeout(()=>{if(!ready&&peer===instance){try{instance.destroy()}catch(e){}fail('Room creation timed out. Try again.')}},12000);
+    instance.on('open',()=>{
+      if(peer!==instance)return;
+      ready=true;clearTimeout(timeout);busy=false;$('btn-create').disabled=false;phase='lobby';
+      history.replaceState(null,'','?room='+room);renderLobby();
+    });
+    instance.on('connection',c=>{
+      c.on('open',()=>{connections.set(c.peer,c)});
+      c.on('data',msg=>handleHost(msg,c.peer));
+      c.on('close',()=>closedGuest(c.peer));
+      c.on('error',()=>closedGuest(c.peer));
+    });
+    instance.on('error',e=>{
+      if(peer!==instance)return;
+      if(!ready){clearTimeout(timeout);
+        if(e.type==='unavailable-id'&&attempts++<5){instance.destroy();create();return}
+        fail('Could not create room ('+(e.type||'network issue')+'). Please retry.');
+      }else netError('Room network error: '+(e.type||'connection lost'));
+    });
+  }
+  create();
+}
+function joinRoom(){
+  if(busy)return;let name=nameFromHome(false);if(!name)return;
+  if(!window.Peer){error('home-error','Online rooms could not load. Check your internet connection.');return}
+  let requested=$('code-in').value.toUpperCase().trim();
+  if(!/^[A-HJ-NP-Z2-9]{4}$/.test(requested)){error('home-error','Enter a valid four-character room code.');return}
+  busy=true;mode='guest';room=requested;$('btn-join').disabled=true;$('net-note').textContent='Joining room '+room+'…';
+  let connected=false;
+  const fail=msg=>{if(connected)return;error('home-error',msg);busy=false;$('btn-join').disabled=false;$('net-note').textContent='Online rooms · 1–16 players';try{peer?.destroy()}catch(e){}peer=null};
+  joinTimer=setTimeout(()=>fail('No response from that room. Check the code and try again.'),15000);
+  peer=new window.Peer(undefined,{debug:0});
+  peer.on('open',id=>{
+    myId=id;hostConn=peer.connect(PEER_PREFIX+room.toLowerCase(),{reliable:true});
+    hostConn.on('open',()=>hostConn.send({t:'join',name}));
+    hostConn.on('data',msg=>{
+      if(msg?.t==='lobby'&&!connected){connected=true;clearTimeout(joinTimer);busy=false;$('btn-join').disabled=false;history.replaceState(null,'','?room='+room)}
+      if(msg?.t==='error'&&!connected){fail(msg.message||'Unable to join this room.');return}
+      handleGuest(msg);
+    });
+    hostConn.on('close',()=>{if(!connected)fail('Host not found or room closed.');else netError('The host disconnected. Please leave the room.')});
+    hostConn.on('error',()=>{if(!connected)fail('Could not connect to the host.');else netError('Room connection lost.')});
+  });
+  peer.on('error',e=>{if(!connected)fail('Unable to join ('+(e.type||'network error')+').');else netError('Network error: '+(e.type||'connection lost'))});
+}
+function startSession(){
+  if(mode!=='host'||phase!=='lobby')return;
+  settings={category:$('category').value,rounds:Number($('rounds').value)};
+  deck=makeDeck(settings.category,settings.rounds);totalRounds=deck.length;
+  players.forEach(p=>p.points=0);
+  sendAll({t:'start',players,totalRounds});beginGame();
+}
+function startSolo(){
+  if(busy||phase!=='home')return;let name=nameFromHome(true);
+  mode='solo';myId='solo';room='';players=[{id:'solo',name,points:0,connected:true}];
+  settings={category:'all',rounds:10};deck=makeDeck('all',10);totalRounds=10;
+  history.replaceState(null,'',location.pathname);
+  beginGame();
+}
+function leave(){
+  if(['guess','waiting','reveal'].includes(phase)&&!confirm('Leave your current game?'))return;
+  stopTimer();try{peer?.destroy()}catch(e){}
+  location.href=location.pathname;
+}
+async function copyLink(){
+  let b=$('btn-copy');
+  try{
+    if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(roomUrl());
+    else{$('lb-link').select();if(!document.execCommand('copy'))throw Error('Clipboard unavailable')}
+    b.textContent='Copied!';setTimeout(()=>b.textContent='Copy link',1600);
+  }catch(e){$('lb-link').select();$('lb-link').focus();b.textContent='Select & copy'}
+}
+$('btn-create').addEventListener('click',createRoom);
+$('btn-join').addEventListener('click',joinRoom);
+$('btn-solo').addEventListener('click',startSolo);
+$('btn-start').addEventListener('click',startSession);
+$('btn-again').addEventListener('click',again);
+$('btn-leave').addEventListener('click',leave);
+$('btn-copy').addEventListener('click',copyLink);
+$('btn-next').addEventListener('click',advance);
+$('category').addEventListener('change',lobbySettings);
+$('rounds').addEventListener('change',lobbySettings);
+$('code-in').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4));
+$('code-in').addEventListener('keydown',e=>{if(e.key==='Enter')joinRoom()});
+$('guess-input').addEventListener('input',()=>{$('btn-lock').disabled=phase!=='guess'||submitted||parsePrice($('guess-input').value)===null});
+$('guess-form').addEventListener('submit',e=>{e.preventDefault();submit()});
+try{$('nm').value=localStorage.getItem('price-check-name')||''}catch(e){}
+const invite=new URLSearchParams(location.search).get('room');
+if(invite&&/^[A-HJ-NP-Z2-9]{4}$/i.test(invite)){$('code-in').value=invite.toUpperCase();$('net-note').textContent='Invite detected. Enter your name and click Join.'}
+show('home');
+})();
+
+</script>
+</body>
+</html>
