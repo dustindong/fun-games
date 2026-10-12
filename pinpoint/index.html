@@ -308,8 +308,8 @@ function renderLobby(){
 function renderScores(){$('scores').innerHTML=players.map(p=>'<li>'+esc(p.name)+(p.connected===false?' · offline':'')+': <strong>'+Number(p.points||0).toLocaleString()+'</strong></li>').join('')}
 function initDemo(){
   if(!window.L)return;
-  demoMap=L.map('demo-map',{zoomControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false,boxZoom:false,keyboard:false,attributionControl:false}).setView([47.5,2.3],4);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19}).addTo(demoMap);
+  demoMap=L.map('demo-map',{zoomControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false,boxZoom:false,keyboard:false}).setView([47.5,2.3],4);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors',maxZoom:19}).addTo(demoMap);
   L.circleMarker([48.8584,2.2945],{radius:9,color:'#fff',weight:3,fillColor:'#e54b45',fillOpacity:1}).addTo(demoMap);
   L.circleMarker([45.764,4.8357],{radius:9,color:'#fff',weight:3,fillColor:'#2D69AC',fillOpacity:1}).addTo(demoMap);
   L.polyline([[48.8584,2.2945],[45.764,4.8357]],{color:'#1b3553',weight:3,dashArray:'7 7'}).addTo(demoMap);
