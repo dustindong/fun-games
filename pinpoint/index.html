@@ -184,6 +184,7 @@ input[type=text]:focus,select:focus{border-color:var(--blue);background:var(--su
         </div>
         <p class="err" id="home-err" role="alert" hidden></p>
         <p class="note" id="net-note">Online rooms · Up to 16 players</p>
+        <button class="btn link" id="btn-solo" type="button">Practice solo</button>
       </div>
     </div>
     <div class="rules">
@@ -272,7 +273,7 @@ const CATEGORIES={all:'Mixed',landmarks:'Landmarks',cities:'Cities',nature:'Natu
 const PEER_PREFIX='pinpoint-party-v2-';
 const MAX_PLAYERS=16;
 let peer=null,hostConn=null,connections=new Map();
-let isHost=false,room='',myId='',players=[],settings={category:'all',rounds:10};
+let isHost=false,solo=false,room='',myId='',players=[],settings={category:'all',rounds:10};
 let phase='home',deck=[],round=0,guesses=new Map(),mySubmitted=false;
 let map=null,demoMap=null,pin=null,overlays=null,guess=null,busy=false,connectionTimer=null;
 const peerOptions={debug:0};
@@ -280,7 +281,7 @@ const esc=value=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','
 const shuffle=arr=>{let result=[...arr];for(let i=result.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[result[i],result[j]]=[result[j],result[i]]}return result};
 const km=(a,b,c,d)=>{let r=Math.PI/180,dl=(c-a)*r,do_=(d-b)*r,x=Math.sin(dl/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(do_/2)**2;return 6371*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))};
 const points=d=>Math.round(5000*Math.exp(-d/1800));
-function show(screen){for(let id of ['home','lobby','game','end'])$('scr-'+id).hidden=id!==screen;$('room-chip').hidden=screen==='home';$('btn-leave').hidden=screen==='home';if(screen==='game'&&map)setTimeout(()=>map.invalidateSize(),50)}
+function show(screen){for(let id of ['home','lobby','game','end'])$('scr-'+id).hidden=id!==screen;$('room-chip').hidden=screen==='home'||solo;$('btn-leave').hidden=screen==='home';$('btn-leave').textContent=solo?'Exit practice':'Leave room';if(screen==='game'&&map)setTimeout(()=>map.invalidateSize(),50)}
 function showError(id,message){$(id).textContent=message;$(id).hidden=!message}
 function networkError(message){if(phase==='home'){showError('home-err',message)}else if(phase==='lobby'){showError('lb-err',message)}else{showError('game-err',message);$('btn-lock').disabled=true}}
 function makeCode(){let alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',bytes=crypto.getRandomValues(new Uint8Array(4));return Array.from(bytes,b=>alphabet[b%alphabet.length]).join('')}
@@ -339,7 +340,7 @@ function startRound(){
   map.setView([15,0],2,{animate:false});
   $('progress').textContent='ROUND '+(round+1)+' / '+deck.length;
   $('question').textContent='Where is '+deck[round].name+'?';
-  $('instruction').textContent='Place your pin. Everyone guesses privately on their own device.';
+  $('instruction').textContent=solo?'Place your pin and see how close you can get.':'Place your pin. Everyone guesses privately on their own device.';
   $('status').textContent='No pin placed yet.';
   $('results').hidden=true;$('results').innerHTML='';
   $('btn-lock').hidden=false;$('btn-lock').disabled=true;
@@ -409,13 +410,14 @@ function finish(){
   phase='end';show('end');
   let ranking=[...players].sort((a,b)=>b.points-a.points);
   let leaders=ranking.filter(p=>p.points===ranking[0].points);
-  $('winner').textContent=leaders.length===1?'🏆 '+leaders[0].name+' wins!':'🏆 It’s a tie!';
+  $('winner').textContent=solo?'🎯 Practice complete!':leaders.length===1?'🏆 '+leaders[0].name+' wins!':'🏆 It’s a tie!';
   $('finalscores').innerHTML=ranking.map((p,i)=>'<tr><td>'+(i+1)+'. '+esc(p.name)+'</td><td>'+Number(p.points).toLocaleString()+'</td></tr>').join('');
-  $('btn-again').hidden=!isHost;$('end-wait').hidden=isHost;
+  $('btn-again').hidden=!isHost;$('btn-again').textContent=solo?'Practice again →':'Play again →';$('end-wait').hidden=isHost;
 }
 function again(){
   if(!isHost||phase!=='end')return;
   for(let p of players)p.points=0;
+  if(solo){deck=makeDeck(settings);beginGame();return}
   sendAll(snapshot());renderLobby();
 }
 function handleHostMessage(msg,from){
@@ -542,11 +544,24 @@ function joinRoom(){
     else networkError('Room connection error: '+(e.type||'network error'));
   });
 }
+function makeDeck(config){
+  const pool=PLACES.filter(p=>config.category==='all'||p[3]===config.category);
+  return shuffle(pool).slice(0,config.rounds).map(p=>({name:p[0],lat:p[1],lng:p[2],category:p[3]}));
+}
+function startSolo(){
+  if(busy||phase!=='home')return;
+  const name=$('nm').value.trim().slice(0,16)||'You';
+  if($('nm').value.trim()){try{localStorage.setItem('pinpoint-name',name)}catch(e){}}
+  solo=true;isHost=true;myId='host';room='';
+  settings={category:'all',rounds:10};
+  players=[{id:'host',name,points:0,connected:true}];
+  deck=makeDeck(settings);
+  beginGame();
+}
 function startGame(){
   if(!isHost||phase!=='lobby')return;
   settings={category:$('category').value,rounds:Number($('rounds').value)};
-  const pool=PLACES.filter(p=>settings.category==='all'||p[3]===settings.category);
-  deck=shuffle(pool).slice(0,settings.rounds).map(p=>({name:p[0],lat:p[1],lng:p[2],category:p[3]}));
+  deck=makeDeck(settings);
   const prompts=deck.map(p=>({name:p.name,category:p.category}));
   sendAll({t:'start',deck:prompts,players});
   beginGame();
@@ -565,6 +580,7 @@ async function copyLink(){
 }
 $('btn-create').addEventListener('click',createRoom);
 $('btn-join').addEventListener('click',joinRoom);
+$('btn-solo').addEventListener('click',startSolo);
 $('code-in').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4));
 $('code-in').addEventListener('keydown',e=>{if(e.key==='Enter')joinRoom()});
 $('nm').addEventListener('keydown',e=>{if(e.key==='Enter')$('btn-create').focus()});
