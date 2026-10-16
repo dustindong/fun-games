@@ -199,6 +199,20 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 .pc-copy{fill:#292008;font:700 12px var(--mono)}
 .pc-sub{fill:var(--ink);font:700 12px var(--body)}
 
+
+/* Read the Room! */
+.game-rr{background:color-mix(in srgb,#8358C9 7%,var(--surface));border-color:color-mix(in srgb,#8358C9 35%,var(--line))}
+.game-rr .meta span{background:color-mix(in srgb,#8358C9 14%,var(--surface))}
+.game-rr .preview{background:none;border-bottom:0}
+.game-rr .body{justify-items:center;text-align:center;padding-top:0}
+.game-rr .name{margin:-25px 0 5px;position:relative;z-index:1;padding:9px 17px 8px;border:3px solid var(--ink);border-radius:12px;background:var(--surface);box-shadow:4px 5px 0 color-mix(in srgb,#8358C9 70%,var(--ink));font-size:37px;line-height:.82;transform:rotate(-2deg)}
+.game-rr .meta{justify-content:center}.game-rr .play{justify-self:center;background:#8358C9;color:#fff}
+.rr-bubble{fill:var(--surface);stroke:#8358C9;stroke-width:2}
+.rr-count{fill:var(--ink);font:800 16px var(--body)}
+.rr-label{fill:var(--muted);font:700 10px var(--mono);letter-spacing:.07em}
+.rr-line{stroke:color-mix(in srgb,#8358C9 55%,var(--line));stroke-width:5;stroke-linecap:round}
+.rr-dot{fill:#8358C9;stroke:var(--surface);stroke-width:3}
+
 </style>
 </head>
 <body>
@@ -344,6 +358,39 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
         <p class="desc">Guess what things cost, from everyday groceries to ridiculous luxuries.</p>
         <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>130 price clues</span></div>
         <span class="play">Play Price Check!
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </a>
+
+    <!-- Read the Room! -->
+    <a class="game game-rr" href="read-the-room/">
+      <svg class="preview" viewBox="0 0 400 200" role="img" aria-label="Family members rating a hot take on a one-to-ten scale">
+        <rect class="rr-bubble" x="28" y="25" width="114" height="68" rx="14"/>
+        <path class="rr-bubble" d="M49 86L44 105 68 90" />
+        <text x="85" y="47" text-anchor="middle" class="rr-label">MY TAKE</text>
+        <text x="85" y="78" text-anchor="middle" font-size="37" font-weight="900" font-family="var(--display)" fill="#8358C9">8</text>
+        <rect class="rr-bubble" x="258" y="25" width="114" height="68" rx="14"/>
+        <path class="rr-bubble" d="M335 86L351 105 326 90"/>
+        <text x="315" y="47" text-anchor="middle" class="rr-label">MY TAKE</text>
+        <text x="315" y="78" text-anchor="middle" font-size="37" font-weight="900" font-family="var(--display)" fill="#8358C9">4</text>
+        <rect x="150" y="13" width="100" height="44" rx="11" fill="#8358C9"/>
+        <text x="200" y="31" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="var(--mono)">THE ROOM</text>
+        <text x="200" y="49" text-anchor="middle" font-size="22" font-weight="900" fill="#fff" font-family="var(--display)">6.3</text>
+        <path class="rr-line" d="M46 144H354"/>
+        <circle class="rr-dot" cx="84" cy="144" r="11"/>
+        <circle class="rr-dot" cx="150" cy="144" r="11"/>
+        <circle class="rr-dot" cx="242" cy="144" r="11"/>
+        <circle class="rr-dot" cx="325" cy="144" r="11"/>
+        <path d="M210 132v24" stroke="#E39D42" stroke-width="5" stroke-linecap="round"/>
+        <text class="rr-label" x="46" y="170" text-anchor="middle">1</text>
+        <text class="rr-label" x="354" y="170" text-anchor="middle">10</text>
+      </svg>
+      <div class="body">
+        <h2 class="name">Read the Room!</h2>
+        <p class="desc">Rate the hot takes, predict your family's average, and uncover the outlier.</p>
+        <div class="meta"><span>2–16 players</span><span>5–15 rounds</span><span>122 hot takes</span></div>
+        <span class="play">Play Read the Room!
           <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
       </div>
