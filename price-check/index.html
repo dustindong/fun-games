@@ -193,12 +193,27 @@ input[type=text]:focus,select:focus{background:var(--surface);border-color:var(-
   .result-list .their-guess{grid-column:1/-1;grid-row:2}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Logo artwork shared with the game selection screen */
+.brand img.game-logo-small{
+ display:block;width:auto;height:44px;max-width:160px;object-fit:contain;
+}
+.hero .title{font-size:initial;line-height:1;letter-spacing:normal;text-transform:none}
+.hero .title img.game-logo-hero{
+ display:block;width:min(100%,480px);height:auto;object-fit:contain;
+ filter:drop-shadow(0 7px 10px rgba(20,33,44,.14));
+}
+@media (max-width:600px){
+ .brand img.game-logo-small{height:36px;max-width:128px}
+ .hero .title img.game-logo-hero{width:min(100%,360px)}
+}
+
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="header">
-    <div class="brand"><span class="brand-mark" aria-hidden="true">$</span><span>Price Check!</span></div>
+    <div class="brand"><img class="game-logo-small" src="logo.svg?v=20261017-logos" alt="Price Check!" width="640" height="467"></div>
     <div class="head-right">
       <a class="btn small" href="../">All games</a>
       <span class="chip" id="room-chip" hidden></span>
@@ -207,7 +222,7 @@ input[type=text]:focus,select:focus{background:var(--surface);border-color:var(-
   </header>
   <section id="scr-home">
     <div class="hero">
-      <h1 class="title">Price <span>Check!</span></h1>
+      <h1 class="title"><img class="game-logo-hero" src="logo.svg?v=20261017-logos" alt="Price Check!" width="640" height="467"></h1>
       <div class="ticket-strip" aria-hidden="true"></div>
       <p class="tagline">Think you know what things cost? Guess the price of everything from groceries to absurd luxuries. Closest guesses win!</p>
     </div>
