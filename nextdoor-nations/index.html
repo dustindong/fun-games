@@ -56,12 +56,27 @@ input[type=text]{width:100%;border:1px solid var(--line);background:var(--surfac
 @media(max-width:760px){.wrap{padding-block:6px 24px}.top{min-height:40px;margin-bottom:6px}.brand{font-size:19px}.home-grid{grid-template-columns:1fr}.home-grid .play{order:-1}.rules{grid-template-columns:1fr;gap:12px}.title{font-size:clamp(62px,20vw,104px)}#demo{height:210px}.reveal{grid-template-columns:1fr}.stage{height:clamp(280px,47vh,420px)}.roundbar{gap:9px}.stat b{font-size:24px}.answer-row{grid-template-columns:1fr}.answer-row .btn{width:100%;padding:14px}.rv-actions{position:sticky;bottom:0;background:var(--surface);padding-top:10px}.board li{grid-template-columns:26px auto minmax(0,1fr) 56px;gap:9px}.board .bars{display:none}.lobby-foot{flex-direction:column;align-items:stretch}#btn-start,#btn-again{width:100%;padding:14px}.invite .join{flex-wrap:wrap}.invite .join input{flex:1 1 180px}}
 @media(max-width:390px){body.in-room .brand span{display:none}.top-right{gap:6px}.chip{font-size:10px;padding:6px}.prompt{font-size:24px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Logo artwork shared with the game selection screen */
+.brand img.game-logo-small{
+ display:block;width:auto;height:44px;max-width:160px;object-fit:contain;
+}
+.hero .title{font-size:initial;line-height:1;letter-spacing:normal;text-transform:none}
+.hero .title img.game-logo-hero{
+ display:block;width:min(100%,480px);height:auto;object-fit:contain;
+ filter:drop-shadow(0 7px 10px rgba(20,33,44,.14));
+}
+@media (max-width:600px){
+ .brand img.game-logo-small{height:36px;max-width:128px}
+ .hero .title img.game-logo-hero{width:min(100%,360px)}
+}
+
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><i></i><span>Nextdoor Nations</span></div>
+    <div class="brand"><img class="game-logo-small" src="logo.svg?v=20261017-logos" alt="Nextdoor Nations" width="640" height="468"></div>
     <div class="top-right">
       <a class="btn small" id="btn-hub" href="../">All games</a>
       <span class="chip" id="room-chip" hidden></span>
@@ -71,7 +86,7 @@ input[type=text]{width:100%;border:1px solid var(--line);background:var(--surfac
 
   <section class="screen" id="scr-home">
     <div class="hero">
-      <h1 class="title">Nextdoor <span>Nations</span></h1>
+      <h1 class="title"><img class="game-logo-hero" src="logo.svg?v=20261017-logos" alt="Nextdoor Nations" width="640" height="468"></h1>
       <div class="route-strip" aria-hidden="true"></div>
       <p class="tagline">You know the country you're standing in. The arrow points in the direction of a bordering country's capital. Name that country.</p>
     </div>
