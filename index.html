@@ -213,6 +213,18 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
 .rr-line{stroke:color-mix(in srgb,#8358C9 55%,var(--line));stroke-width:5;stroke-linecap:round}
 .rr-dot{fill:#8358C9;stroke:var(--surface);stroke-width:3}
 
+
+/* Shared illustrated sticker logos: same treatment as How Big? and Order Up! */
+.game .body:has(.name-logo) .name{
+  margin:-44px 0 -2px; padding:0; border:0; border-radius:0;
+  box-shadow:none; background:transparent; transform:none; line-height:1;
+}
+.game .body:has(.name-logo) .name-logo{
+  display:block; width:auto; height:140px; max-width:100%; object-fit:contain;
+}
+.game .body:has(.name-logo) .meta{justify-content:center}
+.game .body:has(.name-logo) .play{justify-self:center}
+
 </style>
 </head>
 <body>
@@ -284,7 +296,7 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
         <text class="nn-tag" x="290" y="62" font-size="16">?</text>
       </svg>
       <div class="body">
-        <h2 class="name">Nextdoor<br>Nations</h2>
+        <h2 class="name"><img class="name-logo" src="nextdoor-nations/logo.svg?v=20261017-logos" alt="Nextdoor Nations" width="640" height="468" loading="lazy"></h2>
         <p class="desc">Follow the arrow from a city and name the neighboring country it points toward.</p>
         <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>352 directions</span></div>
         <span class="play">Play Nextdoor Nations
@@ -306,7 +318,7 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
         <circle class="ww-check" cx="318" cy="130" r="7"/><path d="M314 130l3 3 5-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <div class="body">
-        <h2 class="name">Where in<br>the Word?</h2>
+        <h2 class="name"><img class="name-logo" src="where-in-the-word/logo.svg?v=20261017-logos" alt="Where in the Word?" width="640" height="458" loading="lazy"></h2>
         <p class="desc">Read the language, pick the country, and score more the faster you recognize it.</p>
         <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>138 GeoGuessr clues</span></div>
         <span class="play">Play Where in the Word?
@@ -326,7 +338,7 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
         <circle class="fg-check" cx="176" cy="160" r="7"/><path d="M172 160l3 3 5-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <div class="body">
-        <h2 class="name">Flagged!</h2>
+        <h2 class="name"><img class="name-logo" src="flagged/logo.svg?v=20261017-logos" alt="Flagged!" width="640" height="451" loading="lazy"></h2>
         <p class="desc">Name the flag fast, beat the lookalikes, and learn the visual tell for next time.</p>
         <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>196 flags</span></div>
         <span class="play">Play Flagged!
@@ -336,7 +348,7 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
     </a>
 
     <!-- To add another game, copy one of the cards above and point its href at the new game's folder. -->
-<a class="game game-nn" href="pinpoint/"><svg class="preview" viewBox="0 0 400 200" role="img" aria-label="Map guessing game"><rect width="400" height="200" fill="#d5e7e5"/><path d="M0 90L72 48 118 70 148 42 202 62 190 108 130 118 108 175 38 153 0 171Z M255 0L320 28 380 18 400 46 400 147 356 160 309 118 260 135 236 83Z" fill="#80b69b"/><path d="M195 39C157 39 157 96 195 131C233 96 233 39 195 39Z" fill="#ed684b" stroke="#203748" stroke-width="4"/><circle cx="195" cy="71" r="13" fill="white"/><circle cx="288" cy="146" r="24" fill="none" stroke="#203748" stroke-width="4" stroke-dasharray="7 6"/><circle cx="288" cy="146" r="7" fill="#ffca49"/></svg><div class="body"><h2 class="name">Pinpoint!</h2><p class="desc">Drop a pin on the world map. Closest guesses score the most points.</p><div class="meta"><span>1–16 players</span><span>5–15 rounds</span><span>60 locations</span></div><span class="play">Play Pinpoint! →</span></div></a>
+<a class="game game-nn" href="pinpoint/"><svg class="preview" viewBox="0 0 400 200" role="img" aria-label="Map guessing game"><rect width="400" height="200" fill="#d5e7e5"/><path d="M0 90L72 48 118 70 148 42 202 62 190 108 130 118 108 175 38 153 0 171Z M255 0L320 28 380 18 400 46 400 147 356 160 309 118 260 135 236 83Z" fill="#80b69b"/><path d="M195 39C157 39 157 96 195 131C233 96 233 39 195 39Z" fill="#ed684b" stroke="#203748" stroke-width="4"/><circle cx="195" cy="71" r="13" fill="white"/><circle cx="288" cy="146" r="24" fill="none" stroke="#203748" stroke-width="4" stroke-dasharray="7 6"/><circle cx="288" cy="146" r="7" fill="#ffca49"/></svg><div class="body"><h2 class="name"><img class="name-logo" src="pinpoint/logo.svg?v=20261017-logos" alt="Pinpoint!" width="640" height="462" loading="lazy"></h2><p class="desc">Drop a pin on the world map. Closest guesses score the most points.</p><div class="meta"><span>1–16 players</span><span>5–15 rounds</span><span>60 locations</span></div><span class="play">Play Pinpoint! →</span></div></a>
 
     <!-- Price Check! -->
     <a class="game game-pc" href="price-check/">
@@ -354,7 +366,7 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
         <text x="140" y="178" class="pc-sub" text-anchor="middle">ONE POUND</text>
       </svg>
       <div class="body">
-        <h2 class="name">Price Check!</h2>
+        <h2 class="name"><img class="name-logo" src="price-check/logo.svg?v=20261017-logos" alt="Price Check!" width="640" height="467" loading="lazy"></h2>
         <p class="desc">Guess what things cost, from everyday groceries to ridiculous luxuries.</p>
         <div class="meta"><span>1–16 players</span><span>10 rounds</span><span>130 price clues</span></div>
         <span class="play">Play Price Check!
@@ -387,7 +399,7 @@ a.game:hover .name-logo{transform:rotate(-3deg) scale(1.04)}
         <text class="rr-label" x="354" y="170" text-anchor="middle">10</text>
       </svg>
       <div class="body">
-        <h2 class="name">Read the Room!</h2>
+        <h2 class="name"><img class="name-logo" src="read-the-room/logo.svg?v=20261017-logos" alt="Read the Room!" width="640" height="465" loading="lazy"></h2>
         <p class="desc">Rate the hot takes, predict your family's average, and uncover the outlier.</p>
         <div class="meta"><span>2–16 players</span><span>5–15 rounds</span><span>120 hot takes</span></div>
         <span class="play">Play Read the Room!
