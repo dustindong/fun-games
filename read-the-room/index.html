@@ -102,16 +102,31 @@ input:focus,select:focus{border-color:var(--accent)}.note{color:var(--muted);fon
 @media(max-width:520px){.scale-buttons{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:420px){.scale-buttons{gap:2px}.scale-buttons button{font-size:11px}.awards{grid-template-columns:1fr}.code span{width:49px;height:61px}.brand{font-size:20px}.top .btn{font-size:12px;padding:8px}.score-strip li{font-size:11px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* Logo artwork shared with the game selection screen */
+.brand img.game-logo-small{
+ display:block;width:auto;height:44px;max-width:160px;object-fit:contain;
+}
+.hero .title{font-size:initial;line-height:1;letter-spacing:normal;text-transform:none}
+.hero .title img.game-logo-hero{
+ display:block;width:min(100%,480px);height:auto;object-fit:contain;
+ filter:drop-shadow(0 7px 10px rgba(20,33,44,.14));
+}
+@media (max-width:600px){
+ .brand img.game-logo-small{height:36px;max-width:128px}
+ .hero .title img.game-logo-hero{width:min(100%,360px)}
+}
+
 </style>
 </head>
 <body>
 <main class="wrap">
 <header class="top">
- <div class="brand"><span class="brand-icon" aria-hidden="true">?</span>Read the Room!</div>
+ <div class="brand"><img class="game-logo-small" src="logo.svg?v=20261017-logos" alt="Read the Room!" width="640" height="465"></div>
  <div class="actions"><a href="../" class="btn small">All games</a><span id="room-chip" class="tag" hidden></span><button class="btn small" id="btn-leave" hidden>Leave room</button></div>
 </header>
 <section id="scr-home">
- <div class="hero"><span class="eyebrow">The family mind-reading party game</span><h1>Read the <span>Room!</span></h1><div class="stripe"></div><p class="tagline">How well do you really know your people? Rate ridiculous hot takes, predict the family average, and find out who's the odd one out.</p></div>
+ <div class="hero"><span class="eyebrow">The family mind-reading party game</span><h1 class="title"><img class="game-logo-hero" src="logo.svg?v=20261017-logos" alt="Read the Room!" width="640" height="465"></h1><div class="stripe"></div><p class="tagline">How well do you really know your people? Rate ridiculous hot takes, predict the family average, and find out who's the odd one out.</p></div>
  <div class="home-grid">
   <div class="card showcase">
    <div class="showcase-head"><span class="eyebrow">Example round</span><span class="eyebrow">1 — 10</span></div>
